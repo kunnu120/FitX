@@ -1,6 +1,4 @@
-package com.example.fitx.data;
-
-import com.example.fitx.data.model.LoggedInUser;
+package com.google.firebase.androidx.auth.java.login.ui;
 
 import java.io.IOException;
 

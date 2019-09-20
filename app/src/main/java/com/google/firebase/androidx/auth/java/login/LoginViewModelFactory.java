@@ -1,11 +1,11 @@
-package com.example.fitx.ui.login;
+package com.google.firebase.androidx.auth.java.login;
 
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.annotation.NonNull;
 
-import com.example.fitx.data.LoginDataSource;
-import com.example.fitx.data.LoginRepository;
+import com.google.firebase.androidx.auth.java.login.ui.LoginDataSource;
+import com.google.firebase.androidx.auth.java.login.ui.LoginRepository;
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.

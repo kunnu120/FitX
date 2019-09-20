@@ -1,31 +1,29 @@
-package  com.example.fitx.ui.login;
+package com.google.firebase.androidx.auth.java.login;
 
-import android.app.Activity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.fitx.R;
-import com.example.fitx.ui.login.LoginViewModel;
-import com.example.fitx.ui.login.LoginViewModelFactory;
+import androidx.annotation.NonNull;
 
-public class LoginActivity extends AppCompatActivity {
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.androidx.auth.R;
 
-    private LoginViewModel loginViewModel;
 
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
+
+    private static final String TAG = "LoginActivity";
+    private FirebaseAuth fAuth;     //firebase authentication variable
+    private String fToken;
+    private TokenBroadcastReceiver fTokenReceiver;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,5 +122,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 }

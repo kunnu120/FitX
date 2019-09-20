@@ -1,4 +1,4 @@
-package  com.example.fitx.ui.login;
+package com.google.firebase.androidx.auth.java.login;
 
 import androidx.annotation.Nullable;
 

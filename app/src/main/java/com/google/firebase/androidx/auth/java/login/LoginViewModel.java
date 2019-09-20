@@ -1,13 +1,13 @@
-package com.example.fitx.ui.login;
+package com.google.firebase.androidx.auth.java.login;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import android.util.Patterns;
 
-import com.example.fitx.data.LoginRepository;
-import com.example.fitx.data.Result;
-import com.example.fitx.data.model.LoggedInUser;
+import com.google.firebase.androidx.auth.java.login.ui.LoginRepository;
+import com.google.firebase.androidx.auth.java.login.ui.Result;
+import com.google.firebase.androidx.auth.java.login.ui.LoggedInUser;
 import com.example.fitx.R;
 
 public class LoginViewModel extends ViewModel {

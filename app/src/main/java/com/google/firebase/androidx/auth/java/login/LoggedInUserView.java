@@ -1,4 +1,4 @@
-package  com.example.fitx.ui.login;
+package com.google.firebase.androidx.auth.java.login;
 
 /**
  * Class exposing authenticated user details to the UI.

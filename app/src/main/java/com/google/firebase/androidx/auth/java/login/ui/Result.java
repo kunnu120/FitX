@@ -1,4 +1,4 @@
-package com.example.fitx.data;
+package com.google.firebase.androidx.auth.java.login.ui;
 
 /**
  * A generic class that holds a result success w/ data or an error exception.

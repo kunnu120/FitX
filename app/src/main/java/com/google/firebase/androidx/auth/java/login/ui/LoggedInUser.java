@@ -1,4 +1,4 @@
-package com.example.fitx.data.model;
+package com.google.firebase.androidx.auth.java.login.ui;
 
 /**
  * Data class that captures user information for logged in users retrieved from LoginRepository
