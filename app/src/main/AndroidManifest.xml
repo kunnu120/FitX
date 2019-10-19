@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.google.firebase.androidx.auth">
+    package="com.google.firebase.androidx.fitx">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -53,9 +53,6 @@
         <activity
             android:name=".java.FirebaseUIActivity"
             android:label="@string/label_firebase_ui" />
-        <activity
-            android:name=".java.GenericIdpActivity"
-            android:label="@string/label_generic_idp" />
     </application>
 
 </manifest>
