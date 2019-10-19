@@ -8,4 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="ThemeOverlay.MyDarkButton"></style>
+
+    <style name="ThemeOverlay.FirebaseIcon"></style>
+
+    <style name="ThemeOverlay.MyTitleText"></style>
+
+    <style name="ThemeOverlay.MyTextDetail"></style>
+
 </resources>

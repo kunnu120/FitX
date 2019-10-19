@@ -25,7 +25,6 @@
     <!-- Strings related to login -->
     <string name="hint_user_id">User ID</string>
     <string name="get_custom_token">Get Token</string>
-    <string name="sign_in">Sign In</string>
     <string name="create_account">Create Account</string>
     <string name="send_link">Send Link</string>
     <string name="sign_out">Sign Out</string>
@@ -67,4 +66,8 @@
     <string name="status_link_found">Link received, enter email to sign in.</string>
 
     <string name="phone_title_text">Phone Number</string>
+    <string name="sign_in">Sign In</string>
+    <string name="title_home" />
+    <string name="title_dashboard" />
+    <string name="title_notifications" />
 </resources>

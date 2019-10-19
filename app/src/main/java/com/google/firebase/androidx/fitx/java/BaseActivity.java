@@ -1,12 +1,13 @@
 package com.google.firebase.androidx.fitx.java;
 
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.firebase.androidx.auth.R;
 import androidx.annotation.VisibleForTesting;
 import android.view.inputmethod.InputMethodManager;
 import android.view.View;
 import android.content.Context;
 import android.app.ProgressDialog;
+
+import com.google.firebase.androidx.fitx.R;
 
 
 public class BaseActivity extends AppCompatActivity {
