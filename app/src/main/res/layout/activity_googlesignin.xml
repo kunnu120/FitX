@@ -54,7 +54,7 @@
         android:background="@color/grey_300">
 
         <com.google.android.gms.common.SignInButton
-            android:id="@+id/signInButton"
+            android:id="@+id/googleSignInButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -62,7 +62,7 @@
             tools:visibility="gone" />
 
         <LinearLayout
-            android:id="@+id/signOutAndDisconnect"
+            android:id="@+id/googleSignOutandDisconnect"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -73,7 +73,7 @@
             tools:visibility="visible">
 
             <Button
-                android:id="@+id/signOutButton"
+                android:id="@+id/googleSignOutButton"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
                 android:theme="@style/ThemeOverlay.MyDarkButton" />
 
             <Button
-                android:id="@+id/disconnectButton"
+                android:id="@+id/googleDisconnectButton"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
