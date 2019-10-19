@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "564746682232",
+    "firebase_url": "https://fitx-71ea1.firebaseio.com",
+    "project_id": "fitx-71ea1",
+    "storage_bucket": "fitx-71ea1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:564746682232:android:d988be37732750519a128d",
+        "android_client_info": {
+          "package_name": "com.example.fitx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "564746682232-pspd4qjdoq7gf4git6k2157g7d6blmlg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fitx",
+            "certificate_hash": "9cc80a4aac9cbb794b03241b0e943959da3179c3"
+          }
+        },
+        {
+          "client_id": "564746682232-24vclfe95sn50h97rk176b1d127n7ibe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDC7top7gRwX3_JgU4P-MSXtUcPQkJfe10"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "564746682232-24vclfe95sn50h97rk176b1d127n7ibe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
