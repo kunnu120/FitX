@@ -38,6 +38,11 @@ public class OurAuthActivity extends AppCompatActivity implements View.OnClickLi
         //creates token receiver
         fTokenReceiver = new TokenBroadcastReceiver() {
             @Override
+            public void onReceive(Context context, Intent intent) {
+
+            }
+
+            @Override
             public void newToken(String token) {
                 Log.d(TAG, "newToken:" + token);
                 setToken(token);
@@ -103,7 +108,7 @@ public class OurAuthActivity extends AppCompatActivity implements View.OnClickLi
         if(fToken != null){
             status = "Token: " + fToken;
         }else{
-            status = "Token: null"
+            status = "Token: null";
         }
 
         findViewById(R.id.signInButton).setEnabled((fToken!=null));

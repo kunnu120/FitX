@@ -15,7 +15,7 @@ public class BaseActivity extends AppCompatActivity {
     @VisibleForTesting
     public ProgressDialog progLog;
 
-    public void displayProgressDialog(){
+    public void showProgressDialog(){
         if(progLog == null){
             progLog = new ProgressDialog(this);
             progLog.setMessage(getString(R.string.loading));

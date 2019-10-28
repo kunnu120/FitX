@@ -118,6 +118,9 @@ public class GoogleSignInActivity extends BaseActivity implements View.OnClickLi
                 });
     }
 
+    private void showProgressDialog() {
+    }
+
     private void signIn(){
         Intent signInIntent = fGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
