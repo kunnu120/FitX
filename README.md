@@ -10,7 +10,7 @@ Running
 
 Deployment
 
-To run FitX on a mobile device a user must connect via  USB cable and cliick "Run" on Android studio. For this to happen the users phone must be in Developer mode
+To run FitX on a mobile device a user must connect via  USB cable and click "Run" on Android studio. For this to happen the users phone must be in Developer mode
 
 Testing
 
