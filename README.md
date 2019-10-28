@@ -20,9 +20,7 @@
         $ sudo yum install zlib.i686 ncurses-libs.i686 bzip2-libs.i686
         
 ### Setup ###
-    -
-    -
-    -
+    - N/A
     
 ### Running ###
     -
@@ -30,6 +28,8 @@
     -
     
 ### Deployment ###
+    - Our user database will be supported by a google firebase backend. This firebase backend will allow for easy interbet redeployment       if necessary
+#### Phone Installation ####
     - To run FitX on a mobile device a user must connect via  USB cable and click "Run" on Android 
       studio. For this to happen the users phone must be in Developer mode
     -
