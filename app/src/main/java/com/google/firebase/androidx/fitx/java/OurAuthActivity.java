@@ -1,5 +1,6 @@
 package com.google.firebase.androidx.fitx.java;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,8 +18,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.androidx.fitx.R;
-
-
 
 public class OurAuthActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -119,4 +118,5 @@ public class OurAuthActivity extends AppCompatActivity implements View.OnClickLi
             doSignIn();
         }
     }
+
 }
