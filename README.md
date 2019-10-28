@@ -1,7 +1,16 @@
 "#FitX"
 
-Technologies
-
+Technologies Requirements
+Windows Installation:
+    - Download the latest version of Android Studio
+    - If you downloaded a .zip file, unpack the .zip and copy the android-studio folder into your Program Files folder
+    - Then open the android-studio/bin folder and launch studio64.exe (for 64-bit machines) or studio.exe (for 32-bit machines)
+    - Follow the setup wizard in Android Studio and install any SDK packages that it recommends
+  Linux Installation:
+    - Download the latest version of Android Studio
+    - 
+    -
+    -
 
 
 Setup
