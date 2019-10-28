@@ -15,7 +15,7 @@ public abstract class TokenBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_TOKEN = "com.google.example.ACTION_TOKEN";
 
     @Override
-    public void tokenReceive(Context cont, Intent intent){
+    public void onReceive(Context cont, Intent intent){
         Log.d(TAG, "token_Recieve:" + intent);
 
         if (ACTION_TOKEN.equals(intent.getAction())) {
