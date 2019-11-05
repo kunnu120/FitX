@@ -1,4 +1,4 @@
-package com.google.firebase.androidx.fitx.java.ui.notifications;
+package com.example.fitx.ui.notifications;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

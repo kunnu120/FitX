@@ -70,4 +70,6 @@
     <string name="title_home" />
     <string name="title_dashboard" />
     <string name="title_notifications" />
+    <string name="email_address">Email address</string>
+    <string name="password">Password</string>
 </resources>
