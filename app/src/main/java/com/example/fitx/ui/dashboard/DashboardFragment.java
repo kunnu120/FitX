@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.google.firebase.androidx.fitx.R;
+import com.google.fitx.R;
 
 public class DashboardFragment extends Fragment {
 

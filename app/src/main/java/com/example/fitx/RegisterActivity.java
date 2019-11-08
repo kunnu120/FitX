@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.androidx.fitx.R;
+import com.google.fitx.R;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -37,35 +37,32 @@ public class RegisterActivity extends AppCompatActivity {
 
         fAuth = FirebaseAuth.getInstance();
 
-        registerButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                String email = emailField.getText().toString();
-                String password = passwordField.getText().toString();
+        registerButton.setOnClickListener(v -> {
+            String email = emailField.getText().toString();
+            String password = passwordField.getText().toString();
 
-                if(TextUtils.isEmpty(email)){
-                    Toast.makeText(getApplicationContext(), "Please fill in the required fields.", Toast.LENGTH_SHORT ).show();
-                    return;
-                }
-
-                if(TextUtils.isEmpty(password)){
-                    Toast.makeText(getApplicationContext(), "Please fill in the required fields.", Toast.LENGTH_SHORT ).show();
-                }
-
-                if(password.length() < 6){
-                    Toast.makeText(getApplicationContext(), "Password must be at least 6 characters.", Toast.LENGTH_SHORT ).show();
-                }
-
-                fAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(task -> {
-                            if(task.isSuccessful()){
-                                startActivity(new Intent(getApplicationContext(), HomeActivity.class ));
-                                finish();
-                            }else{
-                                Toast.makeText(getApplicationContext(), "Email or password is wrong, try again.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+            if(TextUtils.isEmpty(email)){
+                Toast.makeText(getApplicationContext(), "Please fill in the required fields.", Toast.LENGTH_SHORT ).show();
+                return;
             }
+
+            if(TextUtils.isEmpty(password)){
+                Toast.makeText(getApplicationContext(), "Please fill in the required fields.", Toast.LENGTH_SHORT ).show();
+            }
+
+            if(password.length() < 6){
+                Toast.makeText(getApplicationContext(), "Password must be at least 6 characters.", Toast.LENGTH_SHORT ).show();
+            }
+
+            fAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            startActivity(new Intent(getApplicationContext(), HomeActivity.class ));
+                            finish();
+                        }else{
+                            Toast.makeText(getApplicationContext(), "Email or password is wrong, try again.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         });
 
         loginButton.setOnClickListener(v1 -> startActivity(new Intent(getApplicationContext(), LoginActivity.class)));

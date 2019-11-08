@@ -72,4 +72,6 @@
     <string name="title_notifications" />
     <string name="email_address">Email address</string>
     <string name="password">Password</string>
+    <string name="welcome_to_fitx">Welcome to Fitx</string>
+    <string name="welcome">Welcome to FitX</string>
 </resources>

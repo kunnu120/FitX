@@ -13,8 +13,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.androidx.fitx.R;
+
 import com.google.firebase.auth.FirebaseAuth;
+
+import org.snowcorp.login.R;
 
 
 public class ForgotPasswordActivity extends AppCompatActivity {
@@ -27,32 +29,26 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgotpassword);
         emailField = (EditText) findViewById(R.id.emailField);
-        newpasswordButton = (Button) findViewById(R.id.newpasswordlink);
+        newpasswordButton = (Button) findViewById(R.id.newPasswordLink);
 
         fAuth = FirebaseAuth.getInstance();
 
-        newpasswordButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                String email = emailField.getText().toString();
+        newpasswordButton.setOnClickListener(v -> {
+            String email = emailField.getText().toString();
 
-                if(TextUtils.isEmpty(email)){
-                    Toast.makeText(getApplicationContext(), "Please fill the Email field.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                fAuth.sendPasswordResetEmail(email)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()){
-                                    Toast.makeText(getApplicationContext(), "Password reset link was sent to your email address.", Toast.LENGTH_SHORT).show();
-                                }else{
-                                    Toast.makeText(getApplicationContext(), "Email sending error.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+            if(TextUtils.isEmpty(email)){
+                Toast.makeText(getApplicationContext(), "Please fill the Email field.", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            fAuth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            Toast.makeText(getApplicationContext(), "Password reset link was sent to your email address.", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(getApplicationContext(), "Email sending error.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         });
     }
 }
