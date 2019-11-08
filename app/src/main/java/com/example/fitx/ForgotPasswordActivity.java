@@ -16,12 +16,12 @@ import com.google.android.gms.tasks.Task;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-import org.snowcorp.login.R;
+import com.example.fitx.R;
 
 
 public class ForgotPasswordActivity extends AppCompatActivity {
     EditText emailField;
-    Button newpasswordButton;
+    Button newPasswordButton;
     FirebaseAuth fAuth;
 
     @Override
@@ -29,11 +29,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgotpassword);
         emailField = (EditText) findViewById(R.id.emailField);
-        newpasswordButton = (Button) findViewById(R.id.newPasswordLink);
+        newPasswordButton = (Button) findViewById(R.id.newPasswordLink);
 
         fAuth = FirebaseAuth.getInstance();
 
-        newpasswordButton.setOnClickListener(v -> {
+        newPasswordButton.setOnClickListener(v -> {
             String email = emailField.getText().toString();
 
             if(TextUtils.isEmpty(email)){
