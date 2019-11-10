@@ -20,14 +20,14 @@ public class RegisterActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState){
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        emailField = (EditText) findViewById(R.id.email);
-        passwordField = (EditText) findViewById(R.id.password);
-        registerButton = (Button) findViewById(R.id.registerButton);
-        loginButton = (Button) findViewById(R.id.loginButton);
+        emailField = findViewById(R.id.email);
+        passwordField = findViewById(R.id.password);
+        registerButton = findViewById(R.id.registerButton);
+        loginButton = findViewById(R.id.loginButton);
 
         fAuth = FirebaseAuth.getInstance();
 
@@ -35,25 +35,25 @@ public class RegisterActivity extends AppCompatActivity {
             String email = emailField.getText().toString();
             String password = passwordField.getText().toString();
 
-            if(TextUtils.isEmpty(email)){
-                Toast.makeText(getApplicationContext(), "Please fill in the required fields.", Toast.LENGTH_SHORT ).show();
+            if (TextUtils.isEmpty(email)) {
+                Toast.makeText(getApplicationContext(), "Please fill in the required fields.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if(TextUtils.isEmpty(password)){
-                Toast.makeText(getApplicationContext(), "Please fill in the required fields.", Toast.LENGTH_SHORT ).show();
+            if (TextUtils.isEmpty(password)) {
+                Toast.makeText(getApplicationContext(), "Please fill in the required fields.", Toast.LENGTH_SHORT).show();
             }
 
-            if(password.length() < 6){
-                Toast.makeText(getApplicationContext(), "Password must be at least 6 characters.", Toast.LENGTH_SHORT ).show();
+            if (password.length() < 6) {
+                Toast.makeText(getApplicationContext(), "Password must be at least 6 characters.", Toast.LENGTH_SHORT).show();
             }
 
             fAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
-                        if(task.isSuccessful()){
-                            startActivity(new Intent(getApplicationContext(), HomeActivity.class ));
+                        if (task.isSuccessful()) {
+                            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                             finish();
-                        }else{
+                        } else {
                             Toast.makeText(getApplicationContext(), "Email or password is wrong, try again.", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -61,7 +61,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         loginButton.setOnClickListener(v1 -> startActivity(new Intent(getApplicationContext(), LoginActivity.class)));
 
-        if(fAuth.getCurrentUser()!=null){
+        if (fAuth.getCurrentUser() != null) {
             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
         }
     }

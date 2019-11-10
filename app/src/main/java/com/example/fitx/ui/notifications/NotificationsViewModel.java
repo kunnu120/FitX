@@ -1,4 +1,4 @@
-package com.google.firebase.androidx.auth.java.login.ui.notifications;
+package com.example.fitx.ui.notifications;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

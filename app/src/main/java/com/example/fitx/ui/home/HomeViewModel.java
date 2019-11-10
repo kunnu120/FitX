@@ -1,4 +1,4 @@
-package com.google.firebase.androidx.auth.java.login.ui.home;
+package com.example.fitx.ui.home;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

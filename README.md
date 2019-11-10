@@ -19,25 +19,23 @@
     - If you are running 64-bit Fedora, the command is:
         $ sudo yum install zlib.i686 ncurses-libs.i686 bzip2-libs.i686
         
-#### Setup ####
+### Setup ###
+    - N/A
+### Running ###
     -
     -
     -
-    
-#### Running ####
-    -
-    -
-    -
-    
-#### Deployment ####
+### Deployment ###
+    - Our user database will be supported by a google firebase backend. This firebase backend will 
+      allow for easy internet redeployment     if necessary
+#### Phone Installation ####
     - To run FitX on a mobile device a user must connect via  USB cable and click "Run" on Android 
       studio. For this to happen the users phone must be in Developer mode
-    -
-    -
     
-#### Testing ####
+### Testing ###
     -Upcoming
 
-#### Authors ####
+### Authors ###
     - William Simmons, simzwill98@gmail.com
     - Brett Noltkamper, brettn@email.sc.edu
+    - Everett Bishop, ebassman77@gmail.com
