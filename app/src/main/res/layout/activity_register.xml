@@ -10,14 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
+        <!--suppress AndroidElementNotAllowed -->
+        <android.support.v7.widget.AppCompatEditText
             android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:hint="Email"
+            android:hint="@string/email"
+            android:importantForAutofill="no"
             android:inputType="textEmailAddress" />
-
     </android.support.design.widget.TextInputLayout>
 
 
@@ -25,15 +26,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
+        <!--suppress AndroidElementNotAllowed -->
+        <android.support.v7.widget.AppCompatEditText
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:ems="10"
-            android:hint="Password"
+            android:hint="@string/password"
+            android:importantForAutofill="no"
             android:inputType="textPassword" />
-
     </android.support.design.widget.TextInputLayout>
 
     <Button
@@ -42,9 +44,8 @@
         android:layout_height="50dp"
         android:layout_marginTop="50dp"
         android:background="#948D8D"
-        android:text="Register"
+        android:text="@string/register_prompt"
         android:textColor="#FFFF" />
-
 
     <Button
         android:id="@+id/loginButton"
@@ -52,9 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:background="#948D8D"
-        android:text="Login?"
+        android:text="@string/login_prompt"
         android:textAllCaps="false"
         android:textColor="#F7F6F6" />
-
-
 </LinearLayout>

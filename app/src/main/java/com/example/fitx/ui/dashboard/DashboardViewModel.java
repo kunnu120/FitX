@@ -1,4 +1,4 @@
-package com.google.firebase.androidx.auth.java.login.ui.dashboard;
+package com.example.fitx.ui.dashboard;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
