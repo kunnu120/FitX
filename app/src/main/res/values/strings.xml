@@ -63,4 +63,9 @@
     <string name="register_prompt">Register</string>
     <string name="authentication_failed">Auth Failed</string>
     <string name="auth_failure">Auth Failed</string>
+    <string name="logout" />
+    <string name="LOGOUT">Logout</string>
+    <string name="share_nav">Share</string>
+    <string name="profile_nav">Profile</string>
+    <string name="home_nav">Home</string>
 </resources>
