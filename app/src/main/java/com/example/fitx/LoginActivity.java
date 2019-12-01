@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "createUserWithEmail:success");
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null)
-                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                            startActivity(new Intent(LoginActivity.this, UserHomeFragment.class));
                         updateUI(user);
                     } else {
                         // If sign in fails, display a message to the user.
@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "signInWithEmail:success");
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null)
-                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                            startActivity(new Intent(LoginActivity.this, UserHomeFragment.class));
                         updateUI(user);
                     } else {
                         // If sign in fails, display a message to the user.
@@ -204,8 +204,8 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "signInWithCredential:success");
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null) {
-                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             updateUI(user);
+                            startActivity(new Intent(LoginActivity.this, UserHomeFragment.class));
                         } else {
                             updateUI(null);
                         }
