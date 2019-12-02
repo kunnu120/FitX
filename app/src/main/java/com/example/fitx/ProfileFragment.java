@@ -9,8 +9,11 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -42,17 +45,21 @@ public class ProfileFragment extends Fragment {
         storageReference = FirebaseStorage.getInstance().getReference("Images");
         ImageView img = v.findViewById(R.id.profile_pic);
         Button uploadbtn = v.findViewById(R.id.btnUpload);
-
         img.setOnClickListener(v1 -> {
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-
-
         });
 
         uploadbtn.setOnClickListener(v12 -> uploadImage());
+
+        ListView goalView = v.findViewById(R.id.goalList);
+        String[] goals = new String[] { "TEST1", "TEST2", "TEST3", "TEST4", "TEST5" };
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this.getActivity(),android.R.layout.simple_list_item_1, goals);
+        goalView.setAdapter(adapter);
+        goalView.setOnItemClickListener(goalClicked);
 
 
         //FirebaseStorage storage = FirebaseStorage.getInstance("gs://fitx-71ea1.appspot.com");
@@ -83,6 +90,12 @@ public class ProfileFragment extends Fragment {
         //if it is DashboardFragment it should have R.layout.fragment_dashboard
         return v;
     }
+
+    private AdapterView.OnItemClickListener goalClicked = new AdapterView.OnItemClickListener() {
+        public void onItemClick(AdapterView parent, View v, int position, long id) {
+            // Do something in response to the click
+        }
+    };
 
 
     @Override
