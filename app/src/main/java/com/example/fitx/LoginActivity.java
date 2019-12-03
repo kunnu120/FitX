@@ -227,7 +227,6 @@ public class LoginActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
         if (account != null) {
             emailField.setText(getString(R.string.google_status_fmt, account.getEmail()));
-            passwordField.setText(getString(R.string.firebase_status_fmt, account.getUid()));
 
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.signOutButton).setVisibility(View.VISIBLE);

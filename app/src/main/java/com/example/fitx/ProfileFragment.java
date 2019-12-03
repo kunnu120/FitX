@@ -155,7 +155,7 @@ public class ProfileFragment extends Fragment {
     ValueEventListener goalListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            goals = (List<String>)dataSnapshot.getValue();
+            adapter.addAll((List<String>)dataSnapshot.getValue());
         }
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
