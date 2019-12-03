@@ -1,21 +1,26 @@
 package com.example.fitx;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,6 +50,8 @@ public class ProfileFragment extends Fragment {
     StorageReference storageReference;
     List<String> goals;
     final FirebaseDatabase db = FirebaseDatabase.getInstance();
+    DatabaseReference goalsRef;
+    ArrayAdapter<String> adapter;
 
     @NonNull
     @Override
@@ -63,20 +70,19 @@ public class ProfileFragment extends Fragment {
 
         uploadbtn.setOnClickListener(v12 -> uploadImage());
 
-        DatabaseReference goalsRef = db.getReference("profile").child("goals");
+        goalsRef = db.getReference("profile").child("goals");
         ListView goalView = v.findViewById(R.id.goalList);
         goals = new ArrayList<>();
-        goals.add("TEST1");
-        goals.add("TEST2");
-        goals.add("TEST3");
-        goals.add("TEST4");
-        goals.add("TEST5");
-        goalsRef.setValue(goals);
-        goalsRef.addValueEventListener(goalListener);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+        goalsRef.addListenerForSingleValueEvent(goalListener);
+        adapter = new ArrayAdapter<>(
                 this.getActivity(),android.R.layout.simple_list_item_1, goals);
         goalView.setAdapter(adapter);
-        goalView.setOnItemClickListener(goalClicked);
+        goalView.setOnItemClickListener((p,view,pos,id) -> {
+            editGoalDialog(pos);
+        });
+        v.findViewById(R.id.btnAddGoal).setOnClickListener(v1 -> {
+            addGoalDialog();
+        });
 
 
         //FirebaseStorage storage = FirebaseStorage.getInstance("gs://fitx-71ea1.appspot.com");
@@ -108,18 +114,49 @@ public class ProfileFragment extends Fragment {
         return v;
     }
 
-    private AdapterView.OnItemClickListener goalClicked = new AdapterView.OnItemClickListener() {
-        public void onItemClick(AdapterView parent, View v, int position, long id) {
-            // Do something in response to the click
-        }
-    };
+    public void addGoalDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+        builder.setTitle("Add Goal");
+        final EditText input = new EditText(this.getContext());
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+        builder.setPositiveButton("OK", (d,w) -> {
+                adapter.add(input.getText().toString());
+                goalsRef.setValue(goals);
+            });
+        builder.setNegativeButton("Cancel", (d,w) -> {
+                d.cancel();
+            });
+
+        builder.show();
+    }
+
+    public void editGoalDialog(int pos) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+        builder.setTitle("Add Goal");
+        final EditText input = new EditText(this.getContext());
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setText(adapter.getItem(pos), TextView.BufferType.EDITABLE);
+        builder.setView(input);
+        builder.setPositiveButton("Edit", (d,w) -> {
+            adapter.remove(adapter.getItem(pos));
+            adapter.insert(input.getText().toString(),pos);
+            goalsRef.setValue(goals);
+        });
+        builder.setNegativeButton("Delete", (d,w) -> {
+            adapter.remove(adapter.getItem(pos));
+            goalsRef.setValue(goals);
+            d.cancel();
+        });
+
+        builder.show();
+    }
 
     ValueEventListener goalListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             goals = (List<String>)dataSnapshot.getValue();
         }
-
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
 
