@@ -30,7 +30,6 @@
         android:background="@color/colorPrimary"
         android:contentDescription="@string/profile_pic" />
 
-
     <Button
         android:id="@+id/btnUpload"
         android:layout_width="100dp"

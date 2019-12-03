@@ -20,11 +20,18 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -36,6 +43,8 @@ public class ProfileFragment extends Fragment {
     public ImageView img;
     //FirebaseStorage storage;
     StorageReference storageReference;
+    List<String> goals;
+    final FirebaseDatabase db = FirebaseDatabase.getInstance();
 
     @NonNull
     @Override
@@ -54,9 +63,17 @@ public class ProfileFragment extends Fragment {
 
         uploadbtn.setOnClickListener(v12 -> uploadImage());
 
+        DatabaseReference goalsRef = db.getReference("profile").child("goals");
         ListView goalView = v.findViewById(R.id.goalList);
-        String[] goals = new String[] { "TEST1", "TEST2", "TEST3", "TEST4", "TEST5" };
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+        goals = new ArrayList<>();
+        goals.add("TEST1");
+        goals.add("TEST2");
+        goals.add("TEST3");
+        goals.add("TEST4");
+        goals.add("TEST5");
+        goalsRef.setValue(goals);
+        goalsRef.addValueEventListener(goalListener);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this.getActivity(),android.R.layout.simple_list_item_1, goals);
         goalView.setAdapter(adapter);
         goalView.setOnItemClickListener(goalClicked);
@@ -97,6 +114,17 @@ public class ProfileFragment extends Fragment {
         }
     };
 
+    ValueEventListener goalListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            goals = (List<String>)dataSnapshot.getValue();
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
