@@ -1,6 +1,5 @@
 package com.example.fitx;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,7 +10,6 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -121,12 +119,12 @@ public class ProfileFragment extends Fragment {
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
         builder.setPositiveButton("OK", (d,w) -> {
-                adapter.add(input.getText().toString());
-                goalsRef.setValue(goals);
-            });
+            adapter.add(input.getText().toString());
+            goalsRef.setValue(goals);
+        });
         builder.setNegativeButton("Cancel", (d,w) -> {
-                d.cancel();
-            });
+            d.cancel();
+        });
 
         builder.show();
     }
