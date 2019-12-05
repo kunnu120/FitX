@@ -10,8 +10,8 @@
 
     <FrameLayout
         android:id="@+id/fragment_container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginBottom="56dp"
         android:text="@string/title_home"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -31,6 +31,13 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/bottom_nav_menu" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewpager"
+        app:layout_anchor="@id/tabs"
+        app:layout_anchorGravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <Button
         android:id="@+id/logoutButton"

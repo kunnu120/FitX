@@ -15,15 +15,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "564746682232-t8lmn9pad7j5ahqfu1dqun5j0l0idbko.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.fitx",
-            "certificate_hash": "036eb45c397f15a640c208389b54262472d034a3"
-          }
-        },
-        {
-          "client_id": "564746682232-pspd4qjdoq7gf4git6k2157g7d6blmlg.apps.googleusercontent.com",
+          "client_id": "564746682232",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.fitx",
@@ -31,7 +23,7 @@
           }
         },
         {
-          "client_id": "564746682232-24vclfe95sn50h97rk176b1d127n7ibe.apps.googleusercontent.com",
+          "client_id": "564746682232",
           "client_type": 3
         }
       ],
@@ -44,7 +36,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "564746682232-24vclfe95sn50h97rk176b1d127n7ibe.apps.googleusercontent.com",
+              "client_id": "564746682232",
               "client_type": 3
             }
           ]

@@ -2,20 +2,31 @@ package com.example.fitx;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.TextView;
 
+import androidx.viewpager.widget.ViewPager;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class HomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
-    TextView textV;
+import java.util.ArrayList;
+
+//implements BottomNavigationView.OnNavigationItemSelectedListener
+public class HomeActivity extends AppCompatActivity {
+
+
+    BottomNavigationView bottomNav;
+    ViewPager2 viewPager;
+    PageAdapter adapter;
+    private ArrayList<Fragment> fragments = new ArrayList<>();
     Button logoutButton;
     FirebaseAuth fAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
@@ -24,26 +35,59 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        //textV = findViewById(R.id.textView);
+
         logoutButton = findViewById(R.id.logoutButton);
 
-        //default fragment
-        loadFragment(new HomeFragment());
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(this);
+
+        //initializing view pager
+        viewPager = findViewById(R.id.viewpager);
+
+        //initializing bottom navigation view
+        bottomNav = findViewById(R.id.navigation);
+        bottomNav.setOnNavigationItemSelectedListener(
+                item -> {
+                    switch (item.getItemId()) {
+                        case R.id.navigation_home:
+                            viewPager.setCurrentItem(0);
+                            break;
+                        case R.id.navigation_exercises:
+                            viewPager.setCurrentItem(1);
+                            break;
+                        case R.id.navigation_programs:
+                            viewPager.setCurrentItem(2);
+                            break;
+                        case R.id.navigation_profile:
+                            viewPager.setCurrentItem(3);
+                            break;
+                        case R.id.navigation_social:
+                            viewPager.setCurrentItem(4);
+                            break;
+                    }
+                    return false;
+                });
+
+        fragments.add(new HomeFragment());
+        fragments.add(new ExercisesFragment());
+        fragments.add(new ProgramsFragment());
+        fragments.add(new ProfileFragment());
+        fragments.add(new SocialFragment());
+        adapter = new PageAdapter(getSupportFragmentManager(), getLifecycle());
+        viewPager.setOrientation(viewPager.ORIENTATION_HORIZONTAL);
+        viewPager.setAdapter(adapter);
+        viewPager.setPageTransformer(new MarginPageTransformer(1500));
+
 
 
         fAuth = FirebaseAuth.getInstance();
 
         authStateListener = firebaseAuth -> {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
+            FirebaseUser user = fAuth.getCurrentUser();
             if (user == null) {
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
             }
         };
 
-        //textV.setText(R.string.welcome);
 
         logoutButton.setOnClickListener(v -> {
             fAuth.signOut();
@@ -52,6 +96,8 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         });
 
     }
+
+
 
     @Override
     protected void onStart() {
@@ -66,45 +112,8 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         }
     }
 
-    private boolean loadFragment(Fragment fragment) {
-        //switching fragment
-        if (fragment != null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
-            return true;
-        }
-        return false;
-    }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment fragment = null;
 
-        switch (item.getItemId()) {
-            case R.id.navigation_social:
-                fragment = new SocialFragment();
-                break;
 
-            case R.id.navigation_profile:
-                fragment = new ProfileFragment();
-                break;
-
-            case R.id.navigation_home:
-                fragment = new HomeFragment();
-                break;
-
-            case R.id.navigation_programs:
-                fragment = new ProgramsFragment();
-                break;
-
-            case R.id.navigation_exercises:
-                fragment = new ExercisesFragment();
-                break;
-        }
-
-        return loadFragment(fragment);
-    }
 }
 
