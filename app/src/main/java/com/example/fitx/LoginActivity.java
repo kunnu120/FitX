@@ -49,6 +49,13 @@ public class LoginActivity extends AppCompatActivity {
 
         fAuth = FirebaseAuth.getInstance();
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        gsiClient = GoogleSignIn.getClient(this, gso);
+
         findViewById(R.id.sign_in_button).setOnClickListener(v -> GoogleSignIn());
 
         loginButton.setOnClickListener(v -> signIn(emailField.getText().toString(), passwordField.getText().toString()));
@@ -57,12 +64,6 @@ public class LoginActivity extends AppCompatActivity {
 
         findViewById(R.id.signOutButton).setOnClickListener(v -> signOut());
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-        gsiClient = GoogleSignIn.getClient(this, gso);
 
     }
 
@@ -90,9 +91,10 @@ public class LoginActivity extends AppCompatActivity {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "createUserWithEmail:success");
                         FirebaseUser user = fAuth.getCurrentUser();
-                        if (user != null)
-                            startActivity(new Intent(LoginActivity.this, UserHomeFragment.class));
-                        updateUI(user);
+                        if (user != null) {
+                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                            updateUI(user);
+                        }
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -122,9 +124,10 @@ public class LoginActivity extends AppCompatActivity {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithEmail:success");
                         FirebaseUser user = fAuth.getCurrentUser();
-                        if (user != null)
-                            startActivity(new Intent(LoginActivity.this, UserHomeFragment.class));
-                        updateUI(user);
+                        if (user != null) {
+                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                            updateUI(user);
+                        }
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -204,10 +207,9 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "signInWithCredential:success");
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null) {
-                            updateUI(user);
-                            startActivity(new Intent(LoginActivity.this, UserHomeFragment.class));
-                        } else {
-                            updateUI(null);
+                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                            //} else {
+                            // updateUI(null);
                         }
                     } else {
                         // If sign in fails, display a message to the user.
@@ -216,7 +218,7 @@ public class LoginActivity extends AppCompatActivity {
                         updateUI(null);
                     }
 
-                    // ...
+
                 });
     }
 
@@ -230,11 +232,10 @@ public class LoginActivity extends AppCompatActivity {
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.signOutButton).setVisibility(View.VISIBLE);
         } else {
-            emailField.setText(R.string.signed_out);
+            emailField.setText("");
             passwordField.setText(null);
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.signOutButton).setVisibility(View.GONE);
         }
     }
 

@@ -2,25 +2,31 @@ package com.example.fitx;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
+import androidx.viewpager.widget.ViewPager;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.fitx.ui.home.HomeFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
+
+//implements BottomNavigationView.OnNavigationItemSelectedListener
 public class HomeActivity extends AppCompatActivity {
-    TextView textV;
+
+
+    BottomNavigationView bottomNav;
+    ViewPager2 viewPager;
+    PageAdapter adapter;
+    private ArrayList<Fragment> fragments = new ArrayList<>();
     Button logoutButton;
     FirebaseAuth fAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
@@ -29,70 +35,69 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        textV = findViewById(R.id.textView);
+
         logoutButton = findViewById(R.id.logoutButton);
 
-        //bottom navigation code
-        //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
-        bottomNav.setOnNavigationItemSelectedListener(navListener);
-        //NavigationUI.setupWithNavController(bottomNav, navController);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new HomeFragment()).commit();
-        
+        //initializing view pager
+        viewPager = findViewById(R.id.viewpager);
+
+        //initializing bottom navigation view
+        bottomNav = findViewById(R.id.navigation);
+        bottomNav.setOnNavigationItemSelectedListener(
+                item -> {
+                    switch (item.getItemId()) {
+                        case R.id.navigation_home:
+                            viewPager.setCurrentItem(0);
+                            break;
+                        case R.id.navigation_exercises:
+                            viewPager.setCurrentItem(1);
+                            break;
+                        case R.id.navigation_programs:
+                            viewPager.setCurrentItem(2);
+                            break;
+                        case R.id.navigation_profile:
+                            viewPager.setCurrentItem(3);
+                            break;
+                        case R.id.navigation_social:
+                            viewPager.setCurrentItem(4);
+                            break;
+                    }
+                    return false;
+                });
+
+        fragments.add(new HomeFragment());
+        fragments.add(new ExercisesFragment());
+        fragments.add(new ProgramsFragment());
+        fragments.add(new ProfileFragment());
+        fragments.add(new SocialFragment());
+        adapter = new PageAdapter(getSupportFragmentManager(), getLifecycle());
+        viewPager.setOrientation(viewPager.ORIENTATION_HORIZONTAL);
+        viewPager.setAdapter(adapter);
+        viewPager.setPageTransformer(new MarginPageTransformer(1500));
+
+
+
         fAuth = FirebaseAuth.getInstance();
 
         authStateListener = firebaseAuth -> {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
+            FirebaseUser user = fAuth.getCurrentUser();
             if (user == null) {
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
             }
         };
 
-        final FirebaseUser user = fAuth.getCurrentUser();
-        textV.setText(R.string.welcome);
 
         logoutButton.setOnClickListener(v -> {
             fAuth.signOut();
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
         });
+
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
-            item -> {
-                Fragment selectedFragment = null;
 
-                switch (item.getItemId()) {
-                    case R.id.navigation_social:
-                        selectedFragment = new SocialFragment();
-                        break;
-                    case R.id.navigation_profile:
-                        selectedFragment = new UserProfileFragment();
-                        break;
-
-                    case R.id.navigation_home:
-                        selectedFragment = new UserHomeFragment();
-                        break;
-
-                    case R.id.navigation_exerciseprogram:
-                        selectedFragment = new ExerciseProgramFragment();
-                        break;
-
-                    case R.id.navigation_exercisedatabase:
-                        selectedFragment = new ExerciseDatabaseFragment();
-                        break;
-                }
-
-                if (selectedFragment != null) {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            selectedFragment).commit();
-                }
-
-                return true;
-            };
 
     @Override
     protected void onStart() {
@@ -106,4 +111,9 @@ public class HomeActivity extends AppCompatActivity {
             fAuth.removeAuthStateListener(authStateListener);
         }
     }
+
+
+
+
 }
+
