@@ -26,6 +26,7 @@
         android:layout_height="55dp"
         android:layout_alignParentBottom="true"
         android:background="@color/colorPrimary"
+        app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/colorNavIcon"
         app:itemTextColor="@color/colorNavText"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -34,21 +35,9 @@
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewpager"
-        app:layout_anchor="@id/tabs"
-        app:layout_anchorGravity="bottom"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:layout_anchorGravity="bottom" />
 
-    <Button
-        android:id="@+id/logoutButton"
-        style="?android:textAppearanceSmall"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-
-        android:layout_marginTop="0dp"
-        android:background="@color/colorAccent"
-        android:text="@string/logout"
-        android:textColor="@android:color/white"
-        android:textStyle="bold" />
 
 </RelativeLayout>

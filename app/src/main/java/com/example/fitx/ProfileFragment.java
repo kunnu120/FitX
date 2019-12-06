@@ -1,20 +1,16 @@
 package com.example.fitx;
 
 import android.content.ContentResolver;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,15 +18,17 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,35 +40,52 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
+
 
 
 public class ProfileFragment extends Fragment {
 
     private static final int PICK_IMAGE_REQUEST = 1;
+    private final FirebaseDatabase db = FirebaseDatabase.getInstance();
     private Uri uri;
     private Button btnupload;
     private ImageView img;
     private ProgressBar progressBar;
     //FirebaseStorage storage;
-    private DatabaseReference imgdatabRef;
+    private DatabaseReference ProfilePicUrlRef;
     private StorageReference storageRef;
     private ArrayList<String> goals;
-    private final FirebaseDatabase db = FirebaseDatabase.getInstance();
     private DatabaseReference goalsRef;
     private ArrayAdapter<String> adapter;
+    ValueEventListener goalListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            try {
+                adapter.addAll((ArrayList<String>) dataSnapshot.getValue());
+            } catch (NullPointerException e) {
 
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+    // private static final String KEY_VISIBILITY = "image_visibility";
+    //private SharedPreferences sp;
+    private FirebaseAuth firebaseAuth;
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle savedInstanceState){
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         ArrayList<String> goalssave = new ArrayList<>();
         goalssave.addAll(goals);
-        savedInstanceState.putStringArrayList("GOALS", goalssave );
+        savedInstanceState.putStringArrayList("GOALS", goalssave);
     }
 
     @NonNull
@@ -78,21 +93,18 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_profile, null);
-        storageRef = FirebaseStorage.getInstance().getReference("Images");
 
+        storageRef = FirebaseStorage.getInstance().getReference("uploads");
         progressBar = v.findViewById(R.id.ventilator_progress);
+        //StorageReference imageRef = storageRef.child("1575623427796.jpg");
         img = v.findViewById(R.id.profile_pic);
         btnupload = v.findViewById(R.id.btnUpload);
         ListView goalView = v.findViewById(R.id.goalList);
-        storageRef = FirebaseStorage.getInstance().getReference("uploads");
-        imgdatabRef = FirebaseDatabase.getInstance().getReference("uploads");
+        String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        ProfilePicUrlRef = db.getReference("Users").child(userid).child("ProfilePicURL");
 
 
         img.setOnClickListener(v1 -> {
-            //Intent intent = new Intent();
-            //intent.setType("image/*");
-            //intent.setAction(Intent.ACTION_GET_CONTENT);
-            //startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
 
             openFileChooser();
 
@@ -102,12 +114,16 @@ public class ProfileFragment extends Fragment {
             uploadfile();
         });
 
-        if(savedInstanceState!=null){
+        RequestBuilder<Drawable> requestBuilder = Glide.with(ProfileFragment.this).load(uri);
+        requestBuilder.load(uri).into(img);
+
+
+        if (savedInstanceState != null) {
             goals = savedInstanceState.getStringArrayList("GOALS");
-        }else {
+        } else {
             goals = new ArrayList<>();
         }
-        goalsRef = db.getReference("profile").child("goals");
+        goalsRef = db.getReference("Users").child(userid).child("Goals");
         goalsRef.addListenerForSingleValueEvent(goalListener);
         adapter = new ArrayAdapter<>(
                 this.getActivity(), android.R.layout.simple_list_item_1, goals);
@@ -119,59 +135,17 @@ public class ProfileFragment extends Fragment {
             addGoalDialog();
         });
 
-        //FirebaseStorage storage = FirebaseStorage.getInstance("gs://fitx-71ea1.appspot.com");
-        //StorageReference sRef = storage.getReference();
 
-        //Uri file = Uri.fromFile(new File("path/to/images/rivers.jpg"));
-        //StorageReference riversRef = sRef.child("images/"+file.getLastPathSegment());
-        //UploadTask uploadTask = riversRef.putFile(file);
-
-        // Register observers to listen for when the download is done or if it fails
-        //uploadTask.addOnFailureListener(new OnFailureListener() {
-        //    @Override
-        //    public void onFailure(@NonNull Exception exception) {
-        // Handle unsuccessful uploads
-        //    }
-        //}).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-        //    @Override
-        //    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-        // ...
-        //    }
-        //});
-
-
-        //just change the fragment_dashboard
-        //with the fragment you want to inflate
-        //like if the class is HomeFragment it should have R.layout.home_fragment
-        //if it is DashboardFragment it should have R.layout.fragment_dashboard
         return v;
-    }
-
-    private void openFileChooser(){
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
 //#################################### GOAL CODE ############################################
 
-    public void addGoalDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-        builder.setTitle("Add Goal");
-        final EditText input = new EditText(this.getContext());
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
-        builder.setPositiveButton("OK", (d,w) -> {
-                adapter.add(input.getText().toString());
-                goalsRef.setValue(goals);
-            });
-        builder.setNegativeButton("Cancel", (d,w) -> {
-                d.cancel();
-            });
-
-        builder.show();
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
     public void editGoalDialog(int pos) {
@@ -195,16 +169,22 @@ public class ProfileFragment extends Fragment {
         builder.show();
     }
 
-    ValueEventListener goalListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            adapter.addAll((ArrayList<String>)dataSnapshot.getValue());
-        }
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
+    public void addGoalDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+        builder.setTitle("Add Goal");
+        final EditText input = new EditText(this.getContext());
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+        builder.setPositiveButton("OK", (d, w) -> {
+            adapter.add(input.getText().toString());
+            goalsRef.setValue(goals);
+        });
+        builder.setNegativeButton("Cancel", (d, w) -> {
+            d.cancel();
+        });
 
-        }
-    };
+        builder.show();
+    }
 
     //#########################GOAL CODE END ###########################################
 
@@ -219,14 +199,14 @@ public class ProfileFragment extends Fragment {
     }
 
 
-    private String getFileExtentsion(Uri uri){
+    private String getFileExtentsion(Uri uri) {
         ContentResolver cR = getActivity().getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
-    private void uploadfile(){
-        if(img!=null) {
+    private void uploadfile() {
+        if (img != null) {
             StorageReference fileRef = storageRef.child(System.currentTimeMillis() + "." + getFileExtentsion(uri));
 
             fileRef.putFile(uri)
@@ -242,9 +222,7 @@ public class ProfileFragment extends Fragment {
                             }, 5000);
 
                             //empty upload names for now edittextname.getText().toString().trim()
-                            Upload upload = new Upload("", taskSnapshot.getUploadSessionUri().toString());
-                            String uploadId = imgdatabRef.push().getKey();
-                            imgdatabRef.child(uploadId).setValue(upload);
+                            uri = taskSnapshot.getUploadSessionUri();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -261,6 +239,7 @@ public class ProfileFragment extends Fragment {
                         }
                     });
         }
+
     }
 
 
