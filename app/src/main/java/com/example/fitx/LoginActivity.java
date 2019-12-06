@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
         fAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        // Sign up success, update UI with the signed-in user's information
+                        // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "createUserWithEmail:success");
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null) {
@@ -96,9 +96,9 @@ public class LoginActivity extends AppCompatActivity {
                             updateUI(user);
                         }
                     } else {
-                        // If sign up fails, display a message to the user.
+                        // If sign in fails, display a message to the user.
                         Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                        Toast.makeText(LoginActivity.this, "Registration failed.",
+                        Toast.makeText(LoginActivity.this, "Authentication failed.",
                                 Toast.LENGTH_SHORT).show();
                         updateUI(null);
                     }
@@ -218,7 +218,7 @@ public class LoginActivity extends AppCompatActivity {
                         updateUI(null);
                     }
 
-                    // ...
+
                 });
     }
 
@@ -227,6 +227,7 @@ public class LoginActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
         if (account != null) {
             emailField.setText(getString(R.string.google_status_fmt, account.getEmail()));
+            passwordField.setText(getString(R.string.firebase_status_fmt, account.getUid()));
 
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.signOutButton).setVisibility(View.VISIBLE);
