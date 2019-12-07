@@ -2,7 +2,6 @@ package com.example.fitx;
 
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,7 +24,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -61,7 +59,9 @@ public class ProfileFragment extends Fragment {
     private ArrayList<String> goals;
     private DatabaseReference goalsRef;
     private ArrayAdapter<String> adapter;
-    ValueEventListener goalListener = new ValueEventListener() {
+
+
+    private ValueEventListener goalListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             try {
@@ -76,17 +76,7 @@ public class ProfileFragment extends Fragment {
 
         }
     };
-    // private static final String KEY_VISIBILITY = "image_visibility";
-    //private SharedPreferences sp;
-    private FirebaseAuth firebaseAuth;
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        ArrayList<String> goalssave = new ArrayList<>();
-        goalssave.addAll(goals);
-        savedInstanceState.putStringArrayList("GOALS", goalssave);
-    }
 
     @NonNull
     @Override
@@ -94,15 +84,34 @@ public class ProfileFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_profile, null);
 
-        storageRef = FirebaseStorage.getInstance().getReference("uploads");
+        img = v.findViewById(R.id.profile_pic);
         progressBar = v.findViewById(R.id.ventilator_progress);
         //StorageReference imageRef = storageRef.child("1575623427796.jpg");
-        img = v.findViewById(R.id.profile_pic);
+        storageRef = FirebaseStorage.getInstance().getReference("uploads");
+
         btnupload = v.findViewById(R.id.btnUpload);
         ListView goalView = v.findViewById(R.id.goalList);
         String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         ProfilePicUrlRef = db.getReference("Users").child(userid).child("ProfilePicURL");
 
+
+        ProfilePicUrlRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                    String url = dataSnapshot.getValue(String.class);
+                    //Picasso.get().load(url).into(img);
+                    Glide.with(getContext()).load(url).into(img);
+                } catch (NullPointerException e) {
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         img.setOnClickListener(v1 -> {
 
@@ -111,18 +120,11 @@ public class ProfileFragment extends Fragment {
         });
 
         btnupload.setOnClickListener(v12 -> {
-            uploadfile();
+            uploadFile();
         });
 
-        RequestBuilder<Drawable> requestBuilder = Glide.with(ProfileFragment.this).load(uri);
-        requestBuilder.load(uri).into(img);
 
-
-        if (savedInstanceState != null) {
-            goals = savedInstanceState.getStringArrayList("GOALS");
-        } else {
-            goals = new ArrayList<>();
-        }
+        goals = new ArrayList<>();
         goalsRef = db.getReference("Users").child(userid).child("Goals");
         goalsRef.addListenerForSingleValueEvent(goalListener);
         adapter = new ArrayAdapter<>(
@@ -193,21 +195,23 @@ public class ProfileFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
             uri = data.getData();
             Picasso.get().load(uri).into(img);
+            ProfilePicUrlRef.setValue(uri.toString());
         }
     }
 
 
-    private String getFileExtentsion(Uri uri) {
+    private String getFileExtension(Uri uri) {
         ContentResolver cR = getActivity().getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
-    private void uploadfile() {
+    private void uploadFile() {
         if (img != null) {
-            StorageReference fileRef = storageRef.child(System.currentTimeMillis() + "." + getFileExtentsion(uri));
+            StorageReference fileRef = storageRef.child(System.currentTimeMillis() + "." + getFileExtension(uri));
 
             fileRef.putFile(uri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -221,8 +225,10 @@ public class ProfileFragment extends Fragment {
                                 }
                             }, 5000);
 
-                            //empty upload names for now edittextname.getText().toString().trim()
-                            uri = taskSnapshot.getUploadSessionUri();
+                            //uri = taskSnapshot.getUploadSessionUri();
+                            //String uploadUri = uri.toString();
+                            //ProfilePicUrlRef.setValue(uploadUri);
+
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
