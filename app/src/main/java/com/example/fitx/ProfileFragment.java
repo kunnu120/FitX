@@ -151,7 +151,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void editGoalDialog(int pos) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
         builder.setTitle("Add Goal");
         final EditText input = new EditText(this.getContext());
         input.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -172,7 +172,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void addGoalDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
         builder.setTitle("Add Goal");
         final EditText input = new EditText(this.getContext());
         input.setInputType(InputType.TYPE_CLASS_TEXT);
