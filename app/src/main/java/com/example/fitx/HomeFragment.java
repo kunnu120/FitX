@@ -36,4 +36,9 @@ public class HomeFragment extends Fragment {
     }
 
 
+    public static String dummyFunction() {
+        return "This is a useful test.";
+    }
+
+
 }
