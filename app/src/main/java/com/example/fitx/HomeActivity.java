@@ -2,12 +2,7 @@ package com.example.fitx;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.widget.Button;
 
-import androidx.viewpager.widget.ViewPager;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.MarginPageTransformer;
@@ -26,17 +21,14 @@ public class HomeActivity extends AppCompatActivity {
     BottomNavigationView bottomNav;
     ViewPager2 viewPager;
     PageAdapter adapter;
+    FirebaseAuth fAuth = FirebaseAuth.getInstance();
     private ArrayList<Fragment> fragments = new ArrayList<>();
-    Button logoutButton;
-    FirebaseAuth fAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        logoutButton = findViewById(R.id.logoutButton);
 
 
         //initializing view pager
@@ -72,13 +64,10 @@ public class HomeActivity extends AppCompatActivity {
         fragments.add(new ProfileFragment());
         fragments.add(new SocialFragment());
         adapter = new PageAdapter(getSupportFragmentManager(), getLifecycle());
-        viewPager.setOrientation(viewPager.ORIENTATION_HORIZONTAL);
+        viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         viewPager.setAdapter(adapter);
         viewPager.setPageTransformer(new MarginPageTransformer(1500));
 
-
-
-        fAuth = FirebaseAuth.getInstance();
 
         authStateListener = firebaseAuth -> {
             FirebaseUser user = fAuth.getCurrentUser();
@@ -89,14 +78,8 @@ public class HomeActivity extends AppCompatActivity {
         };
 
 
-        logoutButton.setOnClickListener(v -> {
-            fAuth.signOut();
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            finish();
-        });
 
     }
-
 
 
     @Override

@@ -15,4 +15,16 @@
         android:text="Home"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
+    <Button
+        android:id="@+id/logoutButton"
+        style="?android:textAppearanceSmall"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="0dp"
+        android:background="@color/colorAccent"
+        android:text="@string/logout"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
+
 </RelativeLayout>

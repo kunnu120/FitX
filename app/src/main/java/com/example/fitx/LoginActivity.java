@@ -23,6 +23,10 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Objects;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -34,6 +38,10 @@ public class LoginActivity extends AppCompatActivity {
     ProgressBar progressBar;
     GoogleSignInClient gsiClient;
     private FirebaseAuth fAuth;
+    private final FirebaseDatabase db = FirebaseDatabase.getInstance();
+    private DatabaseReference emailRef;
+    private DatabaseReference passwordRef;
+    private DatabaseReference UIDRef;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,7 +55,9 @@ public class LoginActivity extends AppCompatActivity {
         registerButton = findViewById(R.id.registerButton);
         forgotPasswordButton = findViewById(R.id.forgotPasswordButton);
 
+
         fAuth = FirebaseAuth.getInstance();
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -92,6 +102,14 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "createUserWithEmail:success");
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null) {
+                            //saves email and password in database after signup
+                            String userid = Objects.requireNonNull(user.getUid());
+                            emailRef = db.getReference("Users").child(userid).child("Email");
+                            passwordRef = db.getReference("Users").child(userid).child("Password");
+                            UIDRef = db.getReference("Users").child(userid).child("UID");
+                            emailRef.setValue(email);
+                            passwordRef.setValue(password);
+                            UIDRef.setValue(userid);
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             updateUI(user);
                         }
