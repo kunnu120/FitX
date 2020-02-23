@@ -74,4 +74,18 @@
     <string name="clear">Clear</string>
     <string name="open_camera">Open Camera</string>
     <string name="profile_pic" />
+    <string name="exercise">Exercise</string>
+    <string name="weight">Weight</string>
+    <string name="sets">Sets</string>
+    <string name="reps">Reps</string>
+    <string name="comments">Comments</string>
+    <string name="current_program">Current Program</string>
+    <string name="current_program1">Current Program:</string>
+    <string name="exercises">Exercises</string>
+    <string name="add_program">Add Program</string>
+    <string name="add_exercise">Add Exercise</string>
+    <string name="edit_exercise">Edit Exercise</string>
+    <string name="remove_exercise">Remove Exercise</string>
+    <string name="remove_program">Remove Program</string>
+    <string name="select_program">Select Program</string>
 </resources>
