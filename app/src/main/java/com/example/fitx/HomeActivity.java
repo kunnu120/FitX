@@ -2,79 +2,85 @@ package com.example.fitx;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
+
+//implements BottomNavigationView.OnNavigationItemSelectedListener
 public class HomeActivity extends AppCompatActivity {
-    TextView textV;
-    Button logoutButton;
-    FirebaseAuth fAuth;
+
+
+    BottomNavigationView bottomNav;
+    ViewPager2 viewPager;
+    PageAdapter adapter;
+    FirebaseAuth fAuth = FirebaseAuth.getInstance();
+    private ArrayList<Fragment> fragments = new ArrayList<>();
     private FirebaseAuth.AuthStateListener authStateListener;
 
-    //Menu BottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        textV = findViewById(R.id.textView);
-        logoutButton = findViewById(R.id.logoutButton);
-        fAuth = FirebaseAuth.getInstance();
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnav);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
-        {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.navigation_home:
-                        Toast.makeText(HomeActivity.this, "Home", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.navigation_share:
-                        Toast.makeText(HomeActivity.this, "Share", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.navigation_profile:
-                        Toast.makeText(HomeActivity.this, "Profile", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-                return true;
-            }
-        });
 
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user == null) {
-                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                    finish();
-                }
-            }
-        };
+        //initializing view pager
+        viewPager = findViewById(R.id.viewpager);
 
-        final FirebaseUser user = fAuth.getCurrentUser();
-        textV.setText(R.string.welcome);
+        //initializing bottom navigation view
+        bottomNav = findViewById(R.id.navigation);
+        bottomNav.setOnNavigationItemSelectedListener(
+                item -> {
+                    switch (item.getItemId()) {
+                        case R.id.navigation_home:
+                            viewPager.setCurrentItem(0);
+                            break;
+                        case R.id.navigation_exercises:
+                            viewPager.setCurrentItem(1);
+                            break;
+                        case R.id.navigation_programs:
+                            viewPager.setCurrentItem(2);
+                            break;
+                        case R.id.navigation_profile:
+                            viewPager.setCurrentItem(3);
+                            break;
+                        case R.id.navigation_social:
+                            viewPager.setCurrentItem(4);
+                            break;
+                    }
+                    return false;
+                });
 
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fAuth.signOut();
+        fragments.add(new HomeFragment());
+        fragments.add(new ExercisesFragment());
+        fragments.add(new ProgramsFragment());
+        fragments.add(new ProfileFragment());
+        fragments.add(new SocialFragment());
+        adapter = new PageAdapter(getSupportFragmentManager(), getLifecycle());
+        viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+        viewPager.setAdapter(adapter);
+        viewPager.setPageTransformer(new MarginPageTransformer(1500));
+
+
+        authStateListener = firebaseAuth -> {
+            FirebaseUser user = fAuth.getCurrentUser();
+            if (user == null) {
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
             }
-        });
+        };
+
+
+
     }
+
 
     @Override
     protected void onStart() {
@@ -88,4 +94,9 @@ public class HomeActivity extends AppCompatActivity {
             fAuth.removeAuthStateListener(authStateListener);
         }
     }
+
+
+
+
 }
+

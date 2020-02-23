@@ -33,7 +33,9 @@
       studio. For this to happen the users phone must be in Developer mode
     
 ### Testing ###
-    -Upcoming
+    - To run tests: Go to test in project directory, right click it and hit run.
+    - Behavioral Test Location: FitX\app\src\androidTest\java\com\example\fitx\LoginActivityTest2.java
+    - Unit Test Location: FitX\app\src\test\java\com\example\fitx\HomeTest.java
 
 ### Authors ###
     - William Simmons, simzwill98@gmail.com

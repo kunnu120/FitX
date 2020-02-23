@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/navigation_home"
-        android:enabled="true"
-        android:icon="@drawable/ic_action_name"
-        android:title="@string/home_nav"
-        app:showAsAction="ifRoom"/>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_share"
-        android:enabled="true"
-        android:icon="@drawable/ic_action_name1"
-        android:title="@string/share_nav"
-        app:showAsAction="ifRoom"/>
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_home" />
+
+    <item
+        android:id="@+id/navigation_exercises"
+        android:icon="@drawable/ic_fitness_center_black_24dp"
+        android:title="@string/title_exercises" />
+
+    <item
+        android:id="@+id/navigation_programs"
+        android:icon="@drawable/ic_date_range_black_24dp"
+        android:title="@string/title_programs" />
 
     <item
         android:id="@+id/navigation_profile"
-        android:enabled="true"
-        android:icon="@drawable/ic_action_name2"
-        android:title="@string/profile_nav"
-        app:showAsAction="ifRoom"/>
+        android:icon="@drawable/ic_account_circle_black_24dp"
+        android:title="@string/title_profile" />
+
+    <item
+        android:id="@+id/navigation_social"
+        android:icon="@drawable/ic_share_black_24dp"
+        android:title="@string/title_social" />
 
 </menu>

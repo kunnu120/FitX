@@ -11,10 +11,17 @@
         "mobilesdk_app_id": "1:564746682232:android:d988be37732750519a128d",
         "android_client_info": {
           "package_name": "com.example.fitx"
-
         }
       },
       "oauth_client": [
+        {
+          "client_id": "564746682232-jc6tclkfevsh18ic21506hlqbsmeaqab.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fitx",
+            "certificate_hash": "036eb45c397f15a640c208389b54262472d034a3"
+          }
+        },
         {
           "client_id": "564746682232-pspd4qjdoq7gf4git6k2157g7d6blmlg.apps.googleusercontent.com",
           "client_type": 1,

@@ -44,9 +44,16 @@
 
     <string name="phone_title_text">Phone Number</string>
     <string name="sign_in">Sign In</string>
-    <string name="title_home" />
-    <string name="title_dashboard" />
-    <string name="title_notifications" />
+
+    <string name="title_social">Social</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_home">Home</string>
+    <string name="title_programs">Programs</string>
+    <string name="title_exercises">Exercises</string>
+
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
     <string name="email">Email address</string>
     <string name="password">Password</string>
     <string name="welcome_to_fitx">Welcome to Fitx</string>
@@ -63,9 +70,22 @@
     <string name="register_prompt">Register</string>
     <string name="authentication_failed">Auth Failed</string>
     <string name="auth_failure">Auth Failed</string>
-    <string name="logout" />
-    <string name="LOGOUT">Logout</string>
-    <string name="share_nav">Share</string>
-    <string name="profile_nav">Profile</string>
-    <string name="home_nav">Home</string>
+    <string name="logout">Logout</string>
+    <string name="clear">Clear</string>
+    <string name="open_camera">Open Camera</string>
+    <string name="profile_pic" />
+    <string name="exercise">Exercise</string>
+    <string name="weight">Weight</string>
+    <string name="sets">Sets</string>
+    <string name="reps">Reps</string>
+    <string name="comments">Comments</string>
+    <string name="current_program">Current Program</string>
+    <string name="current_program1">Current Program:</string>
+    <string name="exercises">Exercises</string>
+    <string name="add_program">Add Program</string>
+    <string name="add_exercise">Add Exercise</string>
+    <string name="edit_exercise">Edit Exercise</string>
+    <string name="remove_exercise">Remove Exercise</string>
+    <string name="remove_program">Remove Program</string>
+    <string name="select_program">Select Program</string>
 </resources>
