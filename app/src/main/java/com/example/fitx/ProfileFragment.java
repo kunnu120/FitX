@@ -40,7 +40,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Objects;
-
+import java.lang.String;
 import static android.app.Activity.RESULT_OK;
 
 
