@@ -78,8 +78,11 @@
     <string name="current_activity">Current Activity:</string>
     <string name="exercise">Exercise</string>
     <string name="weight">Weight</string>
+    <string name="home_weight">Weight:</string>
     <string name="sets">Sets</string>
+    <string name="home_sets">Sets:</string>
     <string name="reps">Reps</string>
+    <string name="home_reps">Reps:</string>
     <string name="comments">Comments</string>
     <string name="current_program">Current Program</string>
     <string name="current_program1">Current Program:</string>
