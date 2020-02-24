@@ -137,7 +137,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void signIn(String email, String password) {
-        Log.d(TAG, "Sign In: " + email);
+        Log.i(TAG, "Sign In: " + email);
         if (validateForm()) {
             return;
         }
@@ -236,7 +236,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void authThruGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        Log.i(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         fAuth.signInWithCredential(credential)
