@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -39,6 +41,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.lang.String;
 import static android.app.Activity.RESULT_OK;
@@ -56,7 +59,8 @@ public class ProfileFragment extends Fragment {
     //FirebaseStorage storage;
     private DatabaseReference ProfilePicUrlRef;
     private StorageReference storageRef;
-    private ArrayList<String> goals;
+    private List<String> goals;
+    private List<String> goalsEnc = new ArrayList<String>();
     private DatabaseReference goalsRef;
     private ArrayAdapter<String> adapter;
 
@@ -65,7 +69,10 @@ public class ProfileFragment extends Fragment {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             try {
-                adapter.addAll((ArrayList<String>) dataSnapshot.getValue());
+                goalsEnc.addAll(dataSnapshot.getValue(ArrayList.class));
+                for (int i = 0; i < goalsEnc.size(); ++i) {
+                    adapter.add(Security.decodeSaltCipher(Security.decB64(goalsEnc.get(i))));
+                }
             } catch (NullPointerException e) {
 
             }
@@ -125,6 +132,7 @@ public class ProfileFragment extends Fragment {
 
 
         goals = new ArrayList<>();
+
         goalsRef = db.getReference("Users").child(userid).child("Goals");
         goalsRef.addListenerForSingleValueEvent(goalListener);
         adapter = new ArrayAdapter<>(
@@ -158,13 +166,17 @@ public class ProfileFragment extends Fragment {
         input.setText(adapter.getItem(pos), TextView.BufferType.EDITABLE);
         builder.setView(input);
         builder.setPositiveButton("Edit", (d,w) -> {
+            String s = input.getText().toString();
             adapter.remove(adapter.getItem(pos));
-            adapter.insert(input.getText().toString(),pos);
-            goalsRef.setValue(goals);
+            adapter.insert(s,pos);
+            goalsEnc.set(pos,Security.encB64(Security.generateSaltCipher(s)));
+            goalsRef.setValue(goalsEnc);
+
         });
         builder.setNegativeButton("Delete", (d,w) -> {
             adapter.remove(adapter.getItem(pos));
-            goalsRef.setValue(goals);
+            goalsEnc.remove(pos);
+            goalsRef.setValue(goalsEnc);
             d.cancel();
         });
 
@@ -178,8 +190,10 @@ public class ProfileFragment extends Fragment {
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
         builder.setPositiveButton("OK", (d, w) -> {
-            adapter.add(input.getText().toString());
-            goalsRef.setValue(goals);
+            String s = input.getText().toString();
+            adapter.add(s);
+            goalsEnc.add(Base64.encodeToString(Security.generateSaltCipher(s),Base64.DEFAULT));
+            goalsRef.setValue(goalsEnc);
         });
         builder.setNegativeButton("Cancel", (d, w) -> {
             d.cancel();

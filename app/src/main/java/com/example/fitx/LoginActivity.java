@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,8 +24,11 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
@@ -39,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInClient gsiClient;
     private FirebaseAuth fAuth;
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
+    private DatabaseReference saltRef;
     //private DatabaseReference emailRef;
     //private DatabaseReference passwordRef;
     //private DatabaseReference UIDRef;
@@ -103,13 +108,17 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null) {
                             //saves email and password in database after signup
-                            //String userid = Objects.requireNonNull(user.getUid());
+                            String userid = Objects.requireNonNull(user.getUid());
                             //emailRef = db.getReference("Users").child(userid).child("Email");
                             //passwordRef = db.getReference("Users").child(userid).child("Password");
                             //UIDRef = db.getReference("Users").child(userid).child("UID");
                             //emailRef.setValue(email);
                             //passwordRef.setValue(password);
                             //UIDRef.setValue(userid);
+                            saltRef = db.getReference("Users").child(userid).child("PrivateSalt");
+                            byte[] newSalt = Security.generateRandomSalt();
+                            saltRef.setValue(Security.encB64(newSalt));
+                            Security.generateKey(newSalt,password);
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             updateUI(user);
                         }
@@ -143,6 +152,18 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "signInWithEmail:success");
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null) {
+                            String userid = Objects.requireNonNull(user.getUid());
+                            saltRef = db.getReference("Users").child(userid).child("PrivateSalt");
+                            saltRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    byte[] salt = Security.decB64(dataSnapshot.getValue(String.class));
+                                    Security.generateKey(salt,password);
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
+                            });
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             updateUI(user);
                         }
