@@ -74,6 +74,8 @@
     <string name="clear">Clear</string>
     <string name="open_camera">Open Camera</string>
     <string name="profile_pic" />
+    <string name="recent_activity">Recent Activity:</string>
+    <string name="current_activity">Current Activity:</string>
     <string name="exercise">Exercise</string>
     <string name="weight">Weight</string>
     <string name="sets">Sets</string>
