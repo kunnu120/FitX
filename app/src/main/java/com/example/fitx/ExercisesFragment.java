@@ -28,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Vector;
 
 
 public class ExercisesFragment extends Fragment {
@@ -49,13 +50,7 @@ public class ExercisesFragment extends Fragment {
     private TableLayout exerciseTable;
     private int tableposition = 1;
 
-    private void addRowToTable(String[] row, int j){
-        TableRow r = (TableRow)exerciseTable.getChildAt(j);
-        for(int i=0; i<5; i++){
-            TextView cell = (TextView)r.getChildAt(i);
-            cell.setText(row[i]);
-        }
-    }
+
 
     private ValueEventListener programListener = new ValueEventListener(){
         @Override
@@ -76,22 +71,26 @@ public class ExercisesFragment extends Fragment {
     private ValueEventListener exerciseListener = new ValueEventListener(){
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            exercisesAdapter.clear();
+            exercisesAdapter.addAll((ArrayList<String>) dataSnapshot.getValue());
+
             try {
+                //for printing to table
+                Vector<String> data = new Vector<>();
+                for(DataSnapshot ds: dataSnapshot.getChildren())
+                    data.add(ds.getValue().toString());
 
-                exercisesAdapter.clear();
-                exercisesAdapter.addAll((ArrayList<String>) dataSnapshot.getValue());
-
-                String[] row = new String[5];
                 int i = 0;
-                for(DataSnapshot ds: dataSnapshot.getChildren()){
-                    if(i == 4) {
-                        i=0;
-                        addRowToTable(row, tableposition);
-                        tableposition++;
+                for(int j=1; j <= data.size()/5; j++) {
+                    TableRow r = (TableRow) exerciseTable.getChildAt(j);
+                    for (int k = 0; k < 5; k++) {
+                        TextView cell = (TextView) r.getChildAt(k);
+                        cell.setText(data.get(i));
+                        i++;
                     }
-                    row[i] = ds.getValue().toString();
-                    i++;
                 }
+                //////////////////////////
+                data.clear();
 
             } catch (NullPointerException e) {
 
@@ -137,6 +136,7 @@ public class ExercisesFragment extends Fragment {
         programList.setAdapter(programsAdapter);
         programList.setOnItemClickListener((p, view, pos, id) -> {
             currentProgram = userPrograms.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
+            currentProgram_exercises = currentProgram.child("Exercises");
         });
 
 
@@ -158,7 +158,6 @@ public class ExercisesFragment extends Fragment {
                String currProgram = input.getText().toString();
                programsAdapter.add(currProgram);
                currentProgram = userPrograms.child(currProgram);
-               //userPrograms.setValue(programs);
             });
             builder.setNegativeButton("Cancel", (d, w) ->{
                d.cancel();
@@ -191,7 +190,6 @@ public class ExercisesFragment extends Fragment {
 
                 currentProgram_exercises = currentProgram.child("Exercises");
                 currentProgram_exercises.addValueEventListener(exerciseListener);
-                exercisesAdapter.clear();
                 exercisesAdapter.add(s1);
                 exercisesAdapter.add(s2);
                 exercisesAdapter.add(s3);
