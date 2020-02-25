@@ -46,16 +46,23 @@ public class ExercisesFragment extends Fragment {
     private DatabaseReference userPrograms;
     private DatabaseReference currentProgram;
     private DatabaseReference currentProgram_exercises;
-
     private TableLayout exerciseTable;
-    private TableRow row;
+    private int tableposition = 1;
+
+    private void addRowToTable(String[] row, int j){
+        TableRow r = (TableRow)exerciseTable.getChildAt(j);
+        for(int i=0; i<5; i++){
+            TextView cell = (TextView)r.getChildAt(i);
+            cell.setText(row[i]);
+        }
+    }
 
     private ValueEventListener programListener = new ValueEventListener(){
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             try {
-                programsAdapter.clear();
-                programsAdapter.addAll((ArrayList<String>) dataSnapshot.getValue());
+                for(DataSnapshot ds : dataSnapshot.getChildren())
+                programsAdapter.addAll((String)ds.getKey());
             } catch (NullPointerException e) {
 
             }
@@ -70,27 +77,21 @@ public class ExercisesFragment extends Fragment {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             try {
-                int k = exercisesAdapter.getCount();
-                String data[] = new String[k];
-                int i=0;
-                for(DataSnapshot ds : dataSnapshot.getChildren()){
-                   data[i] = ds.getValue().toString();
-                   i++;
-                }
-
-                int x = 0;
-                int numRows= exercisesAdapter.getCount()/5;
-                for(i=1; i<numRows+1; i++){
-                    row = (TableRow)exerciseTable.getChildAt(i);
-                    for(int j=0; j<5; j++){
-                        TextView curr_cell = (TextView)row.getChildAt(j);
-                        curr_cell.setText(data[x]);
-                        x++;
-                    }
-                }
 
                 exercisesAdapter.clear();
                 exercisesAdapter.addAll((ArrayList<String>) dataSnapshot.getValue());
+
+                String[] row = new String[5];
+                int i = 0;
+                for(DataSnapshot ds: dataSnapshot.getChildren()){
+                    if(i == 4) {
+                        i=0;
+                        addRowToTable(row, tableposition);
+                        tableposition++;
+                    }
+                    row[i] = ds.getValue().toString();
+                    i++;
+                }
 
             } catch (NullPointerException e) {
 
@@ -110,7 +111,7 @@ public class ExercisesFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_exercises, null);
 
         //initializing tablelayout
-        TableLayout exerciseTable = v.findViewById(R.id.exercise_table);
+        exerciseTable = v.findViewById(R.id.exercise_table);
 
         //declare buttons on exercise page
         //initialize buttons for exercise page
@@ -141,7 +142,6 @@ public class ExercisesFragment extends Fragment {
 
         exercises = new ArrayList<>();
         exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, exercises);
-
 
 
 
