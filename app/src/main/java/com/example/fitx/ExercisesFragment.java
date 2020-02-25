@@ -28,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Vector;
 
 
 public class ExercisesFragment extends Fragment {
@@ -46,16 +47,17 @@ public class ExercisesFragment extends Fragment {
     private DatabaseReference userPrograms;
     private DatabaseReference currentProgram;
     private DatabaseReference currentProgram_exercises;
-
     private TableLayout exerciseTable;
-    private TableRow row;
+    private int tableposition = 1;
+
+
 
     private ValueEventListener programListener = new ValueEventListener(){
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             try {
-                programsAdapter.clear();
-                programsAdapter.addAll((ArrayList<String>) dataSnapshot.getValue());
+                for(DataSnapshot ds : dataSnapshot.getChildren())
+                programsAdapter.addAll((String)ds.getKey());
             } catch (NullPointerException e) {
 
             }
@@ -69,28 +71,26 @@ public class ExercisesFragment extends Fragment {
     private ValueEventListener exerciseListener = new ValueEventListener(){
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            try {
-                int k = exercisesAdapter.getCount();
-                String data[] = new String[k];
-                int i=0;
-                for(DataSnapshot ds : dataSnapshot.getChildren()){
-                   data[i] = ds.getValue().toString();
-                   i++;
-                }
+            exercisesAdapter.clear();
+            exercisesAdapter.addAll((ArrayList<String>) dataSnapshot.getValue());
 
-                int x = 0;
-                int numRows= exercisesAdapter.getCount()/5;
-                for(i=1; i<numRows+1; i++){
-                    row = (TableRow)exerciseTable.getChildAt(i);
-                    for(int j=0; j<5; j++){
-                        TextView curr_cell = (TextView)row.getChildAt(j);
-                        curr_cell.setText(data[x]);
-                        x++;
+            try {
+                //for printing to table
+                Vector<String> data = new Vector<>();
+                for(DataSnapshot ds: dataSnapshot.getChildren())
+                    data.add(ds.getValue().toString());
+
+                int i = 0;
+                for(int j=1; j <= data.size()/5; j++) {
+                    TableRow r = (TableRow) exerciseTable.getChildAt(j);
+                    for (int k = 0; k < 5; k++) {
+                        TextView cell = (TextView) r.getChildAt(k);
+                        cell.setText(data.get(i));
+                        i++;
                     }
                 }
-
-                exercisesAdapter.clear();
-                exercisesAdapter.addAll((ArrayList<String>) dataSnapshot.getValue());
+                //////////////////////////
+                data.clear();
 
             } catch (NullPointerException e) {
 
@@ -110,7 +110,7 @@ public class ExercisesFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_exercises, null);
 
         //initializing tablelayout
-        TableLayout exerciseTable = v.findViewById(R.id.exercise_table);
+        exerciseTable = v.findViewById(R.id.exercise_table);
 
         //declare buttons on exercise page
         //initialize buttons for exercise page
@@ -136,12 +136,12 @@ public class ExercisesFragment extends Fragment {
         programList.setAdapter(programsAdapter);
         programList.setOnItemClickListener((p, view, pos, id) -> {
             currentProgram = userPrograms.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
+            currentProgram_exercises = currentProgram.child("Exercises");
         });
 
 
         exercises = new ArrayList<>();
         exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, exercises);
-
 
 
 
@@ -158,7 +158,6 @@ public class ExercisesFragment extends Fragment {
                String currProgram = input.getText().toString();
                programsAdapter.add(currProgram);
                currentProgram = userPrograms.child(currProgram);
-               //userPrograms.setValue(programs);
             });
             builder.setNegativeButton("Cancel", (d, w) ->{
                d.cancel();
@@ -191,7 +190,6 @@ public class ExercisesFragment extends Fragment {
 
                 currentProgram_exercises = currentProgram.child("Exercises");
                 currentProgram_exercises.addValueEventListener(exerciseListener);
-                exercisesAdapter.clear();
                 exercisesAdapter.add(s1);
                 exercisesAdapter.add(s2);
                 exercisesAdapter.add(s3);
