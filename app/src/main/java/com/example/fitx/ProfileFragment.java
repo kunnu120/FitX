@@ -69,7 +69,7 @@ public class ProfileFragment extends Fragment {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             try {
-                goalsEnc.addAll(dataSnapshot.getValue(ArrayList.class));
+                goalsEnc.addAll((ArrayList<String>)dataSnapshot.getValue());
                 for (int i = 0; i < goalsEnc.size(); ++i) {
                     adapter.add(Security.decodeSaltCipher(Security.decB64(goalsEnc.get(i))));
                 }
@@ -133,7 +133,7 @@ public class ProfileFragment extends Fragment {
 
         goals = new ArrayList<>();
 
-        goalsRef = db.getReference("Users").child(userid).child("Goals");
+        goalsRef = db.getReference("Users").child(userid).child("GoalsEnc");
         goalsRef.addListenerForSingleValueEvent(goalListener);
         adapter = new ArrayAdapter<>(
                 this.getActivity(), android.R.layout.simple_list_item_1, goals);

@@ -108,17 +108,15 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null) {
                             //saves email and password in database after signup
-                            String userid = Objects.requireNonNull(user.getUid());
+                            String uid = Objects.requireNonNull(user.getUid());
                             //emailRef = db.getReference("Users").child(userid).child("Email");
                             //passwordRef = db.getReference("Users").child(userid).child("Password");
                             //UIDRef = db.getReference("Users").child(userid).child("UID");
                             //emailRef.setValue(email);
                             //passwordRef.setValue(password);
                             //UIDRef.setValue(userid);
-                            saltRef = db.getReference("Users").child(userid).child("PrivateSalt");
-                            byte[] newSalt = Security.generateRandomSalt();
-                            saltRef.setValue(Security.encB64(newSalt));
-                            Security.generateKey(newSalt,password);
+                            saltRef = db.getReference("Users").child(uid).child("PrivateSalt");
+                            saltRef.addListenerForSingleValueEvent(saltListener(password,uid));
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             updateUI(user);
                         }
@@ -137,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void signIn(String email, String password) {
-        Log.i(TAG, "Sign In: " + email);
+        Log.d(TAG, "Sign In: " + email);
         if (validateForm()) {
             return;
         }
@@ -152,18 +150,9 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "signInWithEmail:success");
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null) {
-                            String userid = Objects.requireNonNull(user.getUid());
-                            saltRef = db.getReference("Users").child(userid).child("PrivateSalt");
-                            saltRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    byte[] salt = Security.decB64(dataSnapshot.getValue(String.class));
-                                    Security.generateKey(salt,password);
-                                }
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                }
-                            });
+                            String uid = Objects.requireNonNull(user.getUid());
+                            saltRef = db.getReference("Users").child(uid).child("PrivateSalt");
+                            saltRef.addListenerForSingleValueEvent(saltListener(password,uid));
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             updateUI(user);
                         }
@@ -236,8 +225,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void authThruGoogle(GoogleSignInAccount acct) {
-        Log.i(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         fAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
@@ -246,6 +234,9 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "signInWithCredential:success");
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null) {
+                            String uid = fAuth.getCurrentUser().getUid();
+                            saltRef = db.getReference("Users").child(uid).child("PrivateSalt");
+                            saltRef.addListenerForSingleValueEvent(saltListener(acct.getId(),uid));
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             //} else {
                             // updateUI(null);
@@ -276,6 +267,26 @@ public class LoginActivity extends AppCompatActivity {
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
         }
+    }
+
+    private ValueEventListener saltListener(String key, String uid) {
+        return new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                byte[] salt;
+                if (dataSnapshot.exists()) {
+                    salt = Security.decB64(dataSnapshot.getValue(String.class));
+                } else {
+                    saltRef = db.getReference("Users").child(uid).child("PrivateSalt");
+                    salt = Security.generateRandomSalt();
+                    saltRef.setValue(Security.encB64(salt));
+                }
+                Security.generateKey(salt,key);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        };
     }
 
 }
