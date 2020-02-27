@@ -39,9 +39,9 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInClient gsiClient;
     private FirebaseAuth fAuth;
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
-    private DatabaseReference emailRef;
-    private DatabaseReference passwordRef;
-    private DatabaseReference UIDRef;
+    //private DatabaseReference emailRef;
+    //private DatabaseReference passwordRef;
+    //private DatabaseReference UIDRef;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,13 +103,13 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null) {
                             //saves email and password in database after signup
-                            String userid = Objects.requireNonNull(user.getUid());
-                            emailRef = db.getReference("Users").child(userid).child("Email");
-                            passwordRef = db.getReference("Users").child(userid).child("Password");
-                            UIDRef = db.getReference("Users").child(userid).child("UID");
-                            emailRef.setValue(email);
-                            passwordRef.setValue(password);
-                            UIDRef.setValue(userid);
+                            //String userid = Objects.requireNonNull(user.getUid());
+                            //emailRef = db.getReference("Users").child(userid).child("Email");
+                            //passwordRef = db.getReference("Users").child(userid).child("Password");
+                            //UIDRef = db.getReference("Users").child(userid).child("UID");
+                            //emailRef.setValue(email);
+                            //passwordRef.setValue(password);
+                            //UIDRef.setValue(userid);
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             updateUI(user);
                         }
@@ -256,6 +256,5 @@ public class LoginActivity extends AppCompatActivity {
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
         }
     }
-
 
 }
