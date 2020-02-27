@@ -53,7 +53,6 @@ public class ProfileFragment extends Fragment {
     private Button btnupload;
     private ImageView img;
     private ProgressBar progressBar;
-    //FirebaseStorage storage;
     private DatabaseReference ProfilePicUrlRef;
     private StorageReference storageRef;
     private ArrayList<String> goals;
@@ -86,7 +85,6 @@ public class ProfileFragment extends Fragment {
 
         img = v.findViewById(R.id.profile_pic);
         progressBar = v.findViewById(R.id.ventilator_progress);
-        //StorageReference imageRef = storageRef.child("1575623427796.jpg");
         storageRef = FirebaseStorage.getInstance().getReference("uploads");
 
         btnupload = v.findViewById(R.id.btnUpload);
@@ -141,7 +139,6 @@ public class ProfileFragment extends Fragment {
         return v;
     }
 
-//#################################### GOAL CODE ############################################
 
     private void openFileChooser() {
         Intent intent = new Intent();
