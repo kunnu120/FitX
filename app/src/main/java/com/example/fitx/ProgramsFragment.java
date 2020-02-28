@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.text.format.DateFormat;
@@ -24,6 +25,7 @@ public class ProgramsFragment extends Fragment{
 
     private HorizontalCalendar horizontalCalendar;
     private TextView dateSelected;
+    private ListView datePrint;
 
     @NonNull
     @Override
@@ -35,6 +37,7 @@ public class ProgramsFragment extends Fragment{
 
         View rootView = inflater.inflate(R.layout.fragment_programs, container, false);
         dateSelected = rootView.findViewById(R.id.dateBox);
+        datePrint = rootView.findViewById(R.id.dateOutput);
 
         /* starts before 1 month from now */
         Calendar startDate = Calendar.getInstance();
@@ -63,6 +66,7 @@ public class ProgramsFragment extends Fragment{
                 //dateSelected.setText("Date Selected: " + date);
                 //Toast.makeText(getContext(), DateFormat.format("EEE, MMM d, yyyy", date) + " is selected!", Toast.LENGTH_SHORT).show();
                 dateSelected.setText(DateFormat.format("EEE, MMM d, yyyy", date));
+                datePrint.setTextAlignment(DateFormat.format("EEE"+ "/" + "MMM d" + "/" + "yyyy", date));
             }
 
         });
