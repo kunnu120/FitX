@@ -1,5 +1,6 @@
 package com.example.fitx;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -121,8 +124,76 @@ public class HomeFragment extends Fragment {
         sets = v.findViewById(R.id.sets);
         reps = v.findViewById(R.id.reps);
         weight = v.findViewById(R.id.weight);
+        ImageView calculator_view = v.findViewById(R.id.calculator_view);
+        TextView calculator_total = v.findViewById(R.id.plate_total);
 
         String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+
+
+
+        calculator_view.setOnClickListener(v1 -> {
+            LayoutInflater li = LayoutInflater.from(getContext());
+            View plateCalc = li.inflate(R.layout.plate_calculator_dialog, null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
+            builder.setTitle("Plate Calculator");
+
+            EditText num45 = plateCalc.findViewById(R.id.num_45_plates);
+            EditText num25 = plateCalc.findViewById(R.id.num_25_plates);
+            EditText num10 = plateCalc.findViewById(R.id.num_10_plates);
+            EditText num5 = plateCalc.findViewById(R.id.num_5_plates);
+            EditText num2half = plateCalc.findViewById(R.id.num_2_5_plates);
+
+            builder.setView(plateCalc);
+            builder.setPositiveButton("Done", (d,w)->{
+                double totalplateweight = 0;
+                if(num45.getText().toString().equals("")) {
+                    int plates45 = 0;
+                }else{
+                    int plates45 = Integer.parseInt(num45.getText().toString());
+                    totalplateweight += (45.0*plates45);
+                }
+
+                if(num25.getText().toString().equals("")){
+                    int plates25 = 0;
+                }else{
+                    int plates25 = Integer.parseInt(num25.getText().toString());
+                    totalplateweight += (25.0*plates25);
+                }
+
+                if(num10.getText().toString().equals("")){
+                    int plates10 = 0;
+                }else{
+                    int plates10 = Integer.parseInt(num10.getText().toString());
+                    totalplateweight += (10.0*plates10);
+                }
+
+                if(num5.getText().toString().equals("")){
+                    int plates5 = 0;
+                }else{
+                    int plates5 = Integer.parseInt(num5.getText().toString());
+                    totalplateweight += (5.0*plates5);
+                }
+
+                if(num2half.getText().toString().equals("")){
+                    int plates2_5 = 0;
+                }else{
+                    int plates2_5 = Integer.parseInt(num2half.getText().toString());
+                    totalplateweight += (2.5*plates2_5);
+                }
+
+
+                String plateResult = "Total: " + totalplateweight;
+                calculator_total.setText(plateResult);
+            });
+            builder.setNegativeButton("Cancel", (d,w)->{
+                d.cancel();
+            });
+            builder.show();
+
+
+        });
+
+
 
         programs = new ArrayList<>();
         currentProgram = db.getReference("Users").child(userid).child("Programs");
@@ -145,13 +216,14 @@ public class HomeFragment extends Fragment {
         exerciseView.setOnItemClickListener((p, view, pos, id) -> {
             exerciseInfoIndex = pos * 5;
             //selectProgram = currentProgram.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
-            //exerciseList = selectProgram.child("Exercises");
+            exerciseList = selectProgram.child("Exercises");
 
             exercisesAdapter = new ArrayAdapter<>(Objects.requireNonNull(this.getActivity()), android.R.layout.simple_list_item_1, exercises);
             exerciseList.addValueEventListener(exerciseListener);
 
+            exerciseView.setSelection(pos);
             exerciseView.setAdapter(exercisesAdapter);
-
+            exerciseView.setSelection(pos);
 
         });
 
