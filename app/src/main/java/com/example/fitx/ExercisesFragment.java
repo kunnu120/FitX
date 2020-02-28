@@ -170,10 +170,10 @@ public class ExercisesFragment extends Fragment {
         Button editExercise = v.findViewById(R.id.editexercise);
         Button removeExercise = v.findViewById(R.id.removeexercise);
         Button addProgram = v.findViewById(R.id.addprogram);
-        Button refreshProgram = v.findViewById(R.id.selectprogram);
         Button removeProgram = v.findViewById(R.id.removeprogram);
 
         programList = v.findViewById(R.id.program_list);
+
 
 
         //get current user id
@@ -358,13 +358,6 @@ public class ExercisesFragment extends Fragment {
         });
 
 
-        //select program click listener
-        refreshProgram.setOnClickListener(v1 -> {
-            programList.performClick();
-        });
-
-
-
         return v;
     }
 
@@ -420,6 +413,12 @@ public class ExercisesFragment extends Fragment {
 
         exercisesAdapter.clear();
         currentProgram_exercises.setValue(new_exercises);
+
+        //for updating the table after updating firebase exercise data
+        if(programList.getCount()>0) {
+            int current = programList.getLastVisiblePosition();
+            programList.performItemClick(programList, current, R.id.program_list);
+        }
 
     }
 
