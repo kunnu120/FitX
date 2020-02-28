@@ -42,7 +42,8 @@ public class ExercisesFragment extends Fragment {
     private ArrayAdapter<String> programsAdapter;
     private ArrayList<String> exercises;
     private ArrayAdapter<String> exercisesAdapter;
-
+    private ArrayList<String> new_exercises;
+    private ArrayAdapter<String> new_exercisesAdapter;
 
     //initialize and declare database reference
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -103,6 +104,20 @@ public class ExercisesFragment extends Fragment {
         @Override
         public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
+            Vector<String> data = new Vector<>();
+            for(DataSnapshot ds : dataSnapshot.getChildren()){
+                data.add(ds.getValue().toString());
+            }
+            int i = 0;
+            for(int j=1; j <= data.size()/5; j++) {
+                TableRow r = (TableRow) exerciseTable.getChildAt(j);
+                for (int k = 0; k < 5; k++) {
+                    TextView cell = (TextView) r.getChildAt(k);
+                    cell.setText(data.get(i));
+                    i++;
+                }
+            }
+            data.clear();
         }
 
         @Override
@@ -155,10 +170,10 @@ public class ExercisesFragment extends Fragment {
         Button editExercise = v.findViewById(R.id.editexercise);
         Button removeExercise = v.findViewById(R.id.removeexercise);
         Button addProgram = v.findViewById(R.id.addprogram);
-        Button selectProgram = v.findViewById(R.id.selectprogram);
         Button removeProgram = v.findViewById(R.id.removeprogram);
 
         programList = v.findViewById(R.id.program_list);
+
 
 
         //get current user id
@@ -299,8 +314,23 @@ public class ExercisesFragment extends Fragment {
 
         //remove exercise click listener
         removeExercise.setOnClickListener(v1 -> {
-
+            LayoutInflater li = LayoutInflater.from(getContext());
+            View removeExercisePrompt = li.inflate(R.layout.edit_exercise_prompt, null);
+            AlertDialog.Builder editPrompt = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
+            editPrompt.setTitle("Remove What Exercise?");
+            TextView input = removeExercisePrompt.findViewById(R.id.edit_exercise_name);
+            editPrompt.setView(removeExercisePrompt);
+            editPrompt.setPositiveButton("Remove", (d,w)->{
+                String exerciseStr = input.getText().toString();
+                exerciseToDelete(exerciseStr);
+            });
+            editPrompt.setNegativeButton("Cancel", (d,w)->{
+                d.cancel();
+            });
+            editPrompt.show();
         });
+
+
 
         //remove program click listener
         removeProgram.setOnClickListener(v1 -> {
@@ -313,105 +343,199 @@ public class ExercisesFragment extends Fragment {
             View editExercisePrompt = li.inflate(R.layout.edit_exercise_prompt, null);
             AlertDialog.Builder editPrompt = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
             editPrompt.setTitle("Edit What Exercise?");
+            TextView input = editExercisePrompt.findViewById(R.id.edit_exercise_name);
             editPrompt.setView(editExercisePrompt);
             editPrompt.setPositiveButton("Edit", (d,w)->{
-
+                String exerciseStr = input.getText().toString();
+                editEnteredExercise(exerciseStr);
             });
             editPrompt.setNegativeButton("Cancel", (d,w)->{
                d.cancel();
             });
             editPrompt.show();
-            TextView input = editExercisePrompt.findViewById(R.id.edit_exercise_name);
-            String exerciseStr = input.getText().toString();
 
-                LayoutInflater lii = LayoutInflater.from(getContext());
-                View editExerciseView = lii.inflate(R.layout.add_exercise_dialog, null);
-                AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
-                builder.setTitle("Edit Exercise");
-
-                        //copy whole table into exercises adapter for editing
-                        Vector<String> data = new Vector<>();
-
-                        for(int h=1; h <= 12; h++) {
-                            TableRow row = (TableRow) exerciseTable.getChildAt(h);
-                            TextView namecell = (TextView)row.getChildAt(0);
-                            for (int k = 0; k < 5; k++) {
-                                if(namecell.getText().toString().equals("")){
-                                    h = 13;
-                                }
-                                TextView cell = (TextView) row.getChildAt(k);
-                                String cellData = cell.getText().toString();
-                                data.add(cellData);
-                            }
-                        }
-                        //removes the 5 empty spaces added at the end of the vector
-                        for(int i=0; i < 5; i++) {
-                            data.removeElementAt(data.size() - 1);
-                        }
-
-                        int databaseIndex = 0;
-                        exercises = new ArrayList<>();
-                        exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, exercises);
-                        for(int m=0; m < data.size(); m++){
-                            if(data.elementAt(m).equals(exerciseStr)){
-                                databaseIndex = m;
-                            }
-                            exercisesAdapter.add(data.elementAt(m));
-                        }
-
-
-
-                        int x = databaseIndex;
-                        final EditText exerciseName = editExerciseView.findViewById(R.id.add_exercise_name);
-                        exerciseName.setInputType(InputType.TYPE_CLASS_TEXT);
-                        exerciseName.setText(exercisesAdapter.getItem(x), TextView.BufferType.EDITABLE);
-                        x++;
-                        final EditText setNum = editExerciseView.findViewById(R.id.add_exercise_sets);
-                        setNum.setInputType(InputType.TYPE_CLASS_TEXT);
-                        setNum.setText(exercisesAdapter.getItem(x), TextView.BufferType.EDITABLE);
-                        x++;
-                        final EditText repNum = editExerciseView.findViewById(R.id.add_exercise_reps);
-                        repNum.setInputType(InputType.TYPE_CLASS_TEXT);
-                        repNum.setText(exercisesAdapter.getItem(x), TextView.BufferType.EDITABLE);
-                        x++;
-                        final EditText weightAmt = editExerciseView.findViewById(R.id.add_exercise_weight);
-                        weightAmt.setInputType(InputType.TYPE_CLASS_TEXT);
-                        weightAmt.setText(exercisesAdapter.getItem(x), TextView.BufferType.EDITABLE);
-
-                        builder.setView(editExerciseView);
-
-                        int editIndex = databaseIndex;
-                        builder.setPositiveButton("Edit", (d, w) -> {
-                            Vector<String> newEdit = new Vector<>();
-                            newEdit.add(exerciseName.getText().toString());
-                            newEdit.add(setNum.getText().toString());
-                            newEdit.add(repNum.getText().toString());
-                            newEdit.add(weightAmt.getText().toString());
-
-
-                            for(int i=0; i < 4; i++) {
-                                exercisesAdapter.remove(exercisesAdapter.getItem(editIndex+i));
-                                exercisesAdapter.insert(newEdit.elementAt(i), editIndex+i);
-                            }
-                            currentProgram_exercises.setValue(exercises);
-
-                        });
-                        builder.setNegativeButton("Cancel", (d, w) ->{
-                            d.cancel();
-                        });
-                        builder.show();
-                    });
-
-
-        //select program click listener
-        selectProgram.setOnClickListener(v1 -> {
 
         });
-
 
 
         return v;
     }
 
+
+    private void exerciseToDelete(String exerciseStr){
+
+        //copy whole table into exercises adapter for editing
+        Vector<String> data = new Vector<>();
+
+        for(int h=1; h <= 12; h++) {
+            TableRow row = (TableRow) exerciseTable.getChildAt(h);
+            TextView namecell = (TextView)row.getChildAt(0);
+            for (int k = 0; k < 5; k++) {
+                if(namecell.getText().toString().equals("")){
+                    h = 13;
+                }
+                TextView cell = (TextView) row.getChildAt(k);
+                String cellData = cell.getText().toString();
+                data.add(cellData);
+            }
+        }
+        //removes the 5 empty spaces added at the end of the vector
+        for(int i=0; i < 5; i++) {
+            data.removeElementAt(data.size() - 1);
+        }
+
+        int databaseIndex = 0;
+        exercises = new ArrayList<>();
+        exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, exercises);
+        for(int m=0; m < data.size(); ++m){
+            exercisesAdapter.add(data.elementAt(m));
+        }
+
+        for(int p=0; p < exercisesAdapter.getCount(); ++p){
+            if(exercisesAdapter.getItem(p).equals(exerciseStr)){
+                databaseIndex = p;
+            }
+        }
+
+        final int start = databaseIndex;
+
+        new_exercises = new ArrayList<>();
+        new_exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, new_exercises);
+
+
+        for(int a = 0; a < exercisesAdapter.getCount(); ++a){
+            if(((a >= start) && (a <= (start+4)))){
+
+            }else{
+                new_exercisesAdapter.add(exercisesAdapter.getItem(a));
+            }
+        }
+
+        exercisesAdapter.clear();
+        currentProgram_exercises.setValue(new_exercises);
+
+        //for updating the table after updating firebase exercise data
+        if(programList.getCount()>0) {
+            int current = programList.getLastVisiblePosition();
+            programList.performItemClick(programList, current, R.id.program_list);
+        }
+
+    }
+
+
+
+
+
+    private void editEnteredExercise(String exerciseStr){
+
+        //copy whole table into exercises adapter for editing
+        Vector<String> data = new Vector<>();
+
+        for(int h=1; h <= 12; h++) {
+            TableRow row = (TableRow) exerciseTable.getChildAt(h);
+            TextView namecell = (TextView)row.getChildAt(0);
+            for (int k = 0; k < 5; k++) {
+                if(namecell.getText().toString().equals("")){
+                    h = 13;
+                }
+                TextView cell = (TextView) row.getChildAt(k);
+                String cellData = cell.getText().toString();
+                data.add(cellData);
+            }
+        }
+        //removes the 5 empty spaces added at the end of the vector
+        for(int i=0; i < 5; i++) {
+            data.removeElementAt(data.size() - 1);
+        }
+
+        int databaseIndex = 0;
+        exercises = new ArrayList<>();
+        exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, exercises);
+        for(int m=0; m < data.size(); ++m){
+            exercisesAdapter.add(data.elementAt(m));
+        }
+
+        for(int p=0; p < exercisesAdapter.getCount(); ++p){
+            if(exercisesAdapter.getItem(p).equals(exerciseStr)){
+                databaseIndex = p;
+            }
+        }
+
+        LayoutInflater lii = LayoutInflater.from(getContext());
+        View editExerciseView = lii.inflate(R.layout.add_exercise_dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
+        builder.setTitle("Edit Exercise");
+
+        final int start = databaseIndex;
+        final EditText exerciseName = editExerciseView.findViewById(R.id.add_exercise_name);
+        exerciseName.setInputType(InputType.TYPE_CLASS_TEXT);
+        String s1 = exercisesAdapter.getItem(databaseIndex);
+        exerciseName.setText(s1, TextView.BufferType.EDITABLE);
+        final EditText setNum = editExerciseView.findViewById(R.id.add_exercise_sets);
+        setNum.setInputType(InputType.TYPE_CLASS_TEXT);
+        String s2 = exercisesAdapter.getItem((databaseIndex+1));
+        setNum.setText(s2, TextView.BufferType.EDITABLE);
+        final EditText repNum = editExerciseView.findViewById(R.id.add_exercise_reps);
+        repNum.setInputType(InputType.TYPE_CLASS_TEXT);
+        String s3 = exercisesAdapter.getItem((databaseIndex+2));
+        repNum.setText(s3, TextView.BufferType.EDITABLE);
+        final EditText weightAmt = editExerciseView.findViewById(R.id.add_exercise_weight);
+        weightAmt.setInputType(InputType.TYPE_CLASS_TEXT);
+        String s4 = exercisesAdapter.getItem((databaseIndex+3));
+        weightAmt.setText(s4, TextView.BufferType.EDITABLE);
+
+        builder.setView(editExerciseView);
+
+        builder.setPositiveButton("Edit", (d, w) -> {
+
+            Vector<String> newEdit = new Vector<>();
+
+            if(exerciseName.getText().toString().equals(s1)){
+                newEdit.add(s1);
+            }else{
+                newEdit.add(exerciseName.getText().toString());
+            }
+
+            if(setNum.getText().toString().equals(s2)){
+                newEdit.add(s2);
+            }else{
+                newEdit.add(setNum.getText().toString());
+            }
+
+            if(repNum.getText().toString().equals(s3)){
+                newEdit.add(s3);
+            }else{
+                newEdit.add(repNum.getText().toString());
+            }
+
+            if(weightAmt.getText().toString().equals(s4)){
+                newEdit.add(s4);
+            }else{
+                newEdit.add(weightAmt.getText().toString());
+            }
+
+            new_exercises = new ArrayList<>();
+            new_exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, new_exercises);
+
+            int b = 0;
+            for(int a = 0; a < exercisesAdapter.getCount(); ++a){
+                if((a >= start) && (a <= (start+3))){
+                    new_exercisesAdapter.add(newEdit.elementAt(b));
+                    ++b;
+                }else {
+                    new_exercisesAdapter.add(exercisesAdapter.getItem(a));
+                }
+            }
+
+            exercisesAdapter.clear();
+            newEdit.clear();
+            currentProgram_exercises.setValue(new_exercises);
+
+        });
+        builder.setNegativeButton("Cancel", (d, w) ->{
+            d.cancel();
+        });
+        builder.show();
+    }
 
 }
