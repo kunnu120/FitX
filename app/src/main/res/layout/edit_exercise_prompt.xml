@@ -6,7 +6,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Exercise Name"
+        android:hint="Name"
         android:id="@+id/edit_exercise_name" />
 
 </LinearLayout>
