@@ -100,4 +100,5 @@
     <string name="of_5_lb_plates"># of 5 lb plates</string>
     <string name="of_2_5_lb_plates"># of 2.5 lb plates</string>
     <string name="total">Total:</string>
+    <string name="program_name">Program Name</string>
 </resources>
