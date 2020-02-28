@@ -66,7 +66,7 @@ public class ProgramsFragment extends Fragment{
                 //dateSelected.setText("Date Selected: " + date);
                 //Toast.makeText(getContext(), DateFormat.format("EEE, MMM d, yyyy", date) + " is selected!", Toast.LENGTH_SHORT).show();
                 dateSelected.setText(DateFormat.format("EEE, MMM d, yyyy", date));
-                datePrint.setTextAlignment(DateFormat.format("EEE"+ "/" + "MMM d" + "/" + "yyyy", date));
+                //datePrint.
             }
 
         });
