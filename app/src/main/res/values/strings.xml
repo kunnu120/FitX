@@ -103,4 +103,7 @@
     <string name="of_reps_completed"># of reps completed</string>
     <string name="amount_of_weight_for_set">amount of weight for set</string>
     <string name="program_name">Program Name</string>
+    <string name="select_date">Select Date</string>
+    <string name="program_comments">Program Comments</string>
+    <string name="programs">Programs</string>
 </resources>
