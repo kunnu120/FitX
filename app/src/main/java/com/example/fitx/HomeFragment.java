@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -130,6 +131,15 @@ public class HomeFragment extends Fragment {
         weight = v.findViewById(R.id.weight);
         ImageView calculator_view = v.findViewById(R.id.calculator_view);
         TextView calculator_total = v.findViewById(R.id.plate_total);
+
+        ProgressBar exerciseProgress = v.findViewById(R.id.progressBar2);
+        double progress;
+        progress = Math.round(((logInfo) Objects.requireNonNull(this.getActivity()).getApplication()).getActivityProgress());
+        int progressBar = (int) progress;
+        progressBar = progressBar * 100;
+        System.out.println("Progress bar percentage: " + progressBar);
+        exerciseProgress.setProgress(progressBar);
+
 
         String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
