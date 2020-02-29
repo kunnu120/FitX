@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -60,6 +61,7 @@ public class ProfileFragment extends Fragment {
     private ArrayAdapter<String> adapter;
 
 
+
     private ValueEventListener goalListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -82,6 +84,15 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_profile, null);
+
+      //  View v = inflater.inflate(R.layout.manual, container, false);
+
+        String [] values =
+                {"Male","Female","Other",};
+        Spinner spinner = (Spinner) v.findViewById(R.id.spinner1);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, values);
+        adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        spinner.setAdapter(adapter);
 
         img = v.findViewById(R.id.profile_pic);
         progressBar = v.findViewById(R.id.ventilator_progress);

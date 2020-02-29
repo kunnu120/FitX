@@ -2,6 +2,11 @@ package com.example.fitx;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -14,9 +19,11 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
+import android.view.View;
+import android.widget.Toast;
+
 //implements BottomNavigationView.OnNavigationItemSelectedListener
 public class HomeActivity extends AppCompatActivity {
-
 
     BottomNavigationView bottomNav;
     ViewPager2 viewPager;
@@ -27,9 +34,10 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
 
         //initializing view pager
         viewPager = findViewById(R.id.viewpager);
@@ -82,6 +90,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -93,6 +102,19 @@ public class HomeActivity extends AppCompatActivity {
         if (authStateListener != null) {
             fAuth.removeAuthStateListener(authStateListener);
         }
+    }
+
+    public void buttonClick(View v) {
+        EditText editTextHeight = (EditText) findViewById(R.id.user_height);
+        EditText editTextWeight = (EditText) findViewById(R.id.user_weight);
+        TextView textViewResult = (TextView) findViewById(R.id.userBMI);
+
+        double height = Double.parseDouble(editTextHeight.getText().toString());
+        double weight = Double.parseDouble(editTextWeight.getText().toString());
+
+        double BMI = weight / (height * height);
+
+        textViewResult.setText(Double.toString(BMI));
     }
 
 
