@@ -655,5 +655,4 @@ public class ExercisesFragment extends Fragment {
         });
         builder.show();
     }
-
 }
