@@ -1,7 +1,9 @@
 package com.example.fitx;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -54,9 +58,11 @@ public class HomeFragment extends Fragment {
     private String loggingWeight;
 
     private int exerciseInfoIndex = 0;
+    private boolean wasCalled;
 
 
     private ValueEventListener programListener = new ValueEventListener() {
+
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             if (programsAdapter != null) {
@@ -81,6 +87,7 @@ public class HomeFragment extends Fragment {
     };
 
     private ValueEventListener exerciseListener = new ValueEventListener() {
+
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             exercises = new ArrayList<>();
@@ -117,7 +124,8 @@ public class HomeFragment extends Fragment {
     };
 
 
-
+    @SuppressLint("SetTextI18n")
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @NonNull
     @Override
     public View onCreateView(LayoutInflater inflater, @NonNull ViewGroup container, @NonNull Bundle savedInstanceState) {
@@ -131,14 +139,10 @@ public class HomeFragment extends Fragment {
         weight = v.findViewById(R.id.weight);
         ImageView calculator_view = v.findViewById(R.id.calculator_view);
         TextView calculator_total = v.findViewById(R.id.plate_total);
+        TextView percent = v.findViewById(R.id.percent);
+        TextView progressLabel = v.findViewById(R.id.progressLabel);
 
         ProgressBar exerciseProgress = v.findViewById(R.id.progressBar2);
-        double progress;
-        progress = Math.round(((logInfo) Objects.requireNonNull(this.getActivity()).getApplication()).getActivityProgress());
-        int progressBar = (int) progress;
-        progressBar = progressBar * 100;
-        System.out.println("Progress bar percentage: " + progressBar);
-        exerciseProgress.setProgress(progressBar);
 
 
         String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
@@ -165,11 +169,10 @@ public class HomeFragment extends Fragment {
                 int logWeight = 0;
 
                 int progSets = Integer.parseInt(String.valueOf(loggingSets));
-                //System.out.println(loggingSets);
+
                 int progReps = Integer.parseInt(String.valueOf(loggingReps));
-                //System.out.println(loggingReps);
+
                 int progWeight = Integer.parseInt(String.valueOf(loggingWeight));
-                //System.out.println(loggingWeight);
 
                 totalProgWeight = progSets * progReps * progWeight;
                 ((logInfo) this.getActivity().getApplication()).setTotalProgWeight(totalProgWeight);
@@ -195,10 +198,31 @@ public class HomeFragment extends Fragment {
 
                 //return totalLogWeight;
 
+                DecimalFormat df = new DecimalFormat("#.##");
                 activityProgress = totalLogWeight / totalProgWeight;
-                ((logInfo) this.getActivity().getApplication()).setActivityProgress(activityProgress);
+                activityProgress = Double.parseDouble(df.format(activityProgress));
+                ((logInfo) this.getActivity().getApplication()).setActivityProgress((activityProgress));
                 activityProgress = ((logInfo) this.getActivity().getApplication()).getActivityProgress();
                 System.out.println("Activity Progress: " + activityProgress);
+
+
+                if (wasCalled = true) {
+                    double zero = 0;
+                    double hundred = 100.0;
+                    double progressBar = hundred * activityProgress;
+                    int progressPercent = (int) progressBar;
+                    percent.setText(progressPercent + "%");
+
+
+                    System.out.println("Progress bar percentage: " + progressPercent);
+                    if (progressBar <= 100) {
+                        exerciseProgress.setProgress(progressPercent);
+                        if (progressBar >= 100) {
+                            wasCalled = false;
+                            ((logInfo) this.getActivity().getApplication()).setTotalLogWeight(zero);
+                        }
+                    }
+                }
             });
 
 
@@ -207,8 +231,8 @@ public class HomeFragment extends Fragment {
             });
             builder.show();
 
-        });
 
+        });
 
 
         calculator_view.setOnClickListener(v1 -> {
@@ -274,7 +298,6 @@ public class HomeFragment extends Fragment {
         });
 
 
-
         programs = new ArrayList<>();
         currentProgram = db.getReference("Users").child(userid).child("Programs");
         currentProgram.addValueEventListener(programListener);
@@ -305,16 +328,20 @@ public class HomeFragment extends Fragment {
             exerciseView.setAdapter(exercisesAdapter);
             exerciseView.setSelection(pos);
 
+            wasCalled = true;
+            ((logInfo) this.getActivity().getApplication()).setTotalLogWeight(0);
+            exerciseProgress.setProgress(0);
+            percent.setText("0%");
+            progressLabel.setText(exercisesAdapter.getItem(pos) + " Progress");
+
         });
-
-
-
 
 
         logoutButton.setOnClickListener(v1 -> {
             fAuth.signOut();
             startActivity(new Intent(getContext(), LoginActivity.class));
         });
+
         //just change the fragment_dashboard
         //with the fragment you want to inflate
         //like if the class is HomeFragment it should have R.layout.home_fragment
