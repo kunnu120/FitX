@@ -100,14 +100,14 @@
 
     <TextView
         android:id="@+id/weight"
-        android:layout_width="150dp"
+        android:layout_width="175dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="114dp"
 
         android:text="@string/home_weight"
         android:textColor="@android:color/black"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/reps"
         app:layout_constraintTop_toBottomOf="@+id/reps" />
 
@@ -159,25 +159,53 @@
         android:id="@+id/plate_total"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
+        android:background="#00F"
         android:text="@string/total"
         android:textColor="#FFF"
-        android:background="#00F"
         app:layout_constraintEnd_toEndOf="@+id/calculator_view"
         app:layout_constraintStart_toStartOf="@+id/calculator_view"
         app:layout_constraintTop_toBottomOf="@+id/calculator_view" />
 
     <ProgressBar
         android:id="@+id/progressBar2"
-        style="@android:style/Widget.Material.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="333dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="50dp"
+        android:indeterminate="false"
         android:max="100"
+        android:progressBackgroundTint="@color/grey_100"
+        android:progressTint="#FF1000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/log"
         app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/percent"
+        android:layout_width="70dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textAlignment="gravity"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/progressBar2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/progressBar2"
+        app:layout_constraintTop_toTopOf="@+id/progressBar2" />
+
+    <TextView
+        android:id="@+id/progressLabel"
+        android:layout_width="333dp"
+        android:layout_height="25dp"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/progressBar2"
+        app:layout_constraintEnd_toEndOf="@+id/progressBar2"
+        app:layout_constraintStart_toStartOf="@+id/progressBar2"
+        app:layout_constraintTop_toTopOf="@+id/progressBar2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
