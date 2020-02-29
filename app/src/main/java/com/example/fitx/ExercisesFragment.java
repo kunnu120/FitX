@@ -93,7 +93,6 @@ public class ExercisesFragment extends Fragment {
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-
             if(exercisesAdapter != null) {
                 exercisesAdapter.clear();
                 exercisesAdapter.addAll((ArrayList<String>) dataSnapshot.getValue());
@@ -138,10 +137,26 @@ public class ExercisesFragment extends Fragment {
         @Override
         public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
+            //clears the table for new program
+            for(int j=1; j <= 12; j++) {
+                TableRow r = (TableRow) exerciseTable.getChildAt(j);
+                for (int k = 0; k < 5; k++) {
+                    TextView cell = (TextView) r.getChildAt(k);
+                    cell.setText("");
+                }
+            }
+
+
+
             Vector<String> data = new Vector<>();
             for(DataSnapshot ds : dataSnapshot.getChildren()){
                 data.add(ds.getValue().toString());
             }
+
+            for(int i=0; i < 5; i++) {
+                data.removeElementAt(data.size() - 1);
+            }
+
             int i = 0;
             for(int j=1; j <= data.size()/5; j++) {
                 TableRow r = (TableRow) exerciseTable.getChildAt(j);
@@ -152,6 +167,17 @@ public class ExercisesFragment extends Fragment {
                 }
             }
             data.clear();
+
+            if(programList.getCount() == 0){
+                for(int j=1; j <= 12; j++) {
+                    TableRow r = (TableRow) exerciseTable.getChildAt(j);
+                    for (int k = 0; k < 5; k++) {
+                        TextView cell = (TextView) r.getChildAt(k);
+                        cell.setText("");
+                    }
+                }
+            }
+
         }
 
         @Override
@@ -168,6 +194,17 @@ public class ExercisesFragment extends Fragment {
     private ValueEventListener programListener = new ValueEventListener(){
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            if(programsAdapter.isEmpty()){
+                programsAdapter.clear();
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    programsAdapter.addAll((String) ds.getKey());
+                }
+                if(programsAdapter.getCount()>0) {
+                    programList.performItemClick(programList, 0, R.id.program_list);
+                }
+                programsAdapter.clear();
+            }
+
             try {
 
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
@@ -208,6 +245,7 @@ public class ExercisesFragment extends Fragment {
 
         programList = v.findViewById(R.id.program_list);
 
+
         //fullfillment array and adapter
         ff_array = new ArrayList<>();
         ffAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, ff_array);
@@ -226,6 +264,9 @@ public class ExercisesFragment extends Fragment {
         userPrograms.addListenerForSingleValueEvent(programListener);
         programsAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, programs);
         programList.setAdapter(programsAdapter);
+
+
+
         programList.setOnItemClickListener((p, view, pos, id) -> {
 
             //clears table before switch
@@ -236,6 +277,8 @@ public class ExercisesFragment extends Fragment {
                     cell.setText("");
                 }
             }
+
+
             currentProgram = userPrograms.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
             currentProgram_exercises = currentProgram.child("Exercises");
             currentProgram.addChildEventListener(tableSwitchListener);
@@ -247,6 +290,9 @@ public class ExercisesFragment extends Fragment {
 
 
         });
+
+
+
 
 
 
@@ -359,15 +405,18 @@ public class ExercisesFragment extends Fragment {
 
                 //fullfillment
                 final int numofentries = Integer.parseInt(s2);
-                for(int f = 0; f < numofentries; ++f){
-                    ff_array.add(s1);
-                    ff_array.add(s2);
-                    ff_array.add(s3);
-                    ff_array.add(s4);
-                    ff_array.add(s5);
+                if(numofentries != 0) {
+                    for (int f = 0; f < numofentries; ++f) {
+                        ff_array.add(s1);
+                        ff_array.add(s2);
+                        ff_array.add(s3);
+                        ff_array.add(s4);
+                        ff_array.add(s5);
+                    }
+                    FF_currentProgram_exercises.setValue(ff_array);
                 }
 
-                FF_currentProgram_exercises.setValue(ff_array);
+
 
 
             });
@@ -409,7 +458,19 @@ public class ExercisesFragment extends Fragment {
                 String currProgram = input.getText().toString();
                 currentProgram.setValue(null);
                 programsAdapter.remove(currProgram);
-                if(programList.getCount()>0) {
+                //fullfillment program removal
+                FF_currentProgram.setValue(null);
+                ffAdapter.remove(currProgram);
+
+                if(programsAdapter.getCount() > 0) {
+                    //clears the table
+                    for(int j=1; j <= 12; j++) {
+                        TableRow r = (TableRow) exerciseTable.getChildAt(j);
+                        for (int k = 0; k < 5; k++) {
+                            TextView cell = (TextView) r.getChildAt(k);
+                            cell.setText("");
+                        }
+                    }
                     programList.setSelection(0);
                     programList.performItemClick(programList, 0, R.id.program_list);
                 }else{
@@ -421,8 +482,9 @@ public class ExercisesFragment extends Fragment {
                             cell.setText("");
                         }
                     }
-
                 }
+
+
             });
             builder.setNegativeButton("Cancel", (d, w) ->{
                 d.cancel();
