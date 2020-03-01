@@ -1,7 +1,9 @@
 package com.example.fitx;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -48,10 +53,16 @@ public class HomeFragment extends Fragment {
     private TextView reps;
     private TextView weight;
 
+    private String loggingSets;
+    private String loggingReps;
+    private String loggingWeight;
+
     private int exerciseInfoIndex = 0;
+    private boolean wasCalled;
 
 
     private ValueEventListener programListener = new ValueEventListener() {
+
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             if (programsAdapter != null) {
@@ -76,6 +87,7 @@ public class HomeFragment extends Fragment {
     };
 
     private ValueEventListener exerciseListener = new ValueEventListener() {
+
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             exercises = new ArrayList<>();
@@ -112,7 +124,8 @@ public class HomeFragment extends Fragment {
     };
 
 
-
+    @SuppressLint("SetTextI18n")
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @NonNull
     @Override
     public View onCreateView(LayoutInflater inflater, @NonNull ViewGroup container, @NonNull Bundle savedInstanceState) {
@@ -126,9 +139,100 @@ public class HomeFragment extends Fragment {
         weight = v.findViewById(R.id.weight);
         ImageView calculator_view = v.findViewById(R.id.calculator_view);
         TextView calculator_total = v.findViewById(R.id.plate_total);
+        TextView percent = v.findViewById(R.id.percent);
+        TextView progressLabel = v.findViewById(R.id.progressLabel);
+
+        ProgressBar exerciseProgress = v.findViewById(R.id.progressBar2);
+
 
         String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
+        logButton.setOnClickListener(v1 -> {
+            LayoutInflater li = LayoutInflater.from(getContext());
+            View log = li.inflate(R.layout.log_layout, null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
+            builder.setTitle("Log Your Set");
+
+            EditText numReps = log.findViewById(R.id.num_reps);
+            EditText numWeight = log.findViewById(R.id.num_weight);
+
+            builder.setView(log);
+
+
+            builder.setPositiveButton("Log", (d, w) -> {
+                double totalLogWeight = 0;
+                double totalProgWeight = 0;
+                double activityProgress = 0;
+                double oldProgress = 0;
+                double newProgress = 0;
+                int logReps = 0;
+                int logWeight = 0;
+
+                int progSets = Integer.parseInt(String.valueOf(loggingSets));
+
+                int progReps = Integer.parseInt(String.valueOf(loggingReps));
+
+                int progWeight = Integer.parseInt(String.valueOf(loggingWeight));
+
+                totalProgWeight = progSets * progReps * progWeight;
+                ((logInfo) this.getActivity().getApplication()).setTotalProgWeight(totalProgWeight);
+                totalProgWeight = ((logInfo) this.getActivity().getApplication()).getTotalProgWeight();
+                System.out.println("Total Prog Weight: " + totalProgWeight);
+
+
+                logReps = Integer.parseInt(numReps.getText().toString());
+                logWeight = Integer.parseInt(numWeight.getText().toString());
+
+                oldProgress = logReps * logWeight;
+                if (((logInfo) this.getActivity().getApplication()).getTotalLogWeight() == 0) {
+                    ((logInfo) this.getActivity().getApplication()).setTotalLogWeight(oldProgress);
+                    totalLogWeight = ((logInfo) this.getActivity().getApplication()).getTotalLogWeight();
+                    System.out.println("Total Log Weight: " + totalLogWeight);
+                } else {
+                    newProgress = ((logInfo) this.getActivity().getApplication()).getTotalLogWeight();
+                    totalLogWeight = newProgress + oldProgress;
+                    ((logInfo) this.getActivity().getApplication()).setTotalLogWeight(totalLogWeight);
+                    totalLogWeight = ((logInfo) this.getActivity().getApplication()).getTotalLogWeight();
+                    System.out.println("Total Log Weight: " + totalLogWeight);
+                }
+
+                //return totalLogWeight;
+
+                DecimalFormat df = new DecimalFormat("#.##");
+                activityProgress = totalLogWeight / totalProgWeight;
+                activityProgress = Double.parseDouble(df.format(activityProgress));
+                ((logInfo) this.getActivity().getApplication()).setActivityProgress((activityProgress));
+                activityProgress = ((logInfo) this.getActivity().getApplication()).getActivityProgress();
+                System.out.println("Activity Progress: " + activityProgress);
+
+
+                if (wasCalled = true) {
+                    double zero = 0;
+                    double hundred = 100.0;
+                    double progressBar = hundred * activityProgress;
+                    int progressPercent = (int) progressBar;
+                    percent.setText(progressPercent + "%");
+
+
+                    System.out.println("Progress bar percentage: " + progressPercent);
+                    if (progressBar <= 100) {
+                        exerciseProgress.setProgress(progressPercent);
+                        if (progressBar >= 100) {
+                            wasCalled = false;
+                            ((logInfo) this.getActivity().getApplication()).setTotalLogWeight(zero);
+                        }
+                    }
+                }
+            });
+
+
+            builder.setNegativeButton("Cancel", (d, w) -> {
+                d.cancel();
+            });
+            builder.show();
+
+
+        });
 
 
         calculator_view.setOnClickListener(v1 -> {
@@ -194,7 +298,6 @@ public class HomeFragment extends Fragment {
         });
 
 
-
         programs = new ArrayList<>();
         currentProgram = db.getReference("Users").child(userid).child("Programs");
         currentProgram.addValueEventListener(programListener);
@@ -225,16 +328,20 @@ public class HomeFragment extends Fragment {
             exerciseView.setAdapter(exercisesAdapter);
             exerciseView.setSelection(pos);
 
+            wasCalled = true;
+            ((logInfo) this.getActivity().getApplication()).setTotalLogWeight(0);
+            exerciseProgress.setProgress(0);
+            percent.setText("0%");
+            progressLabel.setText(exercisesAdapter.getItem(pos) + " Progress");
+
         });
-
-
-
 
 
         logoutButton.setOnClickListener(v1 -> {
             fAuth.signOut();
             startActivity(new Intent(getContext(), LoginActivity.class));
         });
+
         //just change the fragment_dashboard
         //with the fragment you want to inflate
         //like if the class is HomeFragment it should have R.layout.home_fragment
@@ -254,20 +361,27 @@ public class HomeFragment extends Fragment {
         String s1 = "Sets: ";
         String s2 = "Reps: ";
         String s3 = "Weight: ";
+        loggingSets = "";
+        loggingReps = "";
+        loggingWeight = "";
         for (DataSnapshot dss : ds.getChildren()) {
             if (i == (index + 1)) {
                 s1 = s1 + (dss.getValue().toString());
+                loggingSets = dss.getValue().toString();
                 sets.setText(s1);
             } else if (i == (index + 2)) {
                 s2 = s2 + (dss.getValue().toString());
+                loggingReps = dss.getValue().toString();
                 reps.setText(s2);
             } else if (i == (index + 3)) {
                 s3 = s3 + (dss.getValue().toString());
+                loggingWeight = dss.getValue().toString();
                 weight.setText(s3);
             }
             i++;
 
         }
+
     }
 
 }
