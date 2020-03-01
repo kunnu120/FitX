@@ -1,34 +1,11 @@
 <resources>
     <string name="app_name">FitX</string>
 
-    <string name="label_google_sign_in">Firebase + Google Sign In</string>
-    <string name="desc_google_sign_in">Use a Google Sign In credential to authenticate with Firebase.</string>
-
-    <string name="label_emailpassword">Email/Password Authentication</string>
-    <string name="desc_emailpassword">Use an email and password to authenticate with Firebase.</string>
-
-    <string name="label_nopassword">Passwordless Authentication</string>
-    <string name="desc_nopassword">Use only an email to authenticate with Firebase.</string>
-
-    <string name="label_phone_auth">Phone Number Authentication</string>
-    <string name="desc_phone_auth">Use a phone number to authenticate with Firebase.</string>
-
-    <string name="label_anonymous_auth">Anonymous Authentication</string>
-    <string name="desc_anonymous_auth">Sign in anonymously and then later upgrade to a full Firebase Auth user.</string>
-
-    <string name="label_our_auth">Our Authentication</string>
-    <string name="desc_our_auth">Use a custom token signed by your own server to authenticate with Firebase.</string>
-
-    <string name="label_firebase_ui">FirebaseUI Auth</string>
-    <string name="desc_firebase_ui">Use the FirebaseUI-Android library to authenticate with Firebase.</string>
-
     <!-- Strings related to login -->
     <string name="hint_user_id">User ID</string>
     <string name="get_custom_token">Get Token</string>
     <string name="create_account">Create Account</string>
     <string name="send_link">Send Link</string>
-    <string name="sign_out">Sign Out</string>
-    <string name="verify_email">Verify Email</string>
     <string name="disconnect">Disconnect</string>
     <string name="loading">Loading…</string>
     <string name="custom_token">Custom Token</string>
@@ -67,7 +44,67 @@
 
     <string name="phone_title_text">Phone Number</string>
     <string name="sign_in">Sign In</string>
-    <string name="title_home" />
-    <string name="title_dashboard" />
-    <string name="title_notifications" />
+
+    <string name="title_social">Social</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_home">Home</string>
+    <string name="title_programs">Programs</string>
+    <string name="title_exercises">Exercises</string>
+
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="email">Email address</string>
+    <string name="password">Password</string>
+    <string name="welcome_to_fitx">Welcome to Fitx</string>
+    <string name="welcome">Welcome to FitX</string>
+    <string name="activity_forgotpassword" />
+    <string name="activity_profile" />
+    <string name="sign_out">Sign Out</string>
+    <string name="verify_email">Verify Email</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="or">OR</string>
+    <string name="register">Register!</string>
+    <string name="login">Login</string>
+    <string name="login_prompt">Login?</string>
+    <string name="register_prompt">Register</string>
+    <string name="authentication_failed">Auth Failed</string>
+    <string name="auth_failure">Auth Failed</string>
+    <string name="logout">Logout</string>
+    <string name="clear">Clear</string>
+    <string name="open_camera">Open Camera</string>
+    <string name="profile_pic" />
+    <string name="program">Current Program:</string>
+    <string name="current_activity">Current Activity:</string>
+    <string name="exercise">Exercise</string>
+    <string name="weight">Weight</string>
+    <string name="home_weight">Weight:</string>
+    <string name="sets">Sets</string>
+    <string name="home_sets">Sets:</string>
+    <string name="reps">Reps</string>
+    <string name="home_reps">Reps:</string>
+    <string name="comments">Comments</string>
+    <string name="current_program">Current Program</string>
+    <string name="current_program1">Current Program:</string>
+    <string name="exercises">Exercises</string>
+    <string name="add_program">Add Program</string>
+    <string name="add_exercise">Add Exercise</string>
+    <string name="edit_exercise">Edit Exercise</string>
+    <string name="remove_exercise">Remove Exercise</string>
+    <string name="remove_program">Remove Program</string>
+    <string name="select_program">Select Program</string>
+    <string name="log">Log</string>
+    <string name="of_10_lb_plates"># of 10 lb plates</string>
+    <string name="of_25_lb_plates"># of 25 lb plates</string>
+    <string name="of_45_lb_plates"># of 45 lb plates</string>
+    <string name="of_5_lb_plates"># of 5 lb plates</string>
+    <string name="of_2_5_lb_plates"># of 2.5 lb plates</string>
+    <string name="total">Total:</string>
+    <string name="of_reps_completed"># of reps completed</string>
+    <string name="amount_of_weight_for_set">amount of weight for set</string>
+    <string name="program_name">Program Name</string>
+    <string name="programs">Programs</string>
+    <string name="select_date">Select Date</string>
+    <string name="program_comments">Program Comments</string>
+    <string name="exercise_progress">Exercise Progress</string>
 </resources>

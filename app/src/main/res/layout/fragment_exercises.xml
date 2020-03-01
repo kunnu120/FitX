@@ -1,0 +1,778 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/exercises"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/program_switcher"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ListView
+        android:id="@+id/program_list"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/home_page_list_views"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/program_switcher"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
+        android:layout_marginEnd="125dp"
+        android:text="@string/current_program1"
+        android:textColor="#000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/exercise_table"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TableLayout
+        android:id="@+id/exercise_table"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="65dp"
+        android:background="#FFFFFF"
+        android:dividerPadding="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="1000dp"
+            android:layout_height="1500dp">
+
+            <TextView
+                android:id="@+id/tablelabel1"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="#00F"
+                android:padding="5dp"
+                android:text="@string/exercise"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/tablelabel3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00F"
+                android:padding="5dp"
+                android:text="@string/sets"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/tablelabel4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00F"
+                android:padding="5dp"
+                android:text="@string/reps"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/tablelabel2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00F"
+                android:padding="5dp"
+                android:text="@string/weight"
+                android:textColor="@color/colorPrimary" />
+
+
+            <TextView
+                android:id="@+id/tablelabel5"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="#00F"
+                android:padding="5dp"
+                android:text="@string/comments"
+                android:textColor="@color/colorPrimary" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="1000dp"
+            android:layout_height="1500dp">
+
+            <TextView
+                android:id="@+id/cell_1"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_5"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="1000dp"
+            android:layout_height="1500dp">
+
+            <TextView
+                android:id="@+id/cell_6"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_10"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="1000dp"
+            android:layout_height="1500dp">
+
+            <TextView
+                android:id="@+id/cell_11"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_15"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="1000dp"
+            android:layout_height="1500dp">
+
+            <TextView
+                android:id="@+id/cell_16"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_19"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_20"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="1000dp"
+            android:layout_height="1500dp">
+
+            <TextView
+                android:id="@+id/cell_21"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_23"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_25"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="1000dp"
+            android:layout_height="1500dp">
+
+            <TextView
+                android:id="@+id/cell_26"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_27"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_28"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_29"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_30"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="1000dp"
+            android:layout_height="1500dp">
+
+            <TextView
+                android:id="@+id/cell_31"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_32"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_33"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_34"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_35"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="1000dp"
+            android:layout_height="1500dp">
+
+            <TextView
+                android:id="@+id/cell_36"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_37"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_38"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_39"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_40"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="1000dp"
+            android:layout_height="1500dp">
+
+            <TextView
+                android:id="@+id/cell_41"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_42"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_43"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_44"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_45"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="1000dp"
+            android:layout_height="1500dp">
+
+            <TextView
+                android:id="@+id/cell_46"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_47"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_48"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_49"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_50"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="1000dp"
+            android:layout_height="1500dp">
+
+            <TextView
+                android:id="@+id/cell_61"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_62"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_63"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_64"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_65"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="1000dp"
+            android:layout_height="1500dp">
+
+            <TextView
+                android:id="@+id/cell_66"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_67"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_68"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_69"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_70"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="1000dp"
+            android:layout_height="1500dp">
+
+            <TextView
+                android:id="@+id/cell_51"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_52"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_53"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_54"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cell_55"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="#000000"
+                android:padding="5dp"
+                android:textColor="@color/colorPrimary" />
+
+        </TableRow>
+
+
+    </TableLayout>
+
+    <Button
+        android:id="@+id/addexercise"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/exercise_db_button"
+        android:text="@string/add_exercise"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintEnd_toStartOf="@+id/editexercise"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/exercise_table" />
+
+    <Button
+        android:id="@+id/addprogram"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/exercise_db_button"
+        android:text="@string/add_program"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintEnd_toStartOf="@+id/program_list"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/editexercise"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/exercise_db_button"
+        android:text="@string/edit_exercise"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/exercise_table" />
+
+
+    <Button
+        android:id="@+id/removeexercise"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/exercise_db_button"
+        android:text="@string/remove_exercise"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editexercise"
+        app:layout_constraintTop_toBottomOf="@+id/exercise_table" />
+
+    <Button
+        android:id="@+id/removeprogram"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/exercise_db_button"
+        android:text="@string/remove_program"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@+id/addprogram"
+        app:layout_constraintStart_toEndOf="@+id/program_list"
+        app:layout_constraintTop_toTopOf="@+id/addprogram" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
