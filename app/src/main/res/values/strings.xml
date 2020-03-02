@@ -114,4 +114,5 @@
     </string-array>
 
     <string name="exercise_progress">Exercise Progress</string>
+    <string name="result">Result</string>
 </resources>
