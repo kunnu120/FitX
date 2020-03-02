@@ -10,13 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,7 +52,7 @@ import static android.app.Activity.RESULT_OK;
 
 
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -63,6 +66,8 @@ public class ProfileFragment extends Fragment {
     private ArrayList<String> goals;
     private DatabaseReference goalsRef;
     private ArrayAdapter<String> adapter;
+    TextView display_data ;
+
 
 
     private ValueEventListener goalListener = new ValueEventListener() {
@@ -87,6 +92,16 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_profile, null);
+
+      //  View v = inflater.inflate(R.layout.manual, container, false);
+
+        String [] values =
+                {"Male","Female","Other",};
+        Spinner spinner = (Spinner) v.findViewById(R.id.spinner1);
+        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, values);
+        myAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        spinner.setAdapter(myAdapter);
+
 
         img = v.findViewById(R.id.profile_pic);
         progressBar = v.findViewById(R.id.ventilator_progress);
@@ -147,6 +162,14 @@ public class ProfileFragment extends Fragment {
         return v;
     }
 
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String text = parent.getItemAtPosition(position).toString();
+        Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 
 //#################################### GOAL CODE ############################################
 
