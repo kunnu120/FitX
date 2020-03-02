@@ -106,10 +106,12 @@
     <string name="programs">Programs</string>
     <string name="select_date">Select Date</string>
     <string name="program_comments">Program Comments</string>
-    
+   
     <string-array name="names" >
         <item>M</item>
         <item>F</item>
         <item>Other</item>
     </string-array>
+
+    <string name="exercise_progress">Exercise Progress</string>
 </resources>

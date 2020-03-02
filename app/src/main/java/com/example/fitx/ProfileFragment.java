@@ -41,6 +41,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+
+import org.w3c.dom.Text;
+
+
 import java.util.ArrayList;
 import java.util.Objects;
 import java.lang.String;
@@ -56,6 +60,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
     private Button btnupload;
     private ImageView img;
     private ProgressBar progressBar;
+
     private DatabaseReference ProfilePicUrlRef;
     private StorageReference storageRef;
     private ArrayList<String> goals;
@@ -100,6 +105,9 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
         img = v.findViewById(R.id.profile_pic);
         progressBar = v.findViewById(R.id.ventilator_progress);
+
+        //StorageReference imageRef = storageRef.child("1575623427796.jpg");
+
         storageRef = FirebaseStorage.getInstance().getReference("uploads");
 
         btnupload = v.findViewById(R.id.btnUpload);
@@ -163,6 +171,9 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
     }
 
+//#################################### GOAL CODE ############################################
+
+
     private void openFileChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -207,6 +218,22 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
         builder.show();
     }
+
+
+    public void button2Clicked(View v) {
+
+        EditText editTextHeight = (EditText) getView().findViewById(R.id.userHeight);
+        EditText editTextWeight = (EditText) getView().findViewById(R.id.userWeight);
+        TextView textViewResult = (TextView) getView().findViewById(R.id.userBMI);
+
+        double height = Double.parseDouble(editTextHeight.getText().toString());
+        double weight = Double.parseDouble(editTextWeight.getText().toString());
+
+        double BMI = weight / (height * height);
+
+        textViewResult.setText(Double.toString(BMI));
+    }
+
 
     //#########################GOAL CODE END ###########################################
 
@@ -267,11 +294,5 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         }
 
     }
-
-
-
-
-
-
 
 }
