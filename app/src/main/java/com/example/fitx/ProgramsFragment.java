@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -69,7 +70,7 @@ public class ProgramsFragment extends Fragment{
 
 
 
-    /*private ValueEventListener programListener = new ValueEventListener(){
+    private ValueEventListener programListener = new ValueEventListener(){
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             if (programsAdapter != null) {
@@ -90,7 +91,7 @@ public class ProgramsFragment extends Fragment{
         public void onCancelled(@NonNull DatabaseError databaseError){
 
         }
-    };*/
+    };
 
     @NonNull
     @Override
@@ -134,48 +135,13 @@ public class ProgramsFragment extends Fragment{
             @Override
             public void onDateSelected(Calendar date, int position) {
                 dateSelected.setText(DateFormat.format("EEE, MMM d, yyyy", date));
-                /* builder1.setTitle("Select Program");
-                //get current user id
-                String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                //declare programs reference
-                programs = new ArrayList<>();
-                userPrograms = db.getReference("Users").child(userid).child("Programs");
-                userPrograms.addListenerForSingleValueEvent(programListener);
-
-                programList.setAdapter(programsAdapter);
-                builder1.setNegativeButton("Cancel", (d, w) ->{
-                    d.cancel();
-                });
-                builder1.show();
-                */
             }
             @Override
             public boolean onDateLongClicked(Calendar date, int position) {
+
                 return true;
             }
         });
-
-        //add program click listener
-/*
-        addProgram.setOnClickListener(v1 -> {
-            AlertDialog.Builder builder1 = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
-            builder1.setTitle("Select Program");
-            //get current user id
-            String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            //declare programs reference
-            programs = new ArrayList<>();
-            userPrograms = db.getReference("Users").child(userid).child("Programs");
-            userPrograms.addListenerForSingleValueEvent(programListener);
-            programsAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, programs);
-
-            programList.setAdapter(programsAdapter);
-            builder1.setNegativeButton("Cancel", (d, w) ->{
-                d.cancel();
-            });
-            builder1.show();
-        });
-
-        */
         return rootView;
     }
 

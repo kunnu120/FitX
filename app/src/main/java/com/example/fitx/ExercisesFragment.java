@@ -292,14 +292,6 @@ public class ExercisesFragment extends Fragment {
         });
 
 
-
-
-
-
-
-
-
-
         //add program click listener
         addProgram.setOnClickListener(v1 -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
