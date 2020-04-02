@@ -41,3 +41,4 @@
     - William Simmons, simzwill98@gmail.com
     - Brett Noltkamper, brettn@email.sc.edu
     - Everett Bishop, ebassman77@gmail.com
+    - Vishwajeet Singh, vs2@email.sc.edu

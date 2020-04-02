@@ -74,12 +74,15 @@
     <string name="clear">Clear</string>
     <string name="open_camera">Open Camera</string>
     <string name="profile_pic" />
-    <string name="recent_activity">Recent Activity:</string>
+    <string name="program">Current Program:</string>
     <string name="current_activity">Current Activity:</string>
     <string name="exercise">Exercise</string>
     <string name="weight">Weight</string>
+    <string name="home_weight">Weight:</string>
     <string name="sets">Sets</string>
+    <string name="home_sets">Sets:</string>
     <string name="reps">Reps</string>
+    <string name="home_reps">Reps:</string>
     <string name="comments">Comments</string>
     <string name="current_program">Current Program</string>
     <string name="current_program1">Current Program:</string>
@@ -90,4 +93,26 @@
     <string name="remove_exercise">Remove Exercise</string>
     <string name="remove_program">Remove Program</string>
     <string name="select_program">Select Program</string>
+    <string name="log">Log</string>
+    <string name="of_10_lb_plates"># of 10 lb plates</string>
+    <string name="of_25_lb_plates"># of 25 lb plates</string>
+    <string name="of_45_lb_plates"># of 45 lb plates</string>
+    <string name="of_5_lb_plates"># of 5 lb plates</string>
+    <string name="of_2_5_lb_plates"># of 2.5 lb plates</string>
+    <string name="total">Total:</string>
+    <string name="of_reps_completed"># of reps completed</string>
+    <string name="amount_of_weight_for_set">amount of weight for set</string>
+    <string name="program_name">Program Name</string>
+    <string name="programs">Programs</string>
+    <string name="select_date">Select Date</string>
+    <string name="program_comments">Program Comments</string>
+   
+    <string-array name="names" >
+        <item>M</item>
+        <item>F</item>
+        <item>Other</item>
+    </string-array>
+
+    <string name="exercise_progress">Exercise Progress</string>
+    <string name="result">Result</string>
 </resources>
