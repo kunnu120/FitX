@@ -2,6 +2,11 @@ package com.example.fitx;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -14,9 +19,11 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
+import android.view.View;
+import android.widget.Toast;
+
 //implements BottomNavigationView.OnNavigationItemSelectedListener
 public class HomeActivity extends AppCompatActivity {
-
 
     BottomNavigationView bottomNav;
     ViewPager2 viewPager;
@@ -24,12 +31,14 @@ public class HomeActivity extends AppCompatActivity {
     FirebaseAuth fAuth = FirebaseAuth.getInstance();
     private ArrayList<Fragment> fragments = new ArrayList<>();
     private FirebaseAuth.AuthStateListener authStateListener;
+    String BMIResult, calculation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
 
         //initializing view pager
         viewPager = findViewById(R.id.viewpager);
@@ -82,6 +91,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -93,6 +103,38 @@ public class HomeActivity extends AppCompatActivity {
         if (authStateListener != null) {
             fAuth.removeAuthStateListener(authStateListener);
         }
+    }
+
+    public void buttonClick(View v) {
+
+        EditText editTextHeight = (EditText) findViewById(R.id.user_height);
+        EditText editTextWeight = (EditText) findViewById(R.id.user_weight);
+        TextView textViewResult = (TextView) findViewById(R.id.userBMI);
+
+        double height = Double.parseDouble(editTextHeight.getText().toString());
+        double weight = Double.parseDouble(editTextWeight.getText().toString());
+
+        double BMI = (weight * 703 )/ (height * height);
+
+     //   textViewResult.setText(Double.toString(BMI));
+
+        if(BMI < 16) {
+            BMIResult = "Severely Under Weight";
+        } else if(BMI < 19.5) {
+            BMIResult = "Under Weight";
+        } else if(BMI >= 19.5 && BMI <= 24.9) {
+            BMIResult = "Normal Weight";
+        } else if(BMI >= 25 && BMI <=29.9) {
+            BMIResult = "Over Weight";
+        } else {
+            BMIResult = "Obese";
+        }
+
+        String BMI2 = String.valueOf(BMI);
+        BMI2 = String.format("%.2f", BMI);
+        calculation = BMI2 + "\n" + BMIResult;
+        textViewResult.setText(calculation);
+        //resulttext.setText(calculation);
     }
 
 
