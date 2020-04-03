@@ -76,13 +76,14 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
     private ValueEventListener goalListener = new ValueEventListener() {
         @Override
+        @SuppressWarnings("unchecked")
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             try {
                 goalsEnc.addAll((ArrayList<String>)dataSnapshot.getValue());
                 for (int i = 0; i < goalsEnc.size(); ++i) {
                     adapter.add(Security.decodeSaltCipher(Security.decB64(goalsEnc.get(i))));
                 }
-            } catch (NullPointerException e) {
+            } catch (Exception e) {
 
             }
         }
