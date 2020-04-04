@@ -10,13 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +41,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+
+import org.w3c.dom.Text;
+
+
 import java.util.ArrayList;
 import java.util.Objects;
 import java.lang.String;
@@ -45,7 +52,7 @@ import static android.app.Activity.RESULT_OK;
 
 
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -53,11 +60,14 @@ public class ProfileFragment extends Fragment {
     private Button btnupload;
     private ImageView img;
     private ProgressBar progressBar;
+
     private DatabaseReference ProfilePicUrlRef;
     private StorageReference storageRef;
     private ArrayList<String> goals;
     private DatabaseReference goalsRef;
     private ArrayAdapter<String> adapter;
+    TextView display_data ;
+
 
 
     private ValueEventListener goalListener = new ValueEventListener() {
@@ -83,8 +93,21 @@ public class ProfileFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_profile, null);
 
+      //  View v = inflater.inflate(R.layout.manual, container, false);
+
+        String [] values =
+                {"Male","Female","Other",};
+        Spinner spinner = (Spinner) v.findViewById(R.id.spinner1);
+        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, values);
+        myAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        spinner.setAdapter(myAdapter);
+
+
         img = v.findViewById(R.id.profile_pic);
         progressBar = v.findViewById(R.id.ventilator_progress);
+
+        //StorageReference imageRef = storageRef.child("1575623427796.jpg");
+
         storageRef = FirebaseStorage.getInstance().getReference("uploads");
 
         btnupload = v.findViewById(R.id.btnUpload);
@@ -139,6 +162,17 @@ public class ProfileFragment extends Fragment {
         return v;
     }
 
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String text = parent.getItemAtPosition(position).toString();
+        Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+//#################################### GOAL CODE ############################################
+
 
     private void openFileChooser() {
         Intent intent = new Intent();
@@ -184,6 +218,22 @@ public class ProfileFragment extends Fragment {
 
         builder.show();
     }
+
+
+    public void button2Clicked(View v) {
+
+        EditText editTextHeight = (EditText) getView().findViewById(R.id.user_height);
+        EditText editTextWeight = (EditText) getView().findViewById(R.id.user_weight);
+        TextView textViewResult = (TextView) getView().findViewById(R.id.userBMI);
+
+        double height = Double.parseDouble(editTextHeight.getText().toString());
+        double weight = Double.parseDouble(editTextWeight.getText().toString());
+
+        double BMI = weight / (height * height);
+
+        textViewResult.setText(Double.toString(BMI));
+    }
+
 
     //#########################GOAL CODE END ###########################################
 
@@ -244,11 +294,5 @@ public class ProfileFragment extends Fragment {
         }
 
     }
-
-
-
-
-
-
 
 }
