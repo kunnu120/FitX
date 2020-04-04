@@ -3,8 +3,11 @@ package com.example.fitx;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -30,6 +34,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class HomeFragment extends Fragment {
@@ -40,9 +46,9 @@ public class HomeFragment extends Fragment {
     private DatabaseReference currentProgram;
     private DatabaseReference exerciseList;
     private DatabaseReference selectProgram;
+    private SharedPreferences sharedPreference;
 
 
-    private ArrayList<String> programs;
     private ArrayList<String> exercises;
     private ArrayAdapter<String> programsAdapter;
     private ArrayAdapter<String> exercisesAdapter;
@@ -58,7 +64,10 @@ public class HomeFragment extends Fragment {
     private String loggingWeight;
 
     private int exerciseInfoIndex = 0;
-    private boolean wasCalled;
+    private double progress = 0;
+    private boolean exerciseCalled;
+    private boolean programCalled;
+    private double programProgress;
 
 
     private ValueEventListener programListener = new ValueEventListener() {
@@ -91,29 +100,30 @@ public class HomeFragment extends Fragment {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             exercises = new ArrayList<>();
-            if (exercisesAdapter != null) {
-                exercisesAdapter.clear();
-            }
 
-            int index = 0;
-            try {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    if (index == 0) {
-                        exercises.add(Objects.requireNonNull(ds.getValue()).toString());
-                    }
-                    index++;
-                    if (index == 5) {
-                        index = 0;
-                    }
+                if (exercisesAdapter != null) {
+                    exercisesAdapter.clear();
                 }
 
-                exercisesAdapter.addAll(exercises);
+                int index = 0;
+                try {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        if (index == 0) {
+                            exercises.add(Objects.requireNonNull(ds.getValue()).toString());
+                        }
+                        index++;
+                        if (index == 5) {
+                            index = 0;
+                        }
+                    }
 
-                setExerciseViews(dataSnapshot, exerciseInfoIndex);
+                    exercisesAdapter.addAll(exercises);
 
-            } catch (NullPointerException e) {
+                    setExerciseViews(dataSnapshot, exerciseInfoIndex);
 
-            }
+                } catch (NullPointerException e) {
+
+                }
 
         }
 
@@ -139,100 +149,150 @@ public class HomeFragment extends Fragment {
         weight = v.findViewById(R.id.weight);
         ImageView calculator_view = v.findViewById(R.id.calculator_view);
         TextView calculator_total = v.findViewById(R.id.plate_total);
-        TextView percent = v.findViewById(R.id.percent);
-        TextView progressLabel = v.findViewById(R.id.progressLabel);
 
-        ProgressBar exerciseProgress = v.findViewById(R.id.progressBar2);
+        TextView percent1 = v.findViewById(R.id.percent1);
+        //TextView percent2 = v.findViewById(R.id.percent2);
+        TextView progressLabel1 = v.findViewById(R.id.progressLabel1);
+        //TextView progressLabel2 = v.findViewById(R.id.progressLabel2);
+
+        ProgressBar exerciseProgress = v.findViewById(R.id.progressBar1);
+        //ProgressBar progProgress = v.findViewById(R.id.progressBar2);
+        //sharedPreference = PreferenceManager.getDefaultSharedPreferences(this.getActivity().getBaseContext());
 
 
         String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
-        logButton.setOnClickListener(v1 -> {
-            LayoutInflater li = LayoutInflater.from(getContext());
-            View log = li.inflate(R.layout.log_layout, null);
-            AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
-            builder.setTitle("Log Your Set");
+        ArrayList<String> programs = new ArrayList<>();
+        currentProgram = db.getReference("Users").child(userid).child("Programs");
+        currentProgram.addValueEventListener(programListener);
+        programsAdapter = new ArrayAdapter<>(Objects.requireNonNull(this.getActivity()), android.R.layout.simple_list_item_1, programs);
+        programView.setAdapter(programsAdapter);
 
-            EditText numReps = log.findViewById(R.id.num_reps);
-            EditText numWeight = log.findViewById(R.id.num_weight);
+            logButton.setOnClickListener(v1 -> {
+                LayoutInflater li = LayoutInflater.from(getContext());
+                View log = li.inflate(R.layout.log_layout, null);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
+                builder.setTitle("Log Your Set");
 
-            builder.setView(log);
+                EditText numReps = log.findViewById(R.id.num_reps);
+                EditText numWeight = log.findViewById(R.id.num_weight);
 
-
-            builder.setPositiveButton("Log", (d, w) -> {
-                double totalLogWeight = 0;
-                double totalProgWeight = 0;
-                double activityProgress = 0;
-                double oldProgress = 0;
-                double newProgress = 0;
-                int logReps = 0;
-                int logWeight = 0;
-
-                int progSets = Integer.parseInt(String.valueOf(loggingSets));
-
-                int progReps = Integer.parseInt(String.valueOf(loggingReps));
-
-                int progWeight = Integer.parseInt(String.valueOf(loggingWeight));
-
-                totalProgWeight = progSets * progReps * progWeight;
-                ((logInfo) this.getActivity().getApplication()).setTotalProgWeight(totalProgWeight);
-                totalProgWeight = ((logInfo) this.getActivity().getApplication()).getTotalProgWeight();
-                System.out.println("Total Prog Weight: " + totalProgWeight);
+                builder.setView(log);
 
 
-                logReps = Integer.parseInt(numReps.getText().toString());
-                logWeight = Integer.parseInt(numWeight.getText().toString());
+                builder.setPositiveButton("Log", (d, w) -> {
 
-                oldProgress = logReps * logWeight;
-                if (((logInfo) this.getActivity().getApplication()).getTotalLogWeight() == 0) {
-                    ((logInfo) this.getActivity().getApplication()).setTotalLogWeight(oldProgress);
-                    totalLogWeight = ((logInfo) this.getActivity().getApplication()).getTotalLogWeight();
-                    System.out.println("Total Log Weight: " + totalLogWeight);
-                } else {
-                    newProgress = ((logInfo) this.getActivity().getApplication()).getTotalLogWeight();
-                    totalLogWeight = newProgress + oldProgress;
-                    ((logInfo) this.getActivity().getApplication()).setTotalLogWeight(totalLogWeight);
-                    totalLogWeight = ((logInfo) this.getActivity().getApplication()).getTotalLogWeight();
-                    System.out.println("Total Log Weight: " + totalLogWeight);
-                }
+                    double totalLogWeight = 0;
+                    double totalProgWeight = 0;
+                    double activityProgress = 0;
+                    double oldProgress = 0;
+                    double newProgress = 0;
+                    int logReps = 0;
+                    int logWeight = 0;
+                    int progSets = 0;
+                    int progReps = 0;
+                    int progWeight = 0;
 
-                //return totalLogWeight;
+                    if(loggingSets == null || loggingReps == null || loggingWeight == null) {
+                        Toast.makeText(this.getActivity(), "Choose a program", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        progSets = Integer.parseInt(String.valueOf(loggingSets));
 
-                DecimalFormat df = new DecimalFormat("#.##");
-                activityProgress = totalLogWeight / totalProgWeight;
-                activityProgress = Double.parseDouble(df.format(activityProgress));
-                ((logInfo) this.getActivity().getApplication()).setActivityProgress((activityProgress));
-                activityProgress = ((logInfo) this.getActivity().getApplication()).getActivityProgress();
-                System.out.println("Activity Progress: " + activityProgress);
+                        progReps = Integer.parseInt(String.valueOf(loggingReps));
 
+                        progWeight = Integer.parseInt(String.valueOf(loggingWeight));
 
-                if (wasCalled = true) {
-                    double zero = 0;
-                    double hundred = 100.0;
-                    double progressBar = hundred * activityProgress;
-                    int progressPercent = (int) progressBar;
-                    percent.setText(progressPercent + "%");
+                        try {
+                            logReps = Integer.parseInt(numReps.getText().toString());
 
+                            logWeight = Integer.parseInt(numWeight.getText().toString());
+                        } catch (NumberFormatException e) {
 
-                    System.out.println("Progress bar percentage: " + progressPercent);
-                    if (progressBar <= 100) {
-                        exerciseProgress.setProgress(progressPercent);
-                        if (progressBar >= 100) {
-                            wasCalled = false;
-                            ((logInfo) this.getActivity().getApplication()).setTotalLogWeight(zero);
+                                Toast.makeText(this.getActivity(), "Enter your numbers", Toast.LENGTH_SHORT).show();
                         }
                     }
-                }
+
+
+                    totalProgWeight = progSets * progReps * progWeight;
+                    ((logInfo) this.getActivity().getApplication()).setTotalProgWeight(totalProgWeight);
+                    totalProgWeight = ((logInfo) this.getActivity().getApplication()).getTotalProgWeight();
+                    System.out.println("Total Prog Weight: " + totalProgWeight);
+
+
+
+
+                    oldProgress = logReps * logWeight;
+                    if (((logInfo) this.getActivity().getApplication()).getTotalLogWeight() == 0) {
+                        ((logInfo) this.getActivity().getApplication()).setTotalLogWeight(oldProgress);
+                        totalLogWeight = ((logInfo) this.getActivity().getApplication()).getTotalLogWeight();
+                        System.out.println("Total Log Weight: " + totalLogWeight);
+                    } else {
+                        newProgress = ((logInfo) this.getActivity().getApplication()).getTotalLogWeight();
+                        totalLogWeight = newProgress + oldProgress;
+                        ((logInfo) this.getActivity().getApplication()).setTotalLogWeight(totalLogWeight);
+                        totalLogWeight = ((logInfo) this.getActivity().getApplication()).getTotalLogWeight();
+                        System.out.println("Total Log Weight: " + totalLogWeight);
+                    }
+
+                    //return totalLogWeight;
+
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    activityProgress = totalLogWeight / totalProgWeight;
+                    activityProgress = Double.parseDouble(df.format(activityProgress));
+                    ((logInfo) this.getActivity().getApplication()).setActivityProgress((activityProgress));
+                    activityProgress = ((logInfo) this.getActivity().getApplication()).getActivityProgress();
+                    //sharedPreference.edit().putString("programWeight", String.valueOf(totalProgWeight));
+
+
+                    //sharedPreference.edit().putString("progress", String.valueOf(activityProgress/2)).apply();
+
+                    System.out.println("Activity Progress: " + activityProgress);
+                    /*
+                    String value = sharedPreference.getString("progress","");
+                    DecimalFormat df1 = new DecimalFormat(".##");
+                    double value1 = Double.parseDouble(df1.format(value));
+
+                    programProgress = value1;
+
+                    System.out.println("Program Progress : " + value1);
+                    //float count = exerciseView.getAdapter().getCount();
+                    double progress = programProgress;
+                    double progressFinal = progress*100;
+                    double progressFinal2 = progressFinal*10;
+                    int progressFinal3 = (int) progressFinal2;
+                    System.out.println(progress);
+                    //int progressPercent2 = (int) progress;
+                    System.out.println(progressFinal);
+                    percent2.setText(progressFinal + "%");
+                    progProgress.setProgress(progressFinal3);
+                    System.out.println(programProgress);
+                    */
+                    if (exerciseCalled = true) {
+                        double hundred = 100.0;
+                        double progressBar = hundred * activityProgress;
+                        int progressPercent = (int) progressBar;
+                        percent1.setText(progressPercent + "%");
+
+                        System.out.println("Progress bar percentage: " + progressPercent);
+                        if (progressBar <= 100) {
+                            exerciseProgress.setProgress(progressPercent);
+                        }
+                        if (progressBar > 100) {
+                                exerciseProgress.setProgress(100);
+                            }
+                    }
+                });
+
+
+                builder.setNegativeButton("Cancel", (d, w) -> {
+                    d.cancel();
+                });
+                builder.show();
+
+
             });
 
-
-            builder.setNegativeButton("Cancel", (d, w) -> {
-                d.cancel();
-            });
-            builder.show();
-
-
-        });
 
 
         calculator_view.setOnClickListener(v1 -> {
@@ -298,11 +358,11 @@ public class HomeFragment extends Fragment {
         });
 
 
-        programs = new ArrayList<>();
-        currentProgram = db.getReference("Users").child(userid).child("Programs");
-        currentProgram.addValueEventListener(programListener);
-        programsAdapter = new ArrayAdapter<>(Objects.requireNonNull(this.getActivity()), android.R.layout.simple_list_item_1, programs);
-        programView.setAdapter(programsAdapter);
+
+
+
+
+
         programView.setOnItemClickListener((p, view, pos, id) -> {
             exercises = new ArrayList<>();
 
@@ -313,7 +373,36 @@ public class HomeFragment extends Fragment {
             exerciseList.addValueEventListener(exerciseListener);
 
             exerciseView.setAdapter(exercisesAdapter);
+
+            ((logInfo) this.getActivity().getApplication()).setTotalLogWeight(0);
+            exerciseProgress.setProgress(0);
+            percent1.setText("0%");
+
+            //progressLabel2.setText(programsAdapter.getItem(pos) + " Progress");
+            //progProgress.setProgress(0);
+            //percent2.setText("0%");
+            programCalled = true;
+            //haredPreference.edit().putString("progress", String.valueOf(0)).apply();
+
         });
+
+        final Handler handler1 = new Handler();
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    programView.performItemClick(programView, 0, programView.getAdapter().getItemId(0));
+                } catch(NullPointerException e) {
+
+                }
+            }
+        }, 1500);
+
+
+
+
+
+
 
 
         exerciseView.setOnItemClickListener((p, view, pos, id) -> {
@@ -328,13 +417,30 @@ public class HomeFragment extends Fragment {
             exerciseView.setAdapter(exercisesAdapter);
             exerciseView.setSelection(pos);
 
-            wasCalled = true;
+            exerciseCalled = true;
             ((logInfo) this.getActivity().getApplication()).setTotalLogWeight(0);
             exerciseProgress.setProgress(0);
-            percent.setText("0%");
-            progressLabel.setText(exercisesAdapter.getItem(pos) + " Progress");
+            percent1.setText("0%");
+            progressLabel1.setText(exercisesAdapter.getItem(pos) + " Progress");
+
+
 
         });
+
+        final Handler handler2 = new Handler();
+        handler2.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    exerciseView.performItemClick(exerciseView, 0, exerciseView.getAdapter().getItemId(0));
+                }catch (NullPointerException e) {
+
+                }
+            }
+        }, 1600);
+
+
+
 
 
         logoutButton.setOnClickListener(v1 -> {
@@ -342,11 +448,10 @@ public class HomeFragment extends Fragment {
             startActivity(new Intent(getContext(), LoginActivity.class));
         });
 
-        //just change the fragment_dashboard
-        //with the fragment you want to inflate
-        //like if the class is HomeFragment it should have R.layout.home_fragment
-        //if it is DashboardFragment it should have R.layout.fragment_dashboard
+
         return v;
+
+
 
     }
 
