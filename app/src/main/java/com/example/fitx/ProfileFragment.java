@@ -70,7 +70,8 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
     private List<String> goalsEnc = new ArrayList<String>();
     private DatabaseReference goalsRef;
     private ArrayAdapter<String> adapter;
-    TextView display_data ;
+    private String userid;
+    TextView display_data;
 
 
 
@@ -119,8 +120,9 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         storageRef = FirebaseStorage.getInstance().getReference("uploads");
 
         btnupload = v.findViewById(R.id.btnUpload);
+        btnupload.setEnabled(false);
         ListView goalView = v.findViewById(R.id.goalList);
-        String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         ProfilePicUrlRef = db.getReference("Users").child(userid).child("ProfilePicURL");
 
 
@@ -143,9 +145,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         });
 
         img.setOnClickListener(v1 -> {
-
             openFileChooser();
-
         });
 
         btnupload.setOnClickListener(v12 -> {
@@ -259,8 +259,10 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
             uri = data.getData();
-            Picasso.get().load(uri).into(img);
+            //Picasso.get().load(uri).into(img);
+            Glide.with(getContext()).load(uri).into(img);
             ProfilePicUrlRef.setValue(uri.toString());
+            btnupload.setEnabled(true);
         }
     }
 
@@ -273,7 +275,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
     private void uploadFile() {
         if (img != null) {
-            StorageReference fileRef = storageRef.child(System.currentTimeMillis() + "." + getFileExtension(uri));
+            StorageReference fileRef = storageRef.child(userid + "." + getFileExtension(uri));
 
             fileRef.putFile(uri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

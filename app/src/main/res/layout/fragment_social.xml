@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,8 +11,47 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:text="Social"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
+    <ImageView
+        android:id="@+id/profile_pic"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="40dp"
+        android:background="@color/colorPrimary"
+        android:contentDescription="@string/profile_pic" />
+
+    <Button
+        android:id="@+id/btnUpload"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/textFieldLayout"
+        android:layout_toEndOf="@+id/profile_pic"
+        android:background="@drawable/exercise_db_button"
+        android:text="Upload" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textFieldLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/profile_pic"
+        android:layout_toEndOf="@+id/profile_pic">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textField"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Type your post..." />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/testimgView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="false"
+        android:background="@color/colorPrimary"
+        />
 </RelativeLayout>
