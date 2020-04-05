@@ -16,6 +16,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -32,14 +34,15 @@ public class HomeActivity extends AppCompatActivity {
     private ArrayList<Fragment> fragments = new ArrayList<>();
     private FirebaseAuth.AuthStateListener authStateListener;
     String BMIResult, calculation;
-
+    FirebaseDatabase db = FirebaseDatabase.getInstance();
+    DatabaseReference databaseReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        databaseReference = db.getReference();
         //initializing view pager
         viewPager = findViewById(R.id.viewpager);
 
@@ -107,13 +110,12 @@ public class HomeActivity extends AppCompatActivity {
 
     public void buttonClick(View v) {
 
-        EditText editTextHeight = (EditText) findViewById(R.id.user_height);
-        EditText editTextWeight = (EditText) findViewById(R.id.user_weight);
+        EditText editTextHeight = (EditText) findViewById(R.id.userHeight);
+        EditText editTextWeight = (EditText) findViewById(R.id.userWeight);
         TextView textViewResult = (TextView) findViewById(R.id.userBMI);
 
         double height = Double.parseDouble(editTextHeight.getText().toString());
         double weight = Double.parseDouble(editTextWeight.getText().toString());
-
         double BMI = (weight * 703 )/ (height * height);
 
      //   textViewResult.setText(Double.toString(BMI));

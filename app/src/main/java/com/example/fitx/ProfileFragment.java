@@ -96,7 +96,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
       //  View v = inflater.inflate(R.layout.manual, container, false);
 
         String [] values =
-                {"Male","Female","Other",};
+                {"Male","Female","Other"};
         Spinner spinner = (Spinner) v.findViewById(R.id.spinner1);
         ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, values);
         myAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
