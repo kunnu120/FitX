@@ -222,8 +222,8 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
     public void button2Clicked(View v) {
 
-        EditText editTextHeight = (EditText) getView().findViewById(R.id.userHeight);
-        EditText editTextWeight = (EditText) getView().findViewById(R.id.userWeight);
+        EditText editTextHeight = (EditText) getView().findViewById(R.id.user_height);
+        EditText editTextWeight = (EditText) getView().findViewById(R.id.user_weight);
         TextView textViewResult = (TextView) getView().findViewById(R.id.userBMI);
 
         double height = Double.parseDouble(editTextHeight.getText().toString());

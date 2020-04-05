@@ -12,11 +12,11 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="120dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="380dp"
+            android:text="Body Composition"
             android:textSize="20dp"
-            android:textStyle="bold"
-            android:text="Body Composition" />
+            android:textStyle="bold" />
     </FrameLayout>
 
     <TextView
@@ -95,8 +95,8 @@
         android:id="@+id/userHeight"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="420dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="410dp"
         android:ems="10"
         android:hint="Height(inch)"
         android:inputType="number" />
@@ -105,8 +105,8 @@
         android:id="@+id/userWeight"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="230dp"
-        android:layout_marginTop="420dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="460dp"
         android:ems="10"
         android:hint="Weight(lbs)"
         android:inputType="number" />
@@ -115,29 +115,29 @@
         android:id="@+id/user_age"
         android:layout_width="50dp"
         android:layout_height="40dp"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="470dp"
+        android:layout_marginStart="135dp"
+        android:layout_marginTop="415dp"
         android:ems="10"
         android:hint="Age"
         android:inputType="number" />
 
+
     <Button
         android:id="@+id/button2"
-        android:layout_width="50dip"
-        android:layout_height="50dip"
-        android:layout_marginStart="160dp"
-        android:layout_marginTop="500dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="450dp"
+        android:layout_marginStart="240dp"
         android:background="@drawable/bmi"
-        android:onClick="buttonClick"/>
-
-
+        android:onClick="buttonClick" />
 
     <Spinner
         android:id="@+id/spinner1"
-        android:layout_width="120dp"
+        android:layout_width="100dp"
         android:layout_height="40dp"
-        android:layout_marginStart="240dp"
-        android:layout_marginTop="470dp" />
+        android:hint="Gender2"
+        android:layout_marginStart="135dp"
+        android:layout_marginTop="460dp" />
 
     <TextView
         android:id="@+id/userBMI"
@@ -150,6 +150,7 @@
 
 
     />
+
 
 
 </RelativeLayout>
