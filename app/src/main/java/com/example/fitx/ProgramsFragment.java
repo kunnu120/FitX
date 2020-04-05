@@ -2,6 +2,7 @@ package com.example.fitx;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -54,25 +55,50 @@ public class ProgramsFragment extends Fragment{
     private ListView dateListPrint;
     private ListView programList;
 
-    //array lists for programs and exercises
+    //array lists for programs and its adapter
     private ArrayList<String> programs;
     private ArrayAdapter<String> programsAdapter;
 
     //array lists for dates
-    //private ArrayList<Calendar> datesClicked;
-    //private ArrayAdapter<Calendar> datesClickedAdapter;
+    private ArrayList<String> datesClicked;
+    private ArrayAdapter<String> datesClickedAdapter;
+
 
     //initialize and declare database reference
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
     private DatabaseReference currentProgram;
+    private DatabaseReference currentDate;
     //initialized reference for Programs
     private DatabaseReference selectProgram;
 
-    @Override
+    /*@Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
     }
 
+
+    private ValueEventListener dateListener = new ValueEventListener(){
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            if (datesClickedAdapter != null) {
+                datesClickedAdapter.clear();
+            }
+            try {
+
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    datesClickedAdapter.addAll(ds.getKey());
+                }
+
+
+            } catch (NullPointerException e) {
+
+            }
+        }
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError){
+
+        }
+    };*/
 
     private ValueEventListener programListener = new ValueEventListener(){
         @Override
@@ -103,10 +129,9 @@ public class ProgramsFragment extends Fragment{
 
         View rootView = inflater.inflate(R.layout.fragment_programs, container, false);
         dateSelected = rootView.findViewById(R.id.dateBox);
-        //dateScroll = rootView.findViewById(R.id.dateScroll);
-        programList= rootView.findViewById(R.id.programList);
+        dateListPrint = rootView.findViewById(R.id.dateOutputList);
+        programList= rootView.findViewById(R.id.LT);
         title = rootView.findViewById(R.id.title);
-        //programsScroll = rootView.findViewById(R.id.programScroll);
         String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         //initializing add program to selected date button
         //Button addProgram = rootView.findViewById(R.id.addProgramToDate);
@@ -120,6 +145,15 @@ public class ProgramsFragment extends Fragment{
         endDate.add(Calendar.MONTH, 1);
 
         //programsAdapter = new RecyclerView.Adapter<ArrayList<String>>(this.getContext(), android.R.layout.simple_list_item_1, programs);
+        if (programs == null){
+        programs = new ArrayList<>();
+        currentProgram = db.getReference("Users").child(userid).child("Programs");
+        currentProgram.addValueEventListener(programListener);
+        programsAdapter = new ArrayAdapter<>(Objects.requireNonNull(this.getActivity()), android.R.layout.simple_list_item_1, programs);
+        programList.setAdapter(programsAdapter);
+        programList.setOnItemClickListener((p, view, pos, id) -> {
+            selectProgram = currentProgram.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
+        });}
 
         horizontalCalendar = new HorizontalCalendar.Builder(rootView, R.id.calendarView)
                 .range(startDate, endDate)
@@ -134,7 +168,6 @@ public class ProgramsFragment extends Fragment{
                     .textColor(Color.LTGRAY, Color.WHITE)
                 .end()
                 .build();
-
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar date, int position) {
@@ -142,20 +175,17 @@ public class ProgramsFragment extends Fragment{
             }
             @Override
             public boolean onDateLongClicked(Calendar date, int position) {
-
+                /*datesClicked = new ArrayList<>();
+                currentDate = db.getReference("Users").child(userid).child("Dates");
+                currentDate.addValueEventListener(dateListener);
+                datesClickedAdapter = new ArrayAdapter<>(Objects.requireNonNull(this.onDateSelected(Calendar date,int position);, android.R.layout.simple_list_item_1, datesClicked);)
+                datesClicked.setAdapter(datesClickedAdapter);
+                programList.setOnItemClickListener((p, view, pos, id) -> {
+                    selectProgram = currentProgram.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
+                */
                 return true;
             }
         });
-        programs = new ArrayList<>();
-        currentProgram = db.getReference("Users").child(userid).child("Programs");
-        currentProgram.addValueEventListener(programListener);
-        programsAdapter = new ArrayAdapter<>(Objects.requireNonNull(this.getActivity()), android.R.layout.simple_list_item_1, programs);
-        programList.setAdapter(programsAdapter);
-        programList.setOnItemClickListener((p, view, pos, id) -> {
-            selectProgram = currentProgram.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
-        });
-
         return rootView;
     }
-
 }
