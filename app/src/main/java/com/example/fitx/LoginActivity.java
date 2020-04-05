@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth fAuth;
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
     private DatabaseReference saltRef;
-    //private DatabaseReference emailRef;
+    private DatabaseReference emailRef;
     //private DatabaseReference passwordRef;
     //private DatabaseReference UIDRef;
 
@@ -109,10 +109,10 @@ public class LoginActivity extends AppCompatActivity {
                         if (user != null) {
                             //saves email and password in database after signup
                             String uid = Objects.requireNonNull(user.getUid());
-                            //emailRef = db.getReference("Users").child(userid).child("Email");
+                            emailRef = db.getReference("Users").child(uid).child("Email");
+                            emailRef.setValue(email);
                             //passwordRef = db.getReference("Users").child(userid).child("Password");
                             //UIDRef = db.getReference("Users").child(userid).child("UID");
-                            //emailRef.setValue(email);
                             //passwordRef.setValue(password);
                             //UIDRef.setValue(userid);
                             saltRef = db.getReference("Users").child(uid).child("PrivateSalt");
@@ -151,6 +151,8 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null) {
                             String uid = Objects.requireNonNull(user.getUid());
+                            emailRef = db.getReference("Users").child(uid).child("Email");
+                            emailRef.setValue(email);
                             saltRef = db.getReference("Users").child(uid).child("PrivateSalt");
                             saltRef.addListenerForSingleValueEvent(saltListener(password,uid));
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
@@ -235,6 +237,8 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null) {
                             String uid = fAuth.getCurrentUser().getUid();
+                            emailRef = db.getReference("Users").child(uid).child("Email");
+                            emailRef.setValue(acct.getId());
                             saltRef = db.getReference("Users").child(uid).child("PrivateSalt");
                             saltRef.addListenerForSingleValueEvent(saltListener(acct.getId(),uid));
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
@@ -257,13 +261,13 @@ public class LoginActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
         if (account != null) {
             emailField.setText(getString(R.string.google_status_fmt, account.getEmail()));
-            passwordField.setText(getString(R.string.firebase_status_fmt, account.getUid()));
+            //passwordField.setText(getString(R.string.firebase_status_fmt, account.getUid()));
 
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.signOutButton).setVisibility(View.VISIBLE);
         } else {
             emailField.setText("");
-            passwordField.setText(null);
+           // passwordField.setText(null);
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
         }

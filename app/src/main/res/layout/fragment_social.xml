@@ -7,6 +7,7 @@
 
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -15,20 +16,28 @@
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
     <ImageView
-        android:id="@+id/profile_pic"
+        android:id="@+id/postpic"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="40dp"
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="20dp"
         android:background="@color/colorPrimary"
         android:contentDescription="@string/profile_pic" />
 
+    <ProgressBar
+        android:id="@+id/ventilator_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/postpic"
+        android:progress="50" />
+
     <Button
-        android:id="@+id/btnUpload"
+        android:id="@+id/btnPostUpload"
         android:layout_width="100dp"
         android:layout_height="40dp"
         android:layout_below="@+id/textFieldLayout"
-        android:layout_toEndOf="@+id/profile_pic"
+        android:layout_toEndOf="@+id/postpic"
         android:background="@drawable/exercise_db_button"
         android:text="Upload" />
 
@@ -36,22 +45,15 @@
         android:id="@+id/textFieldLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/profile_pic"
-        android:layout_toEndOf="@+id/profile_pic">
+        android:layout_marginRight="20dp"
+        android:layout_alignTop="@+id/postpic"
+        android:layout_toEndOf="@+id/postpic">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textField"
+            android:id="@+id/postTextField"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="Type your post..." />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <ImageView
-        android:id="@+id/testimgView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_centerInParent="true"
-        android:layout_centerVertical="false"
-        android:background="@color/colorPrimary"
-        />
 </RelativeLayout>

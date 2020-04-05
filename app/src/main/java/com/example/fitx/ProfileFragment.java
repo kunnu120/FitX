@@ -102,7 +102,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_profile, null);
 
-      //  View v = inflater.inflate(R.layout.manual, container, false);
+        //  View v = inflater.inflate(R.layout.manual, container, false);
 
         String [] values =
                 {"Male","Female","Other",};
@@ -114,10 +114,11 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
         img = v.findViewById(R.id.profile_pic);
         progressBar = v.findViewById(R.id.ventilator_progress);
+        progressBar.setVisibility(View.INVISIBLE);
 
         //StorageReference imageRef = storageRef.child("1575623427796.jpg");
 
-        storageRef = FirebaseStorage.getInstance().getReference("uploads");
+        storageRef = FirebaseStorage.getInstance().getReference("profilepics");
 
         btnupload = v.findViewById(R.id.btnUpload);
         btnupload.setEnabled(false);
@@ -151,7 +152,6 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         btnupload.setOnClickListener(v12 -> {
             uploadFile();
         });
-
 
         goals = new ArrayList<>();
 
@@ -266,7 +266,6 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         }
     }
 
-
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getActivity().getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
@@ -276,7 +275,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
     private void uploadFile() {
         if (img != null) {
             StorageReference fileRef = storageRef.child(userid + "." + getFileExtension(uri));
-
+            progressBar.setVisibility(View.VISIBLE);
             fileRef.putFile(uri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -285,7 +284,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    progressBar.setProgress(0);
+                                    progressBar.setVisibility(View.INVISIBLE);
                                 }
                             }, 5000);
 
