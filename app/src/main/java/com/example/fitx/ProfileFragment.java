@@ -82,7 +82,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
             try {
                 goalsEnc.addAll((ArrayList<String>)dataSnapshot.getValue());
                 for (int i = 0; i < goalsEnc.size(); ++i) {
-                    adapter.add(Security.decodeSaltCipher(Security.decB64(goalsEnc.get(i))));
+                    adapter.add(Security.decode(goalsEnc.get(i)));
                 }
             } catch (Exception e) {
 
@@ -201,9 +201,8 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
             String s = input.getText().toString();
             adapter.remove(adapter.getItem(pos));
             adapter.insert(s,pos);
-            goalsEnc.set(pos,Security.encB64(Security.generateSaltCipher(s)));
+            goalsEnc.set(pos,Security.encode(s));
             goalsRef.setValue(goalsEnc);
-
         });
         builder.setNegativeButton("Delete", (d,w) -> {
             adapter.remove(adapter.getItem(pos));
@@ -224,7 +223,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         builder.setPositiveButton("OK", (d, w) -> {
             String s = input.getText().toString();
             adapter.add(s);
-            goalsEnc.add(Base64.encodeToString(Security.generateSaltCipher(s),Base64.DEFAULT));
+            goalsEnc.add(Security.encode(s));
             goalsRef.setValue(goalsEnc);
         });
         builder.setNegativeButton("Cancel", (d, w) -> {

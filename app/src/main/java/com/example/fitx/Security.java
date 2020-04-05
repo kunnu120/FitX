@@ -99,4 +99,13 @@ public class Security extends Application {
         System.arraycopy(data,SALT_LENGTH,cipher,0,cipherLength);
         return decryptData(cipher,salt);
     }
+
+    public static String decode(String s) {
+        return decodeSaltCipher(decB64(s));
+    }
+
+    public static String encode(String s) {
+        return encB64(Security.generateSaltCipher(s));
+    }
+
 }
