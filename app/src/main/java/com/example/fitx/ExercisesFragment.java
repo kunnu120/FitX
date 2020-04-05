@@ -324,6 +324,7 @@ public class ExercisesFragment extends Fragment {
 
                FF_currentProgram = userFullfillment.child(currProgram);
                FF_currentProgram_exercises = FF_currentProgram.child("Exercises");
+               addExercise.performClick();
 
             });
             builder.setNegativeButton("Cancel", (d, w) ->{
@@ -341,6 +342,7 @@ public class ExercisesFragment extends Fragment {
             //////////////////////////////////
 
             builder.show();
+
         });
 
         //add exercise click listener
