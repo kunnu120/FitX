@@ -52,16 +52,22 @@ public class ProgramsFragment extends Fragment{
     private HorizontalCalendar horizontalCalendar;
     private TextView dateSelected;
     private TextView title;
-    private ListView dateListPrint;
+    private TextView dateToProgramText;
     private ListView programList;
+    private String programText;
+    private String dateClicked;
 
     //array lists for programs and its adapter
     private ArrayList<String> programs;
     private ArrayAdapter<String> programsAdapter;
 
+    //array list for the combination of a date to a program
+    private ArrayList<String> dTPL;
+    private ArrayAdapter<String> dTPLAdapter;
+
     //array lists for dates
-    private ArrayList<String> datesClicked;
-    private ArrayAdapter<String> datesClickedAdapter;
+    //private ArrayList<String> datesClicked;
+    //private ArrayAdapter<String> datesClickedAdapter;
 
 
     //initialize and declare database reference
@@ -70,23 +76,22 @@ public class ProgramsFragment extends Fragment{
     private DatabaseReference currentDate;
     //initialized reference for Programs
     private DatabaseReference selectProgram;
+    private DatabaseReference programAndDate;
 
     /*@Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-    }
-
-
-    private ValueEventListener dateListener = new ValueEventListener(){
+    }*/
+    private ValueEventListener dTPListener = new ValueEventListener(){
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            if (datesClickedAdapter != null) {
-                datesClickedAdapter.clear();
+            if (dTPLAdapter != null) {
+                dTPLAdapter.clear();
             }
             try {
 
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    datesClickedAdapter.addAll(ds.getKey());
+                    dTPLAdapter.addAll(ds.getKey());
                 }
 
 
@@ -98,8 +103,7 @@ public class ProgramsFragment extends Fragment{
         public void onCancelled(@NonNull DatabaseError databaseError){
 
         }
-    };*/
-
+    };
     private ValueEventListener programListener = new ValueEventListener(){
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -122,14 +126,13 @@ public class ProgramsFragment extends Fragment{
 
         }
     };
-
     @NonNull
     @Override
     public View onCreateView(LayoutInflater inflater, @NonNull ViewGroup container, @NonNull Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_programs, container, false);
         dateSelected = rootView.findViewById(R.id.dateBox);
-        dateListPrint = rootView.findViewById(R.id.dateOutputList);
+        dateToProgramText = rootView.findViewById(R.id.dateToProgram);
         programList= rootView.findViewById(R.id.LT);
         title = rootView.findViewById(R.id.title);
         String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
@@ -153,8 +156,17 @@ public class ProgramsFragment extends Fragment{
         programList.setAdapter(programsAdapter);
         programList.setOnItemClickListener((p, view, pos, id) -> {
             selectProgram = currentProgram.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
+            programText = selectProgram.toString();
         });}
 
+        /*dTPL = new ArrayList<>();
+        currentDate= db.getReference("Users").child(userid).child("Program Dates");
+        currentDate.addValueEventListener(dTPListener);
+        dTPLAdapter = new ArrayAdapter<>(Objects.requireNonNull(this.getActivity()), android.R.layout.simple_list_item_1, dTPL);
+        dateToProgramList.setAdapter(dTPLAdapter);
+        dateToProgramList.setOnItemClickListener((p, view, pos, id) -> {
+            programAndDate = currentDate.child(Objects.requireNonNull(dTPLAdapter.getItem(pos)));
+        });*/
         horizontalCalendar = new HorizontalCalendar.Builder(rootView, R.id.calendarView)
                 .range(startDate, endDate)
                 .datesNumberOnScreen(5)
@@ -172,6 +184,9 @@ public class ProgramsFragment extends Fragment{
             @Override
             public void onDateSelected(Calendar date, int position) {
                 dateSelected.setText(DateFormat.format("EEE, MMM d, yyyy", date));
+                if(dateToProgramText != null) {
+                    dateToProgramText.setText(dateSelected.toString().concat(":").concat(programText));
+                }
             }
             @Override
             public boolean onDateLongClicked(Calendar date, int position) {
