@@ -1,5 +1,6 @@
 package com.example.fitx;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -50,8 +51,6 @@ public class ProgramsFragment extends Fragment{
     private HorizontalCalendar horizontalCalendar;
     private TextView dateSelected;
     private TextView title;
-    private TextView programsScroll;
-    private ScrollView dateScroll;
     private ListView dateListPrint;
     private ListView programList;
 
@@ -65,9 +64,14 @@ public class ProgramsFragment extends Fragment{
 
     //initialize and declare database reference
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
+    private DatabaseReference currentProgram;
     //initialized reference for Programs
-    private DatabaseReference userPrograms;
+    private DatabaseReference selectProgram;
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
 
 
     private ValueEventListener programListener = new ValueEventListener(){
@@ -103,7 +107,7 @@ public class ProgramsFragment extends Fragment{
         programList= rootView.findViewById(R.id.programList);
         title = rootView.findViewById(R.id.title);
         //programsScroll = rootView.findViewById(R.id.programScroll);
-
+        String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         //initializing add program to selected date button
         //Button addProgram = rootView.findViewById(R.id.addProgramToDate);
 
@@ -142,6 +146,15 @@ public class ProgramsFragment extends Fragment{
                 return true;
             }
         });
+        programs = new ArrayList<>();
+        currentProgram = db.getReference("Users").child(userid).child("Programs");
+        currentProgram.addValueEventListener(programListener);
+        programsAdapter = new ArrayAdapter<>(Objects.requireNonNull(this.getActivity()), android.R.layout.simple_list_item_1, programs);
+        programList.setAdapter(programsAdapter);
+        programList.setOnItemClickListener((p, view, pos, id) -> {
+            selectProgram = currentProgram.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
+        });
+
         return rootView;
     }
 
