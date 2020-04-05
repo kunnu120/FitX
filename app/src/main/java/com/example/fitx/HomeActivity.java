@@ -139,13 +139,26 @@ public class HomeActivity extends AppCompatActivity {
 
     public void buttonClick(View v) {
 
+
         editTextHeight = (EditText) findViewById(R.id.userHeight);
         EditText editTextWeight = (EditText) findViewById(R.id.userWeight);
         TextView textViewResult = (TextView) findViewById(R.id.userBMI);
         EditText editTextAge = (EditText) findViewById(R.id.user_age);
+        double height = 0.0;
+        double weight = 0.0;
+        if( !editTextHeight.getText().toString().equals("") && editTextHeight.getText().toString().length() > 0 )
+        {
+            // Get String
+            height = Double.parseDouble(editTextHeight.getText().toString());
+        }
 
-        double height = Double.parseDouble(editTextHeight.getText().toString());
-        double weight = Double.parseDouble(editTextWeight.getText().toString());
+        if( !editTextWeight.getText().toString().equals("") && editTextWeight.getText().toString().length() > 0 )
+        {
+            // Get String
+            weight = Double.parseDouble(editTextWeight.getText().toString());
+        }
+
+        //double weight = Double.parseDouble(editTextWeight.getText().toString());
         double BMI = (weight * 703 )/ (height * height);
 
         dataField = findViewById(R.id.userHeight);
@@ -181,7 +194,10 @@ public class HomeActivity extends AppCompatActivity {
         }
      //   textViewResult.setText(Double.toString(BMI));
 
-        if(BMI < 16) {
+        if(Double.isNaN(BMI)) {
+            BMIResult = "Can't determine";
+        }
+        else if(BMI < 16) {
             BMIResult = "Severely Under Weight";
         } else if(BMI < 19.5) {
             BMIResult = "Under Weight";
