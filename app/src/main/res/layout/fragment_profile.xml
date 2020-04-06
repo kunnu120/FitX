@@ -126,8 +126,8 @@
         android:id="@+id/button2"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="450dp"
         android:layout_marginStart="240dp"
+        android:layout_marginTop="450dp"
         android:background="@drawable/bmi"
         android:onClick="buttonClick" />
 
