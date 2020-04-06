@@ -139,15 +139,16 @@
         android:layout_marginStart="135dp"
         android:layout_marginTop="460dp" />
 
+
     <TextView
         android:id="@+id/userBMI"
         android:layout_width="200dp"
         android:layout_height="53dp"
+        android:layout_below="@+id/userWeight"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="555dp"
+        android:layout_marginTop="11dp"
         android:text="Result"
         android:textSize="20dp" />
-
 
     <Button
         android:id="@+id/button3"
