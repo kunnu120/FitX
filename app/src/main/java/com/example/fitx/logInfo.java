@@ -6,9 +6,10 @@ public class logInfo extends Application {
     private double totalLogWeight;
     private double totalProgWeight;
     private double activityProgress;
-    private double oldProgress;
-    private double newProgress;
-    private int logWeight;
+    private double oldProgWeight;
+    private double newProgWeight;
+    private double progLogWeight;
+    private double oldLogWeight;
 
 
     public logInfo() {
@@ -39,27 +40,29 @@ public class logInfo extends Application {
         this.activityProgress = activityProgress;
     }
 
-    public double getOldProgress() {
-        return oldProgress;
+    public double getOldProgWeight() {
+        return oldProgWeight;
     }
 
-    public void setOldProgress(double oldProgress) {
-        this.oldProgress = oldProgress;
+    public void setOldProgWeight(double oldProgWeight) {
+        this.oldProgWeight = oldProgWeight;
     }
 
-    public double getNewProgress() {
-        return newProgress;
+
+    public void setNewProgWeight(double newProgWeight) {
+        this.newProgWeight = newProgWeight;
     }
 
-    public void setNewProgress(double newProgress) {
-        this.newProgress = newProgress;
+    public double getProgLogWeight() {
+        return progLogWeight;
     }
 
-    public int getLogWeight() {
-        return logWeight;
+    public void setProgLogWeight(double progLogWeight) {
+        this.progLogWeight = progLogWeight;
     }
 
-    public void setLogWeight(int logWeight) {
-        this.logWeight = logWeight;
-    }
+    public double getOldLogWeight() {return oldLogWeight;}
+
+    public void setOldLogWeight(double oldLogWeight) {this.oldLogWeight = oldLogWeight;}
+
 }

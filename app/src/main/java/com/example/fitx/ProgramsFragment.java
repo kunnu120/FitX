@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 //import java.text.DateFormat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -39,6 +40,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+
 
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.model.CalendarEvent;
@@ -152,8 +154,10 @@ public class ProgramsFragment extends Fragment{
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError){
 
+
         }
     };
+
     @NonNull
     @Override
     public View onCreateView(LayoutInflater inflater, @NonNull ViewGroup container, @NonNull Bundle savedInstanceState) {
@@ -173,6 +177,9 @@ public class ProgramsFragment extends Fragment{
         /* ends after 1 month from now */
         Calendar endDate = Calendar.getInstance();
         endDate.add(Calendar.MONTH, 1);
+        /*
+
+*/
 
         comments = new ArrayList<>();
         currentComment = db.getReference("Users").child(userid).child("Comments");

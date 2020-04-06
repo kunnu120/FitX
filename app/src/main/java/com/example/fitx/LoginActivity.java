@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,8 +24,11 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
@@ -39,7 +43,8 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInClient gsiClient;
     private FirebaseAuth fAuth;
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
-    //private DatabaseReference emailRef;
+    private DatabaseReference saltRef;
+    private DatabaseReference emailRef;
     //private DatabaseReference passwordRef;
     //private DatabaseReference UIDRef;
 
@@ -103,13 +108,15 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null) {
                             //saves email and password in database after signup
-                            //String userid = Objects.requireNonNull(user.getUid());
-                            //emailRef = db.getReference("Users").child(userid).child("Email");
+                            String uid = Objects.requireNonNull(user.getUid());
+                            emailRef = db.getReference("Users").child(uid).child("Email");
+                            emailRef.setValue(email);
                             //passwordRef = db.getReference("Users").child(userid).child("Password");
                             //UIDRef = db.getReference("Users").child(userid).child("UID");
-                            //emailRef.setValue(email);
                             //passwordRef.setValue(password);
                             //UIDRef.setValue(userid);
+                            saltRef = db.getReference("Users").child(uid).child("PrivateSalt");
+                            saltRef.addListenerForSingleValueEvent(saltListener(password,uid));
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             updateUI(user);
                         }
@@ -143,6 +150,11 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "signInWithEmail:success");
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null) {
+                            String uid = Objects.requireNonNull(user.getUid());
+                            emailRef = db.getReference("Users").child(uid).child("Email");
+                            emailRef.setValue(email);
+                            saltRef = db.getReference("Users").child(uid).child("PrivateSalt");
+                            saltRef.addListenerForSingleValueEvent(saltListener(password,uid));
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             updateUI(user);
                         }
@@ -216,7 +228,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void authThruGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         fAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
@@ -225,6 +236,11 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "signInWithCredential:success");
                         FirebaseUser user = fAuth.getCurrentUser();
                         if (user != null) {
+                            String uid = fAuth.getCurrentUser().getUid();
+                            emailRef = db.getReference("Users").child(uid).child("Email");
+                            emailRef.setValue(acct.getId());
+                            saltRef = db.getReference("Users").child(uid).child("PrivateSalt");
+                            saltRef.addListenerForSingleValueEvent(saltListener(acct.getId(),uid));
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             //} else {
                             // updateUI(null);
@@ -245,16 +261,36 @@ public class LoginActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
         if (account != null) {
             emailField.setText(getString(R.string.google_status_fmt, account.getEmail()));
-            passwordField.setText(getString(R.string.firebase_status_fmt, account.getUid()));
+            //passwordField.setText(getString(R.string.firebase_status_fmt, account.getUid()));
 
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.signOutButton).setVisibility(View.VISIBLE);
         } else {
             emailField.setText("");
-            passwordField.setText(null);
+           // passwordField.setText(null);
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
         }
+    }
+
+    private ValueEventListener saltListener(String key, String uid) {
+        return new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                byte[] salt;
+                if (dataSnapshot.exists()) {
+                    salt = Security.decB64(dataSnapshot.getValue(String.class));
+                } else {
+                    saltRef = db.getReference("Users").child(uid).child("PrivateSalt");
+                    salt = Security.generateRandomSalt();
+                    saltRef.setValue(Security.encB64(salt));
+                }
+                Security.generateKey(salt,key);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        };
     }
 
 }
