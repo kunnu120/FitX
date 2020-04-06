@@ -54,6 +54,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addProgramToDate" />
 
+
     <Button
         android:id="@+id/addProgramToDate"
         android:layout_width="151dp"
@@ -63,6 +64,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dateBox" />
+
 
     <ListView
         android:id="@+id/LT"

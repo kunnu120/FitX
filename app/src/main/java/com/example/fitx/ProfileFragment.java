@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -46,6 +48,7 @@ import org.w3c.dom.Text;
 
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.lang.String;
 import static android.app.Activity.RESULT_OK;
@@ -63,19 +66,25 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
     private DatabaseReference ProfilePicUrlRef;
     private StorageReference storageRef;
-    private ArrayList<String> goals;
+    private List<String> goals;
+    private List<String> goalsEnc = new ArrayList<String>();
     private DatabaseReference goalsRef;
     private ArrayAdapter<String> adapter;
-    TextView display_data ;
+    private String userid;
+    TextView display_data;
 
 
 
     private ValueEventListener goalListener = new ValueEventListener() {
         @Override
+        @SuppressWarnings("unchecked")
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             try {
-                adapter.addAll((ArrayList<String>) dataSnapshot.getValue());
-            } catch (NullPointerException e) {
+                goalsEnc.addAll((ArrayList<String>)dataSnapshot.getValue());
+                for (int i = 0; i < goalsEnc.size(); ++i) {
+                    adapter.add(Security.decode(goalsEnc.get(i)));
+                }
+            } catch (Exception e) {
 
             }
         }
@@ -93,7 +102,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_profile, null);
 
-      //  View v = inflater.inflate(R.layout.manual, container, false);
+        //  View v = inflater.inflate(R.layout.manual, container, false);
 
         String [] values =
                 {"Male","Female","Other"};
@@ -105,14 +114,16 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
         img = v.findViewById(R.id.profile_pic);
         progressBar = v.findViewById(R.id.ventilator_progress);
+        progressBar.setVisibility(View.INVISIBLE);
 
         //StorageReference imageRef = storageRef.child("1575623427796.jpg");
 
-        storageRef = FirebaseStorage.getInstance().getReference("uploads");
+        storageRef = FirebaseStorage.getInstance().getReference("profilepics");
 
         btnupload = v.findViewById(R.id.btnUpload);
+        btnupload.setEnabled(false);
         ListView goalView = v.findViewById(R.id.goalList);
-        String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         ProfilePicUrlRef = db.getReference("Users").child(userid).child("ProfilePicURL");
 
 
@@ -135,18 +146,16 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         });
 
         img.setOnClickListener(v1 -> {
-
             openFileChooser();
-
         });
 
         btnupload.setOnClickListener(v12 -> {
             uploadFile();
         });
 
-
         goals = new ArrayList<>();
-        goalsRef = db.getReference("Users").child(userid).child("Goals");
+
+        goalsRef = db.getReference("Users").child(userid).child("GoalsEnc");
         goalsRef.addListenerForSingleValueEvent(goalListener);
         adapter = new ArrayAdapter<>(
                 this.getActivity(), android.R.layout.simple_list_item_1, goals);
@@ -189,13 +198,16 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         input.setText(adapter.getItem(pos), TextView.BufferType.EDITABLE);
         builder.setView(input);
         builder.setPositiveButton("Edit", (d,w) -> {
+            String s = input.getText().toString();
             adapter.remove(adapter.getItem(pos));
-            adapter.insert(input.getText().toString(),pos);
-            goalsRef.setValue(goals);
+            adapter.insert(s,pos);
+            goalsEnc.set(pos,Security.encode(s));
+            goalsRef.setValue(goalsEnc);
         });
         builder.setNegativeButton("Delete", (d,w) -> {
             adapter.remove(adapter.getItem(pos));
-            goalsRef.setValue(goals);
+            goalsEnc.remove(pos);
+            goalsRef.setValue(goalsEnc);
             d.cancel();
         });
 
@@ -209,8 +221,10 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
         builder.setPositiveButton("OK", (d, w) -> {
-            adapter.add(input.getText().toString());
-            goalsRef.setValue(goals);
+            String s = input.getText().toString();
+            adapter.add(s);
+            goalsEnc.add(Security.encode(s));
+            goalsRef.setValue(goalsEnc);
         });
         builder.setNegativeButton("Cancel", (d, w) -> {
             d.cancel();
@@ -244,11 +258,12 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
             uri = data.getData();
-            Picasso.get().load(uri).into(img);
+            //Picasso.get().load(uri).into(img);
+            Glide.with(getContext()).load(uri).into(img);
             ProfilePicUrlRef.setValue(uri.toString());
+            btnupload.setEnabled(true);
         }
     }
-
 
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getActivity().getContentResolver();
@@ -258,8 +273,8 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
     private void uploadFile() {
         if (img != null) {
-            StorageReference fileRef = storageRef.child(System.currentTimeMillis() + "." + getFileExtension(uri));
-
+            StorageReference fileRef = storageRef.child(userid + "." + getFileExtension(uri));
+            progressBar.setVisibility(View.VISIBLE);
             fileRef.putFile(uri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -268,7 +283,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    progressBar.setProgress(0);
+                                    progressBar.setVisibility(View.INVISIBLE);
                                 }
                             }, 5000);
 
