@@ -167,13 +167,15 @@ public class ProgramsFragment extends Fragment{
         dateToProgramList.setOnItemClickListener((p, view, pos, id) -> {
             programAndDate = currentDate.child(Objects.requireNonNull(dTPLAdapter.getItem(pos)));
         });*/
+
+
         horizontalCalendar = new HorizontalCalendar.Builder(rootView, R.id.calendarView)
                 .range(startDate, endDate)
                 .datesNumberOnScreen(5)
                 .configure()
-                    .formatTopText("MMM")
-                    .formatMiddleText("dd")
-                    .formatBottomText("EEE")
+                    .formatTopText("MMM dd")
+                    .formatMiddleText("EEE")
+                    .formatBottomText("")
                     .textSize(14f, 24f, 14f)
                     .showTopText(true)
                     .showBottomText(true)
@@ -183,10 +185,34 @@ public class ProgramsFragment extends Fragment{
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar date, int position) {
-                dateSelected.setText(DateFormat.format("EEE, MMM d, yyyy", date));
-                if(dateToProgramText != null) {
-                    dateToProgramText.setText(dateSelected.toString().concat(":").concat(programText));
-                }
+                LayoutInflater li = LayoutInflater.from(getContext());
+                View scheduleProgram = li.inflate(R.layout.schedule_program_dialog, null);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogStyle);
+                TextView tv = scheduleProgram.findViewById(R.id.schedule_pro);
+
+
+                int currentProgramIndex = programList.getLastVisiblePosition();
+                programText = programList.getItemAtPosition(currentProgramIndex).toString();
+                String selectedDateStr = DateFormat.format("EEE, MMM dd", date).toString();
+                String prompt = "Do you want to schedule your " + programText + " program on " + selectedDateStr + "?";
+                tv.setText(prompt);
+                builder.setView(scheduleProgram);
+
+                builder.setPositiveButton("Accept", (d,w) ->{
+
+                   
+
+
+                });
+                builder.setNegativeButton("Cancel", (d,w)->{
+
+
+
+                    d.cancel();
+                });
+                builder.show();
+
+
             }
             @Override
             public boolean onDateLongClicked(Calendar date, int position) {
@@ -198,6 +224,8 @@ public class ProgramsFragment extends Fragment{
                 programList.setOnItemClickListener((p, view, pos, id) -> {
                     selectProgram = currentProgram.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
                 */
+
+
                 return true;
             }
         });
