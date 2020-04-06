@@ -57,6 +57,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
+    ArrayAdapter<String> myAdapter;
     private static final int PICK_IMAGE_REQUEST = 1;
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
     private Uri uri;
@@ -107,7 +108,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         String [] values =
                 {"Male","Female","Other"};
         Spinner spinner = (Spinner) v.findViewById(R.id.spinner1);
-        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, values);
+        myAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, values);
         myAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(myAdapter);
 
@@ -232,6 +233,8 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
         builder.show();
     }
+
+
 
 
     public void button2Clicked(View v) {
