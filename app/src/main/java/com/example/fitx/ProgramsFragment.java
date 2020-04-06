@@ -63,19 +63,22 @@ public class ProgramsFragment extends Fragment{
     private ArrayList<String> programs;
     private ArrayAdapter<String> programsAdapter;
 
+    private ArrayList<String> comments;
+    private ArrayAdapter<String> commentsAdapter;
+
     //array list for the combination of a date to a program
-    private ArrayList<String> dTPL;
+    //private ArrayList<String> dTPL;
     private ArrayAdapter<String> dTPLAdapter;
 
     //array lists for dates
     //private ArrayList<String> datesClicked;
     //private ArrayAdapter<String> datesClickedAdapter;
 
-
     //initialize and declare database reference
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
     private DatabaseReference currentProgram;
     private DatabaseReference currentDate;
+    private DatabaseReference currentComment;
     //initialized reference for Programs
     private DatabaseReference selectProgram;
     private DatabaseReference programAndDate;
@@ -84,6 +87,30 @@ public class ProgramsFragment extends Fragment{
     public void onAttach(Activity activity) {
         super.onAttach(activity);
     }*/
+
+    private ValueEventListener commentListener = new ValueEventListener(){
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            if (commentsAdapter != null) {
+                commentsAdapter.clear();
+            }
+            try {
+
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    commentsAdapter.addAll(ds.getKey());
+                }
+
+
+            } catch (NullPointerException e) {
+
+            }
+        }
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError){
+
+        }
+    };
+
     private ValueEventListener dTPListener = new ValueEventListener(){
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -135,6 +162,7 @@ public class ProgramsFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, @NonNull ViewGroup container, @NonNull Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_programs, container, false);
+        ListView commentInput = rootView.findViewById(R.id.CommentList);
         dateSelected = rootView.findViewById(R.id.dateBox);
         dateToProgramText = rootView.findViewById(R.id.dateToProgram);
         programList= rootView.findViewById(R.id.LT);
@@ -154,14 +182,25 @@ public class ProgramsFragment extends Fragment{
 
 */
 
+        comments = new ArrayList<>();
+        currentComment = db.getReference("Users").child(userid).child("Comments");
+        currentComment.addValueEventListener(commentListener);
+        commentsAdapter = new ArrayAdapter<>(Objects.requireNonNull(this.getActivity()), android.R.layout.simple_list_item_1, comments);
+        programList.setAdapter(programsAdapter);
+        programList.setOnItemClickListener((p, view, pos, id) -> {
+            selectProgram = currentProgram.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
+            programText = selectProgram.toString();
+        });
+
         //programsAdapter = new RecyclerView.Adapter<ArrayList<String>>(this.getContext(), android.R.layout.simple_list_item_1, programs);
         if (programs == null){
         programs = new ArrayList<>();
         currentProgram = db.getReference("Users").child(userid).child("Programs");
+
         currentProgram.addValueEventListener(programListener);
         programsAdapter = new ArrayAdapter<>(Objects.requireNonNull(this.getActivity()), android.R.layout.simple_list_item_1, programs);
-        programList.setAdapter(programsAdapter);
-        programList.setOnItemClickListener((p, view, pos, id) -> {
+        commentInput.setAdapter(commentsAdapter);
+        commentInput.setOnItemClickListener((p, view, pos, id) -> {
             selectProgram = currentProgram.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
             programText = selectProgram.toString();
         });}
@@ -188,15 +227,28 @@ public class ProgramsFragment extends Fragment{
                     .showBottomText(true)
                     .textColor(Color.LTGRAY, Color.WHITE)
                 .end()
+                .addEvents(new CalendarEventsPredicate() {
+
+                    @Override
+                    public List<CalendarEvent> events(Calendar date) {
+                        List<CalendarEvent> events = new ArrayList<>();
+                        if (date == horizontalCalendar.getSelectedDate())
+                        {
+                            events.add(new CalendarEvent(Color.RED, "event"));
+                        }
+                        return events;
+                    }
+                })
                 .build();
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar date, int position) {
+                //Random rnd = new Random();
                 LayoutInflater li = LayoutInflater.from(getContext());
                 View scheduleProgram = li.inflate(R.layout.schedule_program_dialog, null);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogStyle);
                 TextView tv = scheduleProgram.findViewById(R.id.schedule_pro);
-
+                dateSelected.setText(DateFormat.format("EEE, MMM dd", date));
 
                 int currentProgramIndex = programList.getLastVisiblePosition();
                 programText = programList.getItemAtPosition(currentProgramIndex).toString();
@@ -206,23 +258,47 @@ public class ProgramsFragment extends Fragment{
                 builder.setView(scheduleProgram);
 
                 builder.setPositiveButton("Accept", (d,w) ->{
-
-                   
-
-
+                    //horizontalCalendar.getConfig().setShowBottomText(true);
+                    //horizontalCalendar.getConfig().setFormatBottomText(programText);
                 });
                 builder.setNegativeButton("Cancel", (d,w)->{
-
-
 
                     d.cancel();
                 });
                 builder.show();
 
+                /*LayoutInflater ci = LayoutInflater.from(getContext());
+                View createComments = ci.inflate(R.layout.comment_dialog, null);
+                AlertDialog.Builder cBuilder = new AlertDialog.Builder(getContext(), R.style.AlertDialogStyle);
+                cBuilder.setTitle("Add a Comment");
+                EditText cTV = createComments.findViewById(R.id.add_program_comment);
+                cBuilder.setView(createComments);
 
+                cBuilder.setPositiveButton("Done", (d,w)->{
+
+                });
+                cBuilder.setNegativeButton("Cancel", (d,w)->{
+                    d.cancel();
+                });
+                cBuilder.show();*/
             }
             @Override
             public boolean onDateLongClicked(Calendar date, int position) {
+                LayoutInflater ci = LayoutInflater.from(getContext());
+                View createComments = ci.inflate(R.layout.comment_dialog, null);
+                AlertDialog.Builder cBuilder = new AlertDialog.Builder(getContext(), R.style.AlertDialogStyle);
+                cBuilder.setTitle("Add a Comment");
+                EditText cTV = createComments.findViewById(R.id.add_program_comment);
+                cBuilder.setView(createComments);
+
+                cBuilder.setPositiveButton("Done", (d,w)->{
+                    String commentSTR = cTV.toString();
+
+                });
+                cBuilder.setNegativeButton("Cancel", (d,w)->{
+                    d.cancel();
+                });
+                cBuilder.show();
                 /*datesClicked = new ArrayList<>();
                 currentDate = db.getReference("Users").child(userid).child("Dates");
                 currentDate.addValueEventListener(dateListener);
@@ -231,8 +307,6 @@ public class ProgramsFragment extends Fragment{
                 programList.setOnItemClickListener((p, view, pos, id) -> {
                     selectProgram = currentProgram.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
                 */
-
-
                 return true;
             }
         });
