@@ -55,6 +55,7 @@ public class ProgramsFragment extends Fragment{
     private TextView dateSelected;
     private TextView title;
     private TextView dateToProgramText;
+    private ListView commentInput;
     private ListView programList;
     private String programText;
     private String dateClicked;
@@ -68,7 +69,7 @@ public class ProgramsFragment extends Fragment{
 
     //array list for the combination of a date to a program
     //private ArrayList<String> dTPL;
-    private ArrayAdapter<String> dTPLAdapter;
+    //private ArrayAdapter<String> dTPLAdapter;
 
     //array lists for dates
     //private ArrayList<String> datesClicked;
@@ -77,8 +78,9 @@ public class ProgramsFragment extends Fragment{
     //initialize and declare database reference
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
     private DatabaseReference currentProgram;
-    private DatabaseReference currentDate;
+    //private DatabaseReference currentDate;
     private DatabaseReference currentComment;
+    private DatabaseReference selectComment;
     //initialized reference for Programs
     private DatabaseReference selectProgram;
     private DatabaseReference programAndDate;
@@ -110,8 +112,7 @@ public class ProgramsFragment extends Fragment{
 
         }
     };
-
-    private ValueEventListener dTPListener = new ValueEventListener(){
+    /*private ValueEventListener dTPListener = new ValueEventListener(){
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             if (dTPLAdapter != null) {
@@ -132,7 +133,7 @@ public class ProgramsFragment extends Fragment{
         public void onCancelled(@NonNull DatabaseError databaseError){
 
         }
-    };
+    };*/
     private ValueEventListener programListener = new ValueEventListener(){
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -162,14 +163,12 @@ public class ProgramsFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, @NonNull ViewGroup container, @NonNull Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_programs, container, false);
-        ListView commentInput = rootView.findViewById(R.id.CommentList);
+        commentInput = rootView.findViewById(R.id.CommentList);
         dateSelected = rootView.findViewById(R.id.dateBox);
         dateToProgramText = rootView.findViewById(R.id.dateToProgram);
         programList= rootView.findViewById(R.id.LT);
         title = rootView.findViewById(R.id.title);
         String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-        //initializing add program to selected date button
-        //Button addProgram = rootView.findViewById(R.id.addProgramToDate);
 
         ////////Calendar View Specifications////////
         /* starts before 1 month from now */
@@ -186,21 +185,18 @@ public class ProgramsFragment extends Fragment{
         currentComment = db.getReference("Users").child(userid).child("Comments");
         currentComment.addValueEventListener(commentListener);
         commentsAdapter = new ArrayAdapter<>(Objects.requireNonNull(this.getActivity()), android.R.layout.simple_list_item_1, comments);
-        programList.setAdapter(programsAdapter);
-        programList.setOnItemClickListener((p, view, pos, id) -> {
-            selectProgram = currentProgram.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
-            programText = selectProgram.toString();
+        commentInput.setAdapter(commentsAdapter);
+        commentInput.setOnItemClickListener((p, view, pos, id) -> {
+            selectComment = currentComment.child(Objects.requireNonNull(commentsAdapter.getItem(pos)));
         });
 
-        //programsAdapter = new RecyclerView.Adapter<ArrayList<String>>(this.getContext(), android.R.layout.simple_list_item_1, programs);
         if (programs == null){
         programs = new ArrayList<>();
         currentProgram = db.getReference("Users").child(userid).child("Programs");
-
         currentProgram.addValueEventListener(programListener);
         programsAdapter = new ArrayAdapter<>(Objects.requireNonNull(this.getActivity()), android.R.layout.simple_list_item_1, programs);
-        commentInput.setAdapter(commentsAdapter);
-        commentInput.setOnItemClickListener((p, view, pos, id) -> {
+        programList.setAdapter(programsAdapter);
+        programList.setOnItemClickListener((p, view, pos, id) -> {
             selectProgram = currentProgram.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
             programText = selectProgram.toString();
         });}
@@ -232,9 +228,9 @@ public class ProgramsFragment extends Fragment{
                     @Override
                     public List<CalendarEvent> events(Calendar date) {
                         List<CalendarEvent> events = new ArrayList<>();
-                        if (date == horizontalCalendar.getSelectedDate())
+                        if (date == date)
                         {
-                            events.add(new CalendarEvent(Color.RED, "event"));
+                            events.add(new CalendarEvent(Color.RED, "Program On Date"));
                         }
                         return events;
                     }
@@ -262,7 +258,6 @@ public class ProgramsFragment extends Fragment{
                     //horizontalCalendar.getConfig().setFormatBottomText(programText);
                 });
                 builder.setNegativeButton("Cancel", (d,w)->{
-
                     d.cancel();
                 });
                 builder.show();
@@ -292,7 +287,8 @@ public class ProgramsFragment extends Fragment{
                 cBuilder.setView(createComments);
 
                 cBuilder.setPositiveButton("Done", (d,w)->{
-                    String commentSTR = cTV.toString();
+                    //String commentSTR = cTV.toString();
+                    //co
 
                 });
                 cBuilder.setNegativeButton("Cancel", (d,w)->{
