@@ -54,6 +54,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
+    ArrayAdapter<String> myAdapter;
     private static final int PICK_IMAGE_REQUEST = 1;
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
     private Uri uri;
@@ -98,7 +99,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         String [] values =
                 {"Male","Female","Other"};
         Spinner spinner = (Spinner) v.findViewById(R.id.spinner1);
-        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, values);
+        myAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, values);
         myAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(myAdapter);
 
@@ -220,10 +221,12 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
     }
 
 
+
+
     public void button2Clicked(View v) {
 
-        EditText editTextHeight = (EditText) getView().findViewById(R.id.user_height);
-        EditText editTextWeight = (EditText) getView().findViewById(R.id.user_weight);
+        EditText editTextHeight = (EditText) getView().findViewById(R.id.userHeight);
+        EditText editTextWeight = (EditText) getView().findViewById(R.id.userWeight);
         TextView textViewResult = (TextView) getView().findViewById(R.id.userBMI);
 
         double height = Double.parseDouble(editTextHeight.getText().toString());
