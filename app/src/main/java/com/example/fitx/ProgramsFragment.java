@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,8 +14,10 @@ import android.text.format.DateFormat;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-//import java.text.DateFormat;
+
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
@@ -26,6 +29,7 @@ public class ProgramsFragment extends Fragment{
     private HorizontalCalendar horizontalCalendar;
     private TextView dateSelected;
     private ListView datePrint;
+
 
     @NonNull
     @Override
@@ -45,6 +49,9 @@ public class ProgramsFragment extends Fragment{
         /* ends after 1 month from now */
         Calendar endDate = Calendar.getInstance();
         endDate.add(Calendar.MONTH, 1);
+        /*
+
+*/
 
         horizontalCalendar = new HorizontalCalendar.Builder(rootView, R.id.calendarView)
                 .range(startDate, endDate)

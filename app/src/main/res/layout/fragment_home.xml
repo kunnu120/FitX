@@ -183,7 +183,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/log"
         app:layout_constraintVertical_bias="0.0" />
-<!--
+
     <ProgressBar
         android:id="@+id/progressBar2"
         style="@android:style/Widget.ProgressBar.Horizontal"
@@ -192,7 +192,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="50dp"
         android:indeterminate="false"
-        android:max="1000"
+        android:max="100"
         android:progressBackgroundTint="@color/grey_100"
         android:progressTint="#FF1000"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -201,7 +201,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressBar1"
         app:layout_constraintVertical_bias="0.0" />
--->
+
     <TextView
         android:id="@+id/percent1"
         android:layout_width="70dp"
@@ -213,7 +213,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/progressBar1"
         app:layout_constraintTop_toTopOf="@+id/progressBar1" />
-<!--
+
     <TextView
         android:id="@+id/percent2"
         android:layout_width="70dp"
@@ -225,7 +225,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/progressBar2"
         app:layout_constraintTop_toTopOf="@+id/progressBar2" />
--->
+
     <TextView
         android:id="@+id/progressLabel1"
         android:layout_width="333dp"
@@ -237,7 +237,7 @@
         app:layout_constraintEnd_toEndOf="@+id/progressBar1"
         app:layout_constraintStart_toStartOf="@+id/progressBar1"
         app:layout_constraintTop_toTopOf="@+id/progressBar1" />
-<!--
+
     <TextView
         android:id="@+id/progressLabel2"
         android:layout_width="333dp"
@@ -249,5 +249,5 @@
         app:layout_constraintEnd_toEndOf="@+id/progressBar2"
         app:layout_constraintStart_toStartOf="@+id/progressBar2"
         app:layout_constraintTop_toTopOf="@+id/progressBar2" />
--->
+
 </androidx.constraintlayout.widget.ConstraintLayout>
