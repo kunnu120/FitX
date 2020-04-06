@@ -108,6 +108,7 @@ public class HomeActivity extends AppCompatActivity {
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         viewPager.setAdapter(adapter);
         viewPager.setPageTransformer(new MarginPageTransformer(1500));
+        viewPager.setOffscreenPageLimit(4);
 
 
         authStateListener = firebaseAuth -> {
