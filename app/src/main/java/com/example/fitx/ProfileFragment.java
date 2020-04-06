@@ -105,7 +105,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         //  View v = inflater.inflate(R.layout.manual, container, false);
 
         String [] values =
-                {"Male","Female","Other",};
+                {"Male","Female","Other"};
         Spinner spinner = (Spinner) v.findViewById(R.id.spinner1);
         ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, values);
         myAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
@@ -236,8 +236,8 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
     public void button2Clicked(View v) {
 
-        EditText editTextHeight = (EditText) getView().findViewById(R.id.user_height);
-        EditText editTextWeight = (EditText) getView().findViewById(R.id.user_weight);
+        EditText editTextHeight = (EditText) getView().findViewById(R.id.userHeight);
+        EditText editTextWeight = (EditText) getView().findViewById(R.id.userWeight);
         TextView textViewResult = (TextView) getView().findViewById(R.id.userBMI);
 
         double height = Double.parseDouble(editTextHeight.getText().toString());
