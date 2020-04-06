@@ -71,7 +71,9 @@ dependencies {
     annotationProcessor 'com.android.support:support-annotations:28.0.0'
     androidTestImplementation 'androidx.test:rules:1.3.0-alpha03'
     implementation 'devs.mulham.horizontalcalendar:horizontalcalendar:1.3.4'
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation 'androidx.recyclerview:recyclerview-selection:1.1.0-rc01'
+    implementation "androidx.cardview:cardview:1.0.0"
 }
 
 apply plugin: 'com.google.gms.google-services'

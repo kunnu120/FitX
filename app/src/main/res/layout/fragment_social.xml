@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -55,5 +54,13 @@
             android:layout_height="match_parent"
             android:hint="Type your post..." />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/posts_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ventilator_progress"
+        android:layout_marginTop="10dp"
+        android:scrollbars="vertical" />
 
 </RelativeLayout>

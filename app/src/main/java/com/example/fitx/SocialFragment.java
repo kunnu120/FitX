@@ -14,14 +14,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,29 +48,39 @@ public class SocialFragment extends Fragment {
 
     private static final int PICK_IMAGE_REQUEST = 10101;
     private ImageView img;
-    private EditText postText;
+    private EditText postTextField;
     private Button btnupload;
     private TextView txt;
     private String userid;
     private Uri uri;
     private ProgressBar progressBar;
-    private List<String> postList = new ArrayList<String>();
+    private List<Post> postList = new ArrayList<Post>();
     private DatabaseReference postListRef;
+    private PostAdapter adapter;
+    private RecyclerView rvPosts;
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
     private final StorageReference storageRef = FirebaseStorage.getInstance().getReference("uploads");
 
-    private ValueEventListener postListener = new ValueEventListener() {
+    private ChildEventListener postListener = new ChildEventListener() {
         @Override
-        @SuppressWarnings("unchecked")
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            try {
-                postList.addAll((ArrayList<String>)dataSnapshot.getValue());
-                //for (int i = 0; i < postList.size(); ++i) {
-                    //adapter.add(Security.decodeSaltCipher(Security.decB64(goalsEnc.get(i))));
-                //}
-            } catch (Exception e) {
+        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            postList.add(dataSnapshot.getValue(Post.class));
+            adapter.notifyItemInserted(postList.size()-1);
+        }
 
-            }
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
         }
 
         @Override
@@ -80,7 +95,7 @@ public class SocialFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_social, null);
 
-        postText = v.findViewById(R.id.postTextField);
+        postTextField = v.findViewById(R.id.postTextField);
 
         img = v.findViewById(R.id.postpic);
         img.setOnClickListener(v1 -> {
@@ -91,20 +106,35 @@ public class SocialFragment extends Fragment {
         progressBar.setVisibility(View.INVISIBLE);
 
         btnupload = v.findViewById(R.id.btnPostUpload);
-        btnupload.setEnabled(false);
         btnupload.setOnClickListener(x -> {
-            uploadPost();
+            if (uri == null & postTextField.getText().toString() == "") {
+                Toast.makeText(getContext(), "Cannot upload empty post!",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                uploadPost();
+            }
         });
+
+        uri = null;
 
         userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
-        postList = new ArrayList<>();
+        postList = new ArrayList<Post>();
         postListRef = db.getReference("postList");
-        postListRef.addListenerForSingleValueEvent(postListener);
+
+        rvPosts = (RecyclerView) v.findViewById(R.id.posts_view);
+        adapter = new PostAdapter(Glide.with(this), postList);
+        // Attach the adapter to the recyclerview to populate items
+        rvPosts.setAdapter(adapter);
+        // Set layout manager to position the items
+        rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        postListRef.addChildEventListener(postListener);
         return v;
     }
 
     private void openFileChooser() {
+        btnupload.setEnabled(false);
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -128,15 +158,13 @@ public class SocialFragment extends Fragment {
     }
 
     private void uploadPost() {
-        String postid = "" + System.currentTimeMillis();
-        String post = userid + "." + postid + "." + postText.getText().toString();
-        postList.add(post);
-        postListRef.setValue(postList);
-        postText.setText("Uploading...");
         btnupload.setEnabled(false);
-        if (img != null) {
-            StorageReference fileRef = storageRef.child(postid + "." + getFileExtension(uri));
+        String postText = postTextField.getText().toString();
+        String postid = ""+System.currentTimeMillis();
+        if (uri != null) {
             progressBar.setVisibility(View.VISIBLE);
+            String refS = postid + "." + getFileExtension(uri);
+            StorageReference fileRef = storageRef.child(refS);
             fileRef.putFile(uri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -145,9 +173,15 @@ public class SocialFragment extends Fragment {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                postTextField.setText("");
+                                Post p = new Post(userid,postid,postText, true);
+                                postListRef.push().setValue(p);
                                 progressBar.setVisibility(View.INVISIBLE);
                                 img.setImageResource(android.R.color.white);
-                                postText.setText("Complete!");
+                                uri = null;
+                                Toast.makeText(getContext(), "Your post has been uploaded.",
+                                        Toast.LENGTH_SHORT).show();
+                                btnupload.setEnabled(true);
                             }
                         }, 5000);
                     }
@@ -155,7 +189,10 @@ public class SocialFragment extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
+                        progressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(getContext(), "Upload failed.",
+                                Toast.LENGTH_SHORT).show();
+                        btnupload.setEnabled(true);
                     }
                 })
                 .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -165,6 +202,13 @@ public class SocialFragment extends Fragment {
                         progressBar.setProgress((int) progress);
                     }
                 });
+        } else {
+            postTextField.setText("");
+            Post p = new Post(userid,postid,postText,false);
+            postListRef.push().setValue(p);
+            Toast.makeText(getContext(), "Your post has been uploaded.",
+                    Toast.LENGTH_SHORT).show();
+            btnupload.setEnabled(true);
         }
     }
 }
