@@ -42,50 +42,43 @@
         app:layout_constraintTop_toBottomOf="@+id/calendarView" />
 
     <ListView
-        android:id="@+id/dateandProgramList"
+        android:id="@+id/CommentList"
         android:layout_width="214dp"
         android:layout_height="66dp"
-        android:layout_marginTop="96dp"
+        android:layout_marginTop="128dp"
         android:background="@drawable/home_page_list_views"
         android:dividerHeight="50dp"
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addProgramToDate" />
-
-    <Button
-        android:id="@+id/addProgramToDate"
-        android:layout_width="151dp"
-        android:layout_height="49dp"
-        android:layout_marginTop="108dp"
-        android:text="@string/add_program"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateBox" />
+        app:layout_constraintTop_toBottomOf="@+id/LT" />
 
     <ListView
         android:id="@+id/LT"
         android:layout_width="193dp"
         android:layout_height="60dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/home_page_list_views"
         android:dividerHeight="50dp"
         android:textColor="@color/colorPrimary"
-        app:layout_constraintBottom_toTopOf="@+id/addProgramToDate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateBox"
-        app:layout_constraintVertical_bias="0.444" />
+        app:layout_constraintTop_toBottomOf="@+id/dateBox" />
+
     <TextView
         android:id="@+id/dateToProgram"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/date_and_program"
+        android:layout_marginBottom="56dp"
+        android:text="Add Comments To Day"
         android:textColor="#000000"
-        app:layout_constraintBottom_toTopOf="@+id/dateandProgramList"
+        app:layout_constraintBottom_toTopOf="@+id/CommentList"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addProgramToDate" />
+        app:layout_constraintTop_toBottomOf="@+id/LT"
+        app:layout_constraintVertical_bias="1.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
