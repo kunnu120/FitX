@@ -177,10 +177,7 @@ public class ProgramsFragment extends Fragment{
         /* ends after 1 month from now */
         Calendar endDate = Calendar.getInstance();
         endDate.add(Calendar.MONTH, 1);
-        /*
-
-*/
-
+        /**/
         comments = new ArrayList<>();
         currentComment = db.getReference("Users").child(userid).child("Comments");
         currentComment.addValueEventListener(commentListener);
@@ -239,28 +236,30 @@ public class ProgramsFragment extends Fragment{
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar date, int position) {
+                //dateSelected.setText(DateFormat.format("EEE, MMM dd", date));
                 //Random rnd = new Random();
-                LayoutInflater li = LayoutInflater.from(getContext());
-                View scheduleProgram = li.inflate(R.layout.schedule_program_dialog, null);
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogStyle);
-                TextView tv = scheduleProgram.findViewById(R.id.schedule_pro);
-                dateSelected.setText(DateFormat.format("EEE, MMM dd", date));
+               if(programText != null) {
+                    LayoutInflater li = LayoutInflater.from(getContext());
+                    View scheduleProgram = li.inflate(R.layout.schedule_program_dialog, null);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogStyle);
+                    TextView tv = scheduleProgram.findViewById(R.id.schedule_pro);
 
-                int currentProgramIndex = programList.getLastVisiblePosition();
-                programText = programList.getItemAtPosition(currentProgramIndex).toString();
-                String selectedDateStr = DateFormat.format("EEE, MMM dd", date).toString();
-                String prompt = "Do you want to schedule your " + programText + " program on " + selectedDateStr + "?";
-                tv.setText(prompt);
-                builder.setView(scheduleProgram);
+                    int currentProgramIndex = programList.getLastVisiblePosition();
+                    programText = programList.getItemAtPosition(currentProgramIndex).toString();
+                    String selectedDateStr = DateFormat.format("EEE, MMM dd", date).toString();
+                    String prompt = "Do you want to schedule your " + programText + " program on " + selectedDateStr + "?";
+                    tv.setText(prompt);
+                    builder.setView(scheduleProgram);
 
-                builder.setPositiveButton("Accept", (d,w) ->{
-                    //horizontalCalendar.getConfig().setShowBottomText(true);
-                    //horizontalCalendar.getConfig().setFormatBottomText(programText);
-                });
-                builder.setNegativeButton("Cancel", (d,w)->{
-                    d.cancel();
-                });
-                builder.show();
+                    builder.setPositiveButton("Accept", (d, w) -> {
+                        //horizontalCalendar.getConfig().setShowBottomText(true);
+                        //horizontalCalendar.getConfig().setFormatBottomText(programText);
+                    });
+                    builder.setNegativeButton("Cancel", (d, w) -> {
+                        d.cancel();
+                    });
+                    builder.show();
+                }
 
                 /*LayoutInflater ci = LayoutInflater.from(getContext());
                 View createComments = ci.inflate(R.layout.comment_dialog, null);
@@ -279,22 +278,24 @@ public class ProgramsFragment extends Fragment{
             }
             @Override
             public boolean onDateLongClicked(Calendar date, int position) {
-                LayoutInflater ci = LayoutInflater.from(getContext());
-                View createComments = ci.inflate(R.layout.comment_dialog, null);
-                AlertDialog.Builder cBuilder = new AlertDialog.Builder(getContext(), R.style.AlertDialogStyle);
-                cBuilder.setTitle("Add a Comment");
-                EditText cTV = createComments.findViewById(R.id.add_program_comment);
-                cBuilder.setView(createComments);
+                if (programs != null) {
+                    LayoutInflater ci = LayoutInflater.from(getContext());
+                    View createComments = ci.inflate(R.layout.comment_dialog, null);
+                    AlertDialog.Builder cBuilder = new AlertDialog.Builder(getContext(), R.style.AlertDialogStyle);
+                    cBuilder.setTitle("Add a Comment");
+                    EditText cTV = createComments.findViewById(R.id.add_program_comment);
+                    cBuilder.setView(createComments);
 
-                cBuilder.setPositiveButton("Done", (d,w)->{
-                    //String commentSTR = cTV.toString();
-                    //co
+                    cBuilder.setPositiveButton("Done", (d, w) -> {
+                        //String commentSTR = cTV.toString();
+                        //co
 
-                });
-                cBuilder.setNegativeButton("Cancel", (d,w)->{
-                    d.cancel();
-                });
-                cBuilder.show();
+                    });
+                    cBuilder.setNegativeButton("Cancel", (d, w) -> {
+                        d.cancel();
+                    });
+                    cBuilder.show();
+                }
                 /*datesClicked = new ArrayList<>();
                 currentDate = db.getReference("Users").child(userid).child("Dates");
                 currentDate.addValueEventListener(dateListener);
@@ -303,8 +304,8 @@ public class ProgramsFragment extends Fragment{
                 programList.setOnItemClickListener((p, view, pos, id) -> {
                     selectProgram = currentProgram.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
                 */
-                return true;
-            }
+                    return true;
+                }
         });
         return rootView;
     }
