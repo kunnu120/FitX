@@ -41,11 +41,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/calendarView" />
 
+
     <ListView
         android:id="@+id/CommentList"
         android:layout_width="214dp"
         android:layout_height="66dp"
-        android:layout_marginTop="128dp"
+        android:layout_marginTop="156dp"
         android:background="@drawable/home_page_list_views"
         android:dividerHeight="50dp"
         android:textColor="@color/colorPrimary"
@@ -54,12 +55,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/LT" />
 
-
-
     <ListView
         android:id="@+id/LT"
-        android:layout_width="193dp"
-        android:layout_height="60dp"
+        android:layout_width="172dp"
+        android:layout_height="44dp"
         android:layout_marginTop="40dp"
         android:background="@drawable/home_page_list_views"
         android:dividerHeight="50dp"
@@ -80,7 +79,18 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/LT"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.765" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="95dp"
+        android:layout_height="42dp"
+        android:layout_marginBottom="8dp"
+        android:text="TextView"
+        android:background="@drawable/home_page_list_views"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateToProgram" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
