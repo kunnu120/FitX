@@ -46,24 +46,25 @@
         android:id="@+id/CommentList"
         android:layout_width="214dp"
         android:layout_height="66dp"
-        android:layout_marginTop="156dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/home_page_list_views"
         android:dividerHeight="50dp"
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LT" />
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <ListView
         android:id="@+id/LT"
         android:layout_width="172dp"
         android:layout_height="44dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="96dp"
         android:background="@drawable/home_page_list_views"
         android:dividerHeight="50dp"
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dateBox" />
 
@@ -71,26 +72,36 @@
         android:id="@+id/dateToProgram"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="56dp"
-        android:text="Add Comments To Day"
+        android:layout_marginTop="40dp"
+        android:text="@string/comment_on_date"
         android:textColor="#000000"
-        app:layout_constraintBottom_toTopOf="@+id/CommentList"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LT"
-        app:layout_constraintVertical_bias="0.765" />
+        app:layout_constraintTop_toBottomOf="@+id/LT" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="95dp"
         android:layout_height="42dp"
-        android:layout_marginBottom="8dp"
-        android:text="TextView"
+        android:layout_marginTop="28dp"
         android:background="@drawable/home_page_list_views"
+        android:text="@string/textview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dateToProgram" />
+
+    <TextView
+        android:id="@+id/dateOfProgram"
+        android:layout_width="203dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="25dp"
+        app:layout_constraintBottom_toTopOf="@+id/LT"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateBox"
+        app:layout_constraintVertical_bias="1.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
