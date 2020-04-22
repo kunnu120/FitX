@@ -1,1 +1,10 @@
+*{
+  margin:0;
+  padding: 0;
+  font-family: Century Gothic;
+}
 
+header{
+    background-image: url('https://i.ibb.co/RPVLmn2/man-working-out-2294361.jpg');
+    height: 100vh;
+}
