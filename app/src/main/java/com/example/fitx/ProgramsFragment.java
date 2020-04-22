@@ -152,7 +152,7 @@ public class ProgramsFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, @NonNull ViewGroup container, @NonNull Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_programs, container, false);
-        commentInput = rootView.findViewById(R.id.CommentList);
+       //commentInput = rootView.findViewById(R.id.CommentList);
         dateSelected = rootView.findViewById(R.id.dateBox);
         comText = rootView.findViewById(R.id.textView3);
         dateOfProgram = rootView.findViewById(R.id.dateOfProgram);
@@ -236,7 +236,6 @@ public class ProgramsFragment extends Fragment{
                 dateSelected.setText(DateFormat.format("EEE, MMM dd", date));
                 currentDate = db.getReference("Users").child(userid).child("Programs").child("Dates");
                 programOnDate = db.getReference("Users").child(userid).child("Programs").child("Dates").child("Program on Date");
-
                 if (programText != null) {
                         LayoutInflater li = LayoutInflater.from(getContext());
                         View scheduleProgram = li.inflate(R.layout.schedule_program_dialog, null);
