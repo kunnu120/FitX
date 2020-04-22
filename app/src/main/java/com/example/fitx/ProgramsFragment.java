@@ -182,7 +182,7 @@ public class ProgramsFragment extends Fragment{
             //System.out.println(programText);
         });}
 
-        if (comments == null){
+        /*if (comments == null){
         comments = new ArrayList<>();
         currentComment = db.getReference("Users").child(userid).child("Programs").child("Program Comments");
         currentComment.addValueEventListener(commentListener);
