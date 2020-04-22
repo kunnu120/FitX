@@ -275,6 +275,7 @@ public class ProgramsFragment extends Fragment{
                             horizontalCalendar.getConfig().setupDefaultValues(config.setFormatBottomText(programText));*/
                         });
                         builder.setNegativeButton("Cancel", (d, w) -> {
+                            dateOfProgram.setText("You have no program scheduled on " + selectedDateStr);
                             /*programOnDate.equals(false);
                             if (programOnDate == null) {
                                 dateOfProgram.setText("You have already scheduled " + programText + " on " + selectedDateStr + ".");
@@ -289,7 +290,8 @@ public class ProgramsFragment extends Fragment{
             }
             @Override
             public boolean onDateLongClicked(Calendar date, int position) {
-                    if (programs != null) {
+                currentComment = db.getReference("Users").child(userid).child("Programs").child("Dates").child("Program on Date").child("Comment on Program");
+                if (programs != null) {
                         LayoutInflater ci = LayoutInflater.from(getContext());
                         View createComments = ci.inflate(R.layout.comment_dialog, null);
                         AlertDialog.Builder cBuilder = new AlertDialog.Builder(getContext(), R.style.AlertDialogStyle);
@@ -304,6 +306,7 @@ public class ProgramsFragment extends Fragment{
                             commentText = cTV.getText().toString();
                             //comText.setText(commentText);
                             comText.setText(commentText);
+                            currentComment.push().setValue(comText.getText());
                             //comText.setText(commentText);
                             //commentInput.setAdapter(commentsAdapter);
                             //commentInput.setFilterText(commentText);
