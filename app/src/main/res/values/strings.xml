@@ -116,4 +116,7 @@
     <string name="exercise_progress">Exercise Progress</string>
     <string name="result">Result</string>
     <string name="date_and_program">Date And Program</string>
+    <string name="textview">TextView</string>
+    <string name="comment_on_date">Comment on Date</string>
+    <string name="program_on_date">Program on Date</string>
 </resources>
