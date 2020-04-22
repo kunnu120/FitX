@@ -41,7 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/calendarView" />
 
-
+    <!--
     <ListView
         android:id="@+id/CommentList"
         android:layout_width="214dp"
@@ -54,7 +54,7 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
+    -->
     <ListView
         android:id="@+id/LT"
         android:layout_width="172dp"
@@ -81,8 +81,8 @@
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="95dp"
-        android:layout_height="42dp"
+        android:layout_width="291dp"
+        android:layout_height="43dp"
         android:layout_marginTop="28dp"
         android:background="@drawable/home_page_list_views"
         android:text="@string/textview"
@@ -98,7 +98,6 @@
         android:layout_marginBottom="25dp"
         app:layout_constraintBottom_toTopOf="@+id/LT"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dateBox"
         app:layout_constraintVertical_bias="1.0" />
