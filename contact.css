@@ -1,0 +1,54 @@
+*{
+  margin:0;
+  padding: 0;
+  font-family: Century Gothic;
+}
+
+header{
+    background-image: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('https://i.ibb.co/TMCNDwm/black-and-white-board-boardroom-business-260689.jpg');
+    height: 200vh;
+    background-size: cover;
+    background-position: center;
+}
+
+.title{
+  position: absolute;
+  top:15%;
+  left:50%;
+  transform: translate(-50%,-50%);
+}
+
+.title h1{
+  color: #fff;
+  font-size:70px;
+  position: center;
+}
+
+.names{
+  position: absolute;
+  top:80%;
+  left:50%;
+  transform: translate(-50%,-50%);
+}
+.names b {
+  color: #fff;
+  font-size:40px;
+  position: center;
+}
+
+li{
+  display: inline-block;
+}
+
+li a{
+  text-decoration: none;
+  color: #fff;
+  padding: 5px 20px;
+  border: 1px solid transparent;
+  transition: 0.6s ease;
+}
+
+li a:hover{
+  background-color: #fff;
+  color:#000;
+}
