@@ -31,12 +31,12 @@ ul li a{
 }
 
 ul li a:hover{
-  background-color: #fff;
+  background-color: #00B9FF;
   color:#000;
 }
 
 ul li.active a{
-  background-color: #fff;
+  background-color: #00B9FF;
   color:#000;
 }
 
@@ -59,8 +59,8 @@ ul li.active a{
 }
 
 .title h1{
-  color: #fff;
-  font-size:70px;
+  color: #00B9FF;
+  font-size:100px;
 }
 
 .button {
@@ -79,6 +79,6 @@ ul li.active a{
 }
 
 .btn:hover{
-  background-color: #fff;
+  background-color: #00B9FF;
   color:#000;
 }
