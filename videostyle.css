@@ -6,7 +6,7 @@
 
 header{
     background-image: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('https://i.ibb.co/TMCNDwm/black-and-white-board-boardroom-business-260689.jpg');
-    height: 100vh;
+    height: 150vh;
     background-size: cover;
     background-position: center;
 }
@@ -26,7 +26,7 @@ header{
 
 .video {
   position: absolute;
-  top:40%;
+  top:80%;
   left:50%;
   transform: translate(-50%,-50%);
 }
