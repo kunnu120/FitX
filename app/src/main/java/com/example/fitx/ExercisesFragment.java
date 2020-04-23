@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -304,104 +305,119 @@ public class ExercisesFragment extends Fragment {
                exercises = new ArrayList<>();
                exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, exercises);
                String currProgram = input.getText().toString();
-               programsAdapter.add(currProgram);
-               currentProgram = userPrograms.child(currProgram);
-               currentProgram_exercises = currentProgram.child("Exercises");
-               currentProgram.addChildEventListener(tableSwitchListener);
-               programList.setSelection(programList.getCount()-1);
+               boolean program_exists = false;
+               for(int i=0; i<programsAdapter.getCount(); i++){
+                   if(programsAdapter.getItem(i).equals(currProgram)){
+                       program_exists = true;
+                   }
 
-                //fullfillment array and adapter
-                ff_array = new ArrayList<>();
-                ffAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, ff_array);
+               }
+               if(!program_exists) {
+                   programsAdapter.add(currProgram);
+                   currentProgram = userPrograms.child(currProgram);
+                   currentProgram_exercises = currentProgram.child("Exercises");
+                   currentProgram.addChildEventListener(tableSwitchListener);
+                   programList.setSelection(programList.getCount() - 1);
 
-               FF_currentProgram = userFullfillment.child(currProgram);
-               FF_currentProgram_exercises = FF_currentProgram.child("Exercises");
+                   //fullfillment array and adapter
+                   ff_array = new ArrayList<>();
+                   ffAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, ff_array);
 
-               //forced add exercise box
-                LayoutInflater li = LayoutInflater.from(getContext());
-                View addExerciseView = li.inflate(R.layout.add_exercise_dialog, null);
-                AlertDialog.Builder forcedbuilder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
-                forcedbuilder.setTitle("Add Exercise");
+                   FF_currentProgram = userFullfillment.child(currProgram);
+                   FF_currentProgram_exercises = FF_currentProgram.child("Exercises");
 
-                forcedbuilder.setView(addExerciseView);
+                   //forced add exercise box
+                   LayoutInflater li = LayoutInflater.from(getContext());
+                   View addExerciseView = li.inflate(R.layout.add_exercise_dialog, null);
+                   AlertDialog.Builder forcedbuilder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
+                   forcedbuilder.setTitle("Add Exercise");
 
-
-                forcedbuilder.setPositiveButton("Add", (u, t) -> {
-
-                    if(exercisesAdapter == null){
-
-                        Vector<String> data = new Vector<>();
-
-                        for(int j=1; j <= 12; j++) {
-                            TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                            TextView startCell = (TextView)r.getChildAt(0);
-                            for (int k = 0; k < 5; k++) {
-                                if(startCell.getText().toString().equals("")){
-                                    j = 13;
-                                }
-                                TextView cell = (TextView) r.getChildAt(k);
-                                String cellData = cell.getText().toString();
-                                data.add(cellData);
-                            }
-                        }
-                        //removes the 5 empty spaces added at the end of the vector
-                        for(int i=0; i < 5; i++) {
-                            data.removeElementAt(data.size() - 1);
-                        }
-
-                        exercises = new ArrayList<>();
-                        exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, exercises);
-                        for(int i=0; i < data.size(); i++) {
-                            exercisesAdapter.add(data.elementAt(i));
-                        }
-                        data.clear();
-                    }
-
-                    final EditText exerciseName = addExerciseView.findViewById(R.id.add_exercise_name);
-                    final EditText setNum = addExerciseView.findViewById(R.id.add_exercise_sets);
-                    final EditText repNum = addExerciseView.findViewById(R.id.add_exercise_reps);
-                    final EditText weightAmt = addExerciseView.findViewById(R.id.add_exercise_weight);
-                    String s1 = exerciseName.getText().toString();
-                    String s2 = setNum.getText().toString();
-                    String s3 = repNum.getText().toString();
-                    String s4 = weightAmt.getText().toString();
-                    String s5 = "";
+                   forcedbuilder.setView(addExerciseView);
 
 
-                    exercisesAdapter.add(s1);
-                    exercisesAdapter.add(s2);
-                    exercisesAdapter.add(s3);
-                    exercisesAdapter.add(s4);
-                    exercisesAdapter.add(s5);
-                    currentProgram_exercises.setValue(exercises);
+                   forcedbuilder.setPositiveButton("Add", (u, t) -> {
+
+                       if (exercisesAdapter == null) {
+
+                           Vector<String> data = new Vector<>();
+
+                           for (int j = 1; j <= 12; j++) {
+                               TableRow r = (TableRow) exerciseTable.getChildAt(j);
+                               TextView startCell = (TextView) r.getChildAt(0);
+                               for (int k = 0; k < 5; k++) {
+                                   if (startCell.getText().toString().equals("")) {
+                                       j = 13;
+                                   }
+                                   TextView cell = (TextView) r.getChildAt(k);
+                                   String cellData = cell.getText().toString();
+                                   data.add(cellData);
+                               }
+                           }
+                           //removes the 5 empty spaces added at the end of the vector
+                           for (int i = 0; i < 5; i++) {
+                               data.removeElementAt(data.size() - 1);
+                           }
+
+                           exercises = new ArrayList<>();
+                           exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, exercises);
+                           for (int i = 0; i < data.size(); i++) {
+                               exercisesAdapter.add(data.elementAt(i));
+                           }
+                           data.clear();
+                       }
+
+                       final EditText exerciseName = addExerciseView.findViewById(R.id.add_exercise_name);
+                       final EditText setNum = addExerciseView.findViewById(R.id.add_exercise_sets);
+                       final EditText repNum = addExerciseView.findViewById(R.id.add_exercise_reps);
+                       final EditText weightAmt = addExerciseView.findViewById(R.id.add_exercise_weight);
+                       String s1 = exerciseName.getText().toString();
+                       String s2 = setNum.getText().toString();
+                       String s3 = repNum.getText().toString();
+                       String s4 = weightAmt.getText().toString();
+                       String s5 = "";
 
 
-                    //fullfillment
-                    final int numofentries = Integer.parseInt(s2);
-                    if(numofentries != 0) {
-                        for (int f = 0; f < numofentries; ++f) {
-                            ff_array.add(s1);
-                            ff_array.add(s2);
-                            ff_array.add(s3);
-                            ff_array.add(s4);
-                            ff_array.add(s5);
-                        }
-                        FF_currentProgram_exercises.setValue(ff_array);
-                    }
-                });
-                forcedbuilder.show();
+                       exercisesAdapter.add(s1);
+                       exercisesAdapter.add(s2);
+                       exercisesAdapter.add(s3);
+                       exercisesAdapter.add(s4);
+                       exercisesAdapter.add(s5);
+                       currentProgram_exercises.setValue(exercises);
+
+
+                       //fullfillment
+                       final int numofentries = Integer.parseInt(s2);
+                       if (numofentries != 0) {
+                           for (int f = 0; f < numofentries; ++f) {
+                               ff_array.add(s1);
+                               ff_array.add(s2);
+                               ff_array.add(s3);
+                               ff_array.add(s4);
+                               ff_array.add(s5);
+                           }
+                           FF_currentProgram_exercises.setValue(ff_array);
+                       }
+                   });
+                   forcedbuilder.show();
+
+                   //clears the table for new program
+                   for(int j=1; j <= 12; j++) {
+                       TableRow r = (TableRow) exerciseTable.getChildAt(j);
+                       for (int k = 0; k < 5; k++) {
+                           TextView cell = (TextView) r.getChildAt(k);
+                           cell.setText("");
+                       }
+                   }
+                   //////////////////////////////////
+               }else{
+                   Toast t = Toast.makeText(getContext(), "Program name entered already exists. Please enter a different name", Toast.LENGTH_LONG);
+                   t.show();
+                   d.cancel();
+                   addProgram.performClick();
+
+               }
             });
             //end of forced dialog
-
-            //clears the table for new program
-            for(int j=1; j <= 12; j++) {
-                TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                for (int k = 0; k < 5; k++) {
-                    TextView cell = (TextView) r.getChildAt(k);
-                    cell.setText("");
-                }
-            }
-            //////////////////////////////////
 
             builder.show();
 
