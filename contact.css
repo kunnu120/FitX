@@ -19,14 +19,14 @@ header{
 }
 
 .title h1{
-  color: #fff;
+  color: #00B9FF;
   font-size:70px;
   position: center;
 }
 
 .names{
   position: absolute;
-  top:80%;
+  top:35%;
   left:50%;
   transform: translate(-50%,-50%);
 }
@@ -49,6 +49,6 @@ li a{
 }
 
 li a:hover{
-  background-color: #fff;
+  background-color: #00B9FF;
   color:#000;
 }
