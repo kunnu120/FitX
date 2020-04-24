@@ -552,8 +552,15 @@ public class ExercisesFragment extends Fragment {
                         t.show();
                         d.cancel();
                     }
+                    for(int i=0; i<exercisesAdapter.getCount(); i++){
+                        if(exercisesAdapter.getItem(i).equals(s1)){
+                            s1check = false;
+                            t = Toast.makeText(getContext(), "Exercise already exists.", Toast.LENGTH_SHORT);
+                            t.show();
+                            d.cancel();
+                        }
+                    }
                     if (s2.length() > 0) {
-
                         if (s2.length() > 2) {
                             s2check = false;
                             t = Toast.makeText(getContext(), "Sets should be a 1 or 2 digit number.", Toast.LENGTH_SHORT);
