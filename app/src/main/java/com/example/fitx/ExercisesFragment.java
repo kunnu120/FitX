@@ -105,38 +105,48 @@ public class ExercisesFragment extends Fragment {
         @Override
         public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-            //clears the table for new program
-            for(int j=1; j <= 12; j++) {
-                TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                for (int k = 0; k < 5; k++) {
-                    TextView cell = (TextView) r.getChildAt(k);
-                    cell.setText("");
+            if(programsAdapter.getCount()>0) {
+                //clears the table for new program
+                for (int j = 1; j <= 12; j++) {
+                    TableRow r = (TableRow) exerciseTable.getChildAt(j);
+                    for (int k = 0; k < 5; k++) {
+                        TextView cell = (TextView) r.getChildAt(k);
+                        cell.setText("");
+                    }
                 }
-            }
 
 
-
-            Vector<String> data = new Vector<>();
-            for(DataSnapshot ds : dataSnapshot.getChildren()){
-                data.add(ds.getValue().toString());
-            }
-
-            for(int i=0; i < 5; i++) {
-                data.removeElementAt(data.size() - 1);
-            }
-
-            int i = 0;
-            for(int j=1; j <= data.size()/5; j++) {
-                TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                for (int k = 0; k < 5; k++) {
-                    TextView cell = (TextView) r.getChildAt(k);
-                    cell.setText(data.get(i));
-                    i++;
+                Vector<String> data = new Vector<>();
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    data.add(ds.getValue().toString());
                 }
-            }
-            data.clear();
 
-            if(programList.getCount() == 0){
+                for (int i = 0; i < 5; i++) {
+                    data.removeElementAt(data.size() - 1);
+                }
+
+                int i = 0;
+                for (int j = 1; j <= data.size() / 5; j++) {
+                    TableRow r = (TableRow) exerciseTable.getChildAt(j);
+                    for (int k = 0; k < 5; k++) {
+                        TextView cell = (TextView) r.getChildAt(k);
+                        cell.setText(data.get(i));
+                        i++;
+                    }
+                }
+                data.clear();
+
+                if (programList.getCount() == 0) {
+                    for (int j = 1; j <= 12; j++) {
+                        TableRow r = (TableRow) exerciseTable.getChildAt(j);
+                        for (int k = 0; k < 5; k++) {
+                            TextView cell = (TextView) r.getChildAt(k);
+                            cell.setText("");
+                        }
+                    }
+                }
+            }else{
+                //clears table
                 for(int j=1; j <= 12; j++) {
                     TableRow r = (TableRow) exerciseTable.getChildAt(j);
                     for (int k = 0; k < 5; k++) {
@@ -145,7 +155,6 @@ public class ExercisesFragment extends Fragment {
                     }
                 }
             }
-
         }
 
         @Override
@@ -237,9 +246,16 @@ public class ExercisesFragment extends Fragment {
                 }
             }
 
-            currentProgram = userPrograms.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
-            currentProgram_exercises = currentProgram.child("Exercises");
-            currentProgram.addChildEventListener(tableSwitchListener);
+            if(programsAdapter.getCount()>0) {
+                currentProgram = userPrograms.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
+                if(exercisesAdapter.getCount() == 0){
+                    Toast t21 = Toast.makeText(getContext(), programsAdapter.getItem(pos) + " program has no exercises. Removing " + programsAdapter.getItem(pos) + ".", Toast.LENGTH_SHORT);
+                    t21.show();
+                    programsAdapter.remove(programsAdapter.getItem(pos));
+                }
+                currentProgram_exercises = currentProgram.child("Exercises");
+                currentProgram.addChildEventListener(tableSwitchListener);
+            }
         });
 
 
@@ -255,224 +271,36 @@ public class ExercisesFragment extends Fragment {
                exercises = new ArrayList<>();
                exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, exercises);
                String currProgram = input.getText().toString();
-               boolean program_exists = false;
-               for(int i=0; i<programsAdapter.getCount(); i++){
-                   if(programsAdapter.getItem(i).equals(currProgram)){
-                       program_exists = true;
-                   }
-
-               }
-               if(!program_exists) {
-                   programsAdapter.add(currProgram);
-                   currentProgram = userPrograms.child(currProgram);
-                   currentProgram_exercises = currentProgram.child("Exercises");
-                   currentProgram.addChildEventListener(tableSwitchListener);
-                   programList.setSelection(programList.getCount() - 1);
-
-                   Toast t2 = Toast.makeText(getContext(), "Program " + currProgram + " added. Please enter your first exercise for this program.", Toast.LENGTH_LONG);
-                   t2.show();
-                   //forced add exercise box
-                   LayoutInflater li = LayoutInflater.from(getContext());
-                   View addExerciseView = li.inflate(R.layout.add_exercise_dialog, null);
-                   AlertDialog.Builder forcedbuilder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
-                   forcedbuilder.setTitle("Add Exercise");
-
-                   forcedbuilder.setView(addExerciseView);
-
-
-                   forcedbuilder.setPositiveButton("Add", (u, t) -> {
-
-                       if (exercisesAdapter == null) {
-
-                           Vector<String> data = new Vector<>();
-
-                           for (int j = 1; j <= 12; j++) {
-                               TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                               TextView startCell = (TextView) r.getChildAt(0);
-                               for (int k = 0; k < 5; k++) {
-                                   if (startCell.getText().toString().equals("")) {
-                                       j = 13;
-                                   }
-                                   TextView cell = (TextView) r.getChildAt(k);
-                                   String cellData = cell.getText().toString();
-                                   data.add(cellData);
-                               }
-                           }
-                           //removes the 5 empty spaces added at the end of the vector
-                           for (int i = 0; i < 5; i++) {
-                               data.removeElementAt(data.size() - 1);
-                           }
-
-                           exercises = new ArrayList<>();
-                           exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, exercises);
-                           for (int i = 0; i < data.size(); i++) {
-                               exercisesAdapter.add(data.elementAt(i));
-                           }
-                           data.clear();
-                       }
-
-                       final EditText exerciseName = addExerciseView.findViewById(R.id.add_exercise_name);
-                       final EditText setNum = addExerciseView.findViewById(R.id.add_exercise_sets);
-                       final EditText repNum = addExerciseView.findViewById(R.id.add_exercise_reps);
-                       final EditText weightAmt = addExerciseView.findViewById(R.id.add_exercise_weight);
-                       String s1 = exerciseName.getText().toString();
-                       String s2 = setNum.getText().toString();
-                       String s3 = repNum.getText().toString();
-                       String s4 = weightAmt.getText().toString();
-                       String s5 = "";
-
-
-                       Toast t1;
-                       boolean s1check = true;
-                       boolean s2check = true;
-                       boolean s3check = true;
-                       boolean s4check = true;
-                       if(s1.length() == 0 && s2.length() == 0 && s3.length() == 0 && s4.length() == 0 ){
-                           s1check = false;
-                           s2check = false;
-                           s3check = false;
-                           s4check = false;
-                           t1 = Toast.makeText(getContext(), "No information entered. Please enter all information correctly.", Toast.LENGTH_LONG);
-                           t1.show();
-                           d.cancel();
-                           addExercise.performClick();
-                       }else {
-                           if (s1.length() == 0) {
-                               s1check = false;
-                               t1 = Toast.makeText(getContext(), "No exercise name entered.", Toast.LENGTH_SHORT);
-                               t1.show();
-                               d.cancel();
-                           }
-                           if (s2.length() > 0) {
-
-                               if (s2.length() > 2) {
-                                   s2check = false;
-                                   t1 = Toast.makeText(getContext(), "Sets should be a 1 or 2 digit number.", Toast.LENGTH_SHORT);
-                                   t1.show();
-                                   d.cancel();
-                               }else {
-                                   int s2intcheck = 0;
-                                   try {
-                                       s2intcheck = Integer.parseInt(s2);
-                                   } catch (NumberFormatException nfe) {
-                                       s2check = false;
-                                       t1 = Toast.makeText(getContext(), "Sets is not in number format.", Toast.LENGTH_SHORT);
-                                       t1.show();
-                                       d.cancel();
-                                   }
-                                   if(s2intcheck < 1){
-                                       s2check = false;
-                                       t1 = Toast.makeText(getContext(), "You must have at least 1 set.", Toast.LENGTH_SHORT);
-                                       t1.show();
-                                       d.cancel();
-                                   }
-                               }
-
-                           } else {
-                               s2check = false;
-                               t1 = Toast.makeText(getContext(), "No set number entered.", Toast.LENGTH_SHORT);
-                               t1.show();
-                               d.cancel();
-                           }
-
-                           if (s3.length() > 0) {
-
-                               if (s3.length() > 2) {
-                                   s3check = false;
-                                   t1 = Toast.makeText(getContext(), "Reps should be a 1 or 2 digit number.", Toast.LENGTH_SHORT);
-                                   t1.show();
-                                   d.cancel();
-                               }else {
-                                   int s3intcheck = 0;
-                                   try {
-                                       s3intcheck = Integer.parseInt(s3);
-                                   } catch (NumberFormatException nfe) {
-                                       s3check = false;
-                                       t1 = Toast.makeText(getContext(), "Reps is not in number format.", Toast.LENGTH_SHORT);
-                                       t1.show();
-                                       d.cancel();
-                                   }
-                                   if(s3intcheck < 1){
-                                       s3check = false;
-                                       t1 = Toast.makeText(getContext(), "You must have at least 1 rep.", Toast.LENGTH_SHORT);
-                                       t1.show();
-                                       d.cancel();
-                                   }
-                               }
-
-                           } else {
-                               s3check = false;
-                               t1 = Toast.makeText(getContext(), "No rep number entered.", Toast.LENGTH_SHORT);
-                               t1.show();
-                               d.cancel();
-                           }
-
-                           if (s4.length() > 0) {
-
-                               if (s4.length() > 3) {
-                                   s4check = false;
-                                   t1 = Toast.makeText(getContext(), "Weight should be a 1, 2, or 3 digit number.", Toast.LENGTH_SHORT);
-                                   t1.show();
-                                   d.cancel();
-                               }else {
-                                   int s4intcheck = 0;
-                                   try {
-                                       s4intcheck = Integer.parseInt(s4);
-                                   } catch (NumberFormatException nfe) {
-                                       s4check = false;
-                                       t1 = Toast.makeText(getContext(), "Weight is not in number format.", Toast.LENGTH_SHORT);
-                                       t1.show();
-                                       d.cancel();
-                                   }
-                                   if(s4intcheck < 1){
-                                       s4check = false;
-                                       t1 = Toast.makeText(getContext(), "You must have at least 1 pound.", Toast.LENGTH_SHORT);
-                                       t1.show();
-                                       d.cancel();
-                                   }
-                               }
-
-                           } else {
-                               s4check = false;
-                               t1 = Toast.makeText(getContext(), "No weight entered.", Toast.LENGTH_SHORT);
-                               t1.show();
-                               d.cancel();
-                           }
-
-                           if(s1check && s2check && s3check && s4check) {
-                               exercisesAdapter.add(s1);
-                               exercisesAdapter.add(s2);
-                               exercisesAdapter.add(s3);
-                               exercisesAdapter.add(s4);
-                               exercisesAdapter.add(s5);
-                               currentProgram_exercises.setValue(exercises);
-                           }else{
-                               t1 = Toast.makeText(getContext(), "Information wasn't entered correctly. Please enter correctly.", Toast.LENGTH_LONG);
-                               t1.show();
-                               d.cancel();
-                               addExercise.performClick();
-                           }
-                       }
-
-                   });
-                   forcedbuilder.show();
-
-                   //clears the table for new program
-                   for(int j=1; j <= 12; j++) {
-                       TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                       for (int k = 0; k < 5; k++) {
-                           TextView cell = (TextView) r.getChildAt(k);
-                           cell.setText("");
-                       }
-                   }
-                   //////////////////////////////////
-               }else{
-                   Toast t = Toast.makeText(getContext(), "Program name entered already exists. Please enter a different name", Toast.LENGTH_LONG);
-                   t.show();
-                   d.cancel();
+               if(currProgram.length() == 0){
+                   Toast t12 = Toast.makeText(getContext(),"You entered nothing. Please enter a name for a workout program.", Toast.LENGTH_SHORT);
+                   t12.show();
                    addProgram.performClick();
+               }else {
 
+                   boolean program_exists = false;
+                   for (int i = 0; i < programsAdapter.getCount(); i++) {
+                       if (programsAdapter.getItem(i).equals(currProgram)) {
+                           program_exists = true;
+                       }
+
+                   }
+                   if (!program_exists) {
+                       programsAdapter.add(currProgram);
+                       currentProgram = userPrograms.child(currProgram);
+                       currentProgram_exercises = currentProgram.child("Exercises");
+                       currentProgram.addChildEventListener(tableSwitchListener);
+                       programList.setSelection(programList.getCount() - 1);
+
+                       Toast t2 = Toast.makeText(getContext(), "Program " + currProgram + " added. Please enter your first exercise for this program.", Toast.LENGTH_LONG);
+                       t2.show();
+                       addExercise.performClick();
+
+
+                   }
                }
+            });
+            builder.setNegativeButton("Cancel", (d,w) ->{
+                d.cancel();
             });
             //end of forced dialog
 
@@ -671,6 +499,8 @@ public class ExercisesFragment extends Fragment {
                 }
             });
             builder.setNegativeButton("Cancel", (d, w) ->{
+                int index = programList.getLastVisiblePosition();
+                programList.performItemClick(programList, index, R.id.program_list);
                 d.cancel();
             });
             builder.show();
@@ -685,8 +515,34 @@ public class ExercisesFragment extends Fragment {
             TextView input = removeExercisePrompt.findViewById(R.id.edit_exercise_name);
             editPrompt.setView(removeExercisePrompt);
             editPrompt.setPositiveButton("Remove", (d,w)->{
+                boolean exists1 = false;
                 String exerciseStr = input.getText().toString();
-                exerciseToDelete(exerciseStr);
+                if(exercisesAdapter.getCount() == 0){
+                    Toast t7 = Toast.makeText(getContext(), "The current program has no exercises.", Toast.LENGTH_SHORT);
+                    t7.show();
+                    d.cancel();
+                }
+
+                if(exerciseStr.length() > 0) {
+                    for (int i = 0; i < exercisesAdapter.getCount(); i++) {
+                        if (exercisesAdapter.getItem(i).equals(exerciseStr)) {
+                            exists1 = true;
+                        }
+                    }
+                    if (exists1) {
+                        exerciseToDelete(exerciseStr);
+                    } else {
+                        Toast t3 = Toast.makeText(getContext(), "Exercise entered does not exist. Please enter one that does for the current program.", Toast.LENGTH_SHORT);
+                        t3.show();
+                        d.cancel();
+                        removeExercise.performClick();
+                    }
+                }else{
+                    Toast t6 = Toast.makeText(getContext(), "You entered nothing. Please enter a valid exercise name.", Toast.LENGTH_SHORT);
+                    t6.show();
+                    d.cancel();
+                    removeExercise.performClick();
+                }
             });
             editPrompt.setNegativeButton("Cancel", (d,w)->{
                 d.cancel();
@@ -705,11 +561,34 @@ public class ExercisesFragment extends Fragment {
             input.setInputType(InputType.TYPE_CLASS_TEXT);
             builder.setView(input);
             builder.setPositiveButton("Delete", (d, w) ->{
-                String currProgram = input.getText().toString();
-                currentProgram.setValue(null);
-                programsAdapter.remove(currProgram);
+
+                if(programsAdapter.getCount() == 0){
+                    Toast t8 = Toast.makeText(getContext(), "You currently have zero programs. Add a program instead.", Toast.LENGTH_SHORT );
+                    t8.show();
+                    d.cancel();
+                }
 
                 if(programsAdapter.getCount() > 0) {
+
+                    String currProgram = input.getText().toString();
+                    boolean exists2 = false;
+                    for(int i=0; i<programsAdapter.getCount(); i++){
+                        if(programsAdapter.getItem(i).equals(currProgram)){
+                            exists2 = true;
+                        }
+                    }
+                    if(exists2) {
+                        currentProgram.setValue(null);
+                        programsAdapter.remove(currProgram);
+                    }else{
+                        Toast t4 = Toast.makeText(getContext(), "The program you entered doesn't exist. Please enter a valid program name to remove.", Toast.LENGTH_SHORT);
+                        t4.show();
+                        d.cancel();
+                        removeProgram.performClick();
+                    }
+
+
+
                     //clears the table
                     for(int j=1; j <= 12; j++) {
                         TableRow r = (TableRow) exerciseTable.getChildAt(j);
@@ -721,6 +600,10 @@ public class ExercisesFragment extends Fragment {
                     programList.setSelection(0);
                     programList.performItemClick(programList, 0, R.id.program_list);
                 }else{
+
+                    Toast t5 = Toast.makeText(getContext(), "You don't have any programs to remove.", Toast.LENGTH_SHORT);
+                    t5.show();
+                    d.cancel();
                     //clears the table
                     for(int j=1; j <= 12; j++) {
                         TableRow r = (TableRow) exerciseTable.getChildAt(j);
@@ -749,8 +632,223 @@ public class ExercisesFragment extends Fragment {
             TextView input = editExercisePrompt.findViewById(R.id.edit_exercise_name);
             editPrompt.setView(editExercisePrompt);
             editPrompt.setPositiveButton("Edit", (d,w)->{
+
+                //copy whole table into exercises adapter for editing
+                Vector<String> data = new Vector<>();
+
+                for(int h=1; h <= 12; h++) {
+                    TableRow row = (TableRow) exerciseTable.getChildAt(h);
+                    TextView namecell = (TextView)row.getChildAt(0);
+                    for (int k = 0; k < 5; k++) {
+                        if(namecell.getText().toString().equals("")){
+                            h = 13;
+                        }
+                        TextView cell = (TextView) row.getChildAt(k);
+                        String cellData = cell.getText().toString();
+                        data.add(cellData);
+                    }
+                }
+                //removes the 5 empty spaces added at the end of the vector
+                for(int i=0; i < 5; i++) {
+                    data.removeElementAt(data.size() - 1);
+                }
+
+                exercises = new ArrayList<>();
+                exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, exercises);
+                for(int m=0; m < data.size(); ++m){
+                    exercisesAdapter.add(data.elementAt(m));
+                }
+
+                boolean exists3 = false;
                 String exerciseStr = input.getText().toString();
-                editEnteredExercise(exerciseStr);
+                if(exercisesAdapter.getCount() == 0){
+                    Toast t9 = Toast.makeText(getContext(), "The current program has zero exercises. Add an exercise instead.", Toast.LENGTH_SHORT);
+                    t9.show();
+                    d.cancel();
+                }
+
+                if(exercisesAdapter.getCount() > 0){
+                    if(exerciseStr.length() > 0){
+                        for(int i=0; i<exercisesAdapter.getCount(); i++){
+                            if(exercisesAdapter.getItem(i).equals(exerciseStr)){
+                                exists3 = true;
+                            }
+                        }
+                    }else{
+                        Toast t10 = Toast.makeText(getContext(), "You entered nothing. Please enter a valid exercise to edit.", Toast.LENGTH_SHORT);
+                        t10.show();
+                        d.cancel();
+
+                    }
+
+
+                }
+                if(exists3) {
+                    int databaseIndex = 0;
+                    for(int p=0; p < exercisesAdapter.getCount(); ++p){
+                        if(exercisesAdapter.getItem(p).equals(exerciseStr)){
+                            databaseIndex = p;
+                        }
+                    }
+
+                    LayoutInflater lii = LayoutInflater.from(getContext());
+                    View editExerciseView = lii.inflate(R.layout.add_exercise_dialog, null);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
+                    builder.setTitle("Edit Exercise");
+
+                    final EditText exerciseName = editExerciseView.findViewById(R.id.add_exercise_name);
+                    exerciseName.setInputType(InputType.TYPE_CLASS_TEXT);
+                    String s1 = exercisesAdapter.getItem(databaseIndex);
+                    exerciseName.setText(s1, TextView.BufferType.EDITABLE);
+                    final EditText setNum = editExerciseView.findViewById(R.id.add_exercise_sets);
+                    setNum.setInputType(InputType.TYPE_CLASS_TEXT);
+                    String s2 = exercisesAdapter.getItem((databaseIndex+1));
+                    setNum.setText(s2, TextView.BufferType.EDITABLE);
+                    final EditText repNum = editExerciseView.findViewById(R.id.add_exercise_reps);
+                    repNum.setInputType(InputType.TYPE_CLASS_TEXT);
+                    String s3 = exercisesAdapter.getItem((databaseIndex+2));
+                    repNum.setText(s3, TextView.BufferType.EDITABLE);
+                    final EditText weightAmt = editExerciseView.findViewById(R.id.add_exercise_weight);
+                    weightAmt.setInputType(InputType.TYPE_CLASS_TEXT);
+                    String s4 = exercisesAdapter.getItem((databaseIndex+3));
+                    weightAmt.setText(s4, TextView.BufferType.EDITABLE);
+
+                    builder.setView(editExerciseView);
+
+                    final int editpos = databaseIndex;
+                    builder.setPositiveButton("Edit", (d1, w1) -> {
+
+                        Vector<String> newEdit = new Vector<>();
+                        boolean s1flag = true;
+                        boolean s2flag = true;
+                        boolean s3flag = true;
+                        boolean s4flag = true;
+                        String new_s1 = exerciseName.getText().toString();
+                        String new_s2;
+                        String new_s3;
+                        String new_s4;
+
+
+
+                            if(new_s1.length() == 0) {
+                                s1flag = false;
+                            }
+
+
+                        if(s1flag) {
+
+                                new_s2 = setNum.getText().toString();
+                                if (new_s2.length() == 0) {
+                                    s2flag = false;
+                                } else {
+                                    if (new_s2.length() < 3) {
+                                        try {
+                                            int check_new_s2 = Integer.parseInt(new_s2);
+                                        } catch (NumberFormatException nfe) {
+                                            s2flag = false;
+                                            Toast t13 = Toast.makeText(getContext(), "Sets entered was not a 1 or 2 digit number.", Toast.LENGTH_SHORT);
+                                            t13.show();
+                                        }
+                                    } else {
+                                        s2flag = false;
+                                        Toast t14 = Toast.makeText(getContext(), "Sets entered is not valid. Should be a 1 or 2 digit number.", Toast.LENGTH_SHORT);
+                                        t14.show();
+
+                                    }
+                                }
+
+
+                                new_s3 = repNum.getText().toString();
+                                if (new_s3.length() == 0) {
+                                    s3flag = false;
+                                } else {
+                                    if (new_s3.length() < 3) {
+                                        try {
+                                            int check_new_s3 = Integer.parseInt(new_s3);
+                                        } catch (NumberFormatException nfe) {
+                                            s3flag = false;
+                                            Toast t15 = Toast.makeText(getContext(), "Reps entered was not a 1 or 2 digit number.", Toast.LENGTH_SHORT);
+                                            t15.show();
+                                        }
+                                    } else {
+                                        s3flag = false;
+                                        Toast t16 = Toast.makeText(getContext(), "Reps entered is not valid. Should be a 1 or 2 digit number.", Toast.LENGTH_SHORT);
+                                        t16.show();
+
+                                    }
+                                }
+
+
+                                new_s4 = weightAmt.getText().toString();
+                                if (new_s4.length() == 0) {
+                                    s4flag = false;
+                                } else {
+                                    if (new_s4.length() < 4) {
+                                        try {
+                                            int check_new_s4 = Integer.parseInt(new_s4);
+                                        } catch (NumberFormatException nfe) {
+                                            s4flag = false;
+                                            Toast t17 = Toast.makeText(getContext(), "Sets entered was not a 1, 2, or 3 digit number.", Toast.LENGTH_SHORT);
+                                            t17.show();
+                                        }
+                                    } else {
+                                        s4flag = false;
+                                        Toast t18 = Toast.makeText(getContext(), "Sets entered is not valid. Should be a 1, 2, or 3 digit number.", Toast.LENGTH_SHORT);
+                                        t18.show();
+
+                                    }
+                                }
+
+
+                            if(s2flag && s3flag && s4flag){
+                                newEdit.add(new_s1);
+                                newEdit.add(new_s2);
+                                newEdit.add(new_s3);
+                                newEdit.add(new_s4);
+
+                                new_exercises = new ArrayList<>();
+                                new_exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, new_exercises);
+
+                                int b = 0;
+                                for(int a = 0; a < exercisesAdapter.getCount(); ++a){
+                                    if((a >= editpos) && (a <= (editpos+3))){
+                                        new_exercisesAdapter.add(newEdit.elementAt(b));
+                                        ++b;
+                                    }else {
+                                        new_exercisesAdapter.add(exercisesAdapter.getItem(a));
+                                    }
+                                }
+
+                                exercisesAdapter.clear();
+                                for(int i=0; i< new_exercisesAdapter.getCount(); i++){
+                                    exercisesAdapter.add(new_exercisesAdapter.getItem(i));
+                                }
+                                newEdit.clear();
+                                new_exercisesAdapter.clear();
+                                currentProgram_exercises.setValue(exercises);
+                                Toast t20 = Toast.makeText(getContext(), "Exercise edited successfully.", Toast.LENGTH_SHORT);
+                                t20.show();
+                            }else{
+                                Toast t19 = Toast.makeText(getContext(), "Information entered for exercise edit not valid. Please enter valid information.", Toast.LENGTH_SHORT);
+                                t19.show();
+                                d1.cancel();
+                                editExercise.performClick();
+                            }
+                        }
+
+
+
+                    });
+                    builder.setNegativeButton("Cancel", (d2, w3) ->{
+                        d2.cancel();
+                    });
+                    builder.show();
+                }else{
+                    Toast t11 = Toast.makeText(getContext(), "The exercise you entered doesn't exist in the current program. Please enter a valid exercise name.", Toast.LENGTH_SHORT);
+                    t11.show();
+                    d.cancel();
+                    editExercise.performClick();
+                }
             });
             editPrompt.setNegativeButton("Cancel", (d,w)->{
                d.cancel();
@@ -799,14 +897,13 @@ public class ExercisesFragment extends Fragment {
             }
         }
 
-        final int start = databaseIndex;
 
         new_exercises = new ArrayList<>();
         new_exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, new_exercises);
 
 
         for(int a = 0; a < exercisesAdapter.getCount(); ++a){
-            if(((a >= start) && (a <= (start+4)))){
+            if(((a >= databaseIndex) && (a <= (databaseIndex+4)))){
 
             }else{
                 new_exercisesAdapter.add(exercisesAdapter.getItem(a));
@@ -824,120 +921,4 @@ public class ExercisesFragment extends Fragment {
 
     }
 
-
-
-
-
-    private void editEnteredExercise(String exerciseStr){
-
-        //copy whole table into exercises adapter for editing
-        Vector<String> data = new Vector<>();
-
-        for(int h=1; h <= 12; h++) {
-            TableRow row = (TableRow) exerciseTable.getChildAt(h);
-            TextView namecell = (TextView)row.getChildAt(0);
-            for (int k = 0; k < 5; k++) {
-                if(namecell.getText().toString().equals("")){
-                    h = 13;
-                }
-                TextView cell = (TextView) row.getChildAt(k);
-                String cellData = cell.getText().toString();
-                data.add(cellData);
-            }
-        }
-        //removes the 5 empty spaces added at the end of the vector
-        for(int i=0; i < 5; i++) {
-            data.removeElementAt(data.size() - 1);
-        }
-
-        int databaseIndex = 0;
-        exercises = new ArrayList<>();
-        exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, exercises);
-        for(int m=0; m < data.size(); ++m){
-            exercisesAdapter.add(data.elementAt(m));
-        }
-
-        for(int p=0; p < exercisesAdapter.getCount(); ++p){
-            if(exercisesAdapter.getItem(p).equals(exerciseStr)){
-                databaseIndex = p;
-            }
-        }
-
-        LayoutInflater lii = LayoutInflater.from(getContext());
-        View editExerciseView = lii.inflate(R.layout.add_exercise_dialog, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
-        builder.setTitle("Edit Exercise");
-
-        final int start = databaseIndex;
-        final EditText exerciseName = editExerciseView.findViewById(R.id.add_exercise_name);
-        exerciseName.setInputType(InputType.TYPE_CLASS_TEXT);
-        String s1 = exercisesAdapter.getItem(databaseIndex);
-        exerciseName.setText(s1, TextView.BufferType.EDITABLE);
-        final EditText setNum = editExerciseView.findViewById(R.id.add_exercise_sets);
-        setNum.setInputType(InputType.TYPE_CLASS_TEXT);
-        String s2 = exercisesAdapter.getItem((databaseIndex+1));
-        setNum.setText(s2, TextView.BufferType.EDITABLE);
-        final EditText repNum = editExerciseView.findViewById(R.id.add_exercise_reps);
-        repNum.setInputType(InputType.TYPE_CLASS_TEXT);
-        String s3 = exercisesAdapter.getItem((databaseIndex+2));
-        repNum.setText(s3, TextView.BufferType.EDITABLE);
-        final EditText weightAmt = editExerciseView.findViewById(R.id.add_exercise_weight);
-        weightAmt.setInputType(InputType.TYPE_CLASS_TEXT);
-        String s4 = exercisesAdapter.getItem((databaseIndex+3));
-        weightAmt.setText(s4, TextView.BufferType.EDITABLE);
-
-        builder.setView(editExerciseView);
-
-        builder.setPositiveButton("Edit", (d, w) -> {
-
-            Vector<String> newEdit = new Vector<>();
-
-            if(exerciseName.getText().toString().equals(s1)){
-                newEdit.add(s1);
-            }else{
-                newEdit.add(exerciseName.getText().toString());
-            }
-
-            if(setNum.getText().toString().equals(s2)){
-                newEdit.add(s2);
-            }else{
-                newEdit.add(setNum.getText().toString());
-            }
-
-            if(repNum.getText().toString().equals(s3)){
-                newEdit.add(s3);
-            }else{
-                newEdit.add(repNum.getText().toString());
-            }
-
-            if(weightAmt.getText().toString().equals(s4)){
-                newEdit.add(s4);
-            }else{
-                newEdit.add(weightAmt.getText().toString());
-            }
-
-            new_exercises = new ArrayList<>();
-            new_exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, new_exercises);
-
-            int b = 0;
-            for(int a = 0; a < exercisesAdapter.getCount(); ++a){
-                if((a >= start) && (a <= (start+3))){
-                    new_exercisesAdapter.add(newEdit.elementAt(b));
-                    ++b;
-                }else {
-                    new_exercisesAdapter.add(exercisesAdapter.getItem(a));
-                }
-            }
-
-            exercisesAdapter.clear();
-            newEdit.clear();
-            currentProgram_exercises.setValue(new_exercises);
-
-
-        });
-        builder.setNegativeButton("Cancel", (d, w) ->{
-            d.cancel();
-        });
-        builder.show();
-    }
 }
