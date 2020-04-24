@@ -52,42 +52,9 @@ public class ExercisesFragment extends Fragment {
     private DatabaseReference userPrograms;
     private DatabaseReference currentProgram;
     private DatabaseReference currentProgram_exercises;
-    private DatabaseReference userFullfillment;
-    private DatabaseReference FF_currentProgram;
-    private DatabaseReference FF_currentProgram_exercises;
     private TableLayout exerciseTable;
-    private ArrayList<String> ff_array;
-    private ArrayAdapter<String> ffAdapter;
 
-    private ChildEventListener fullfillmentListener = new ChildEventListener() {
-        @Override
-        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            if(ffAdapter != null){
-                ffAdapter.clear();
-                ffAdapter.addAll((ArrayList<String>)dataSnapshot.getValue());
-            }
-        }
 
-        @Override
-        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-        }
-
-        @Override
-        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-        }
-
-        @Override
-        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-        }
-    };
 
     private ChildEventListener tableSwitchListener = new ChildEventListener() {
 
@@ -246,17 +213,8 @@ public class ExercisesFragment extends Fragment {
 
         programList = v.findViewById(R.id.program_list);
 
-
-        //fullfillment array and adapter
-        ff_array = new ArrayList<>();
-        ffAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, ff_array);
-
         //get current user id
         String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-
-        //declare fullfillment references
-        userFullfillment = db.getReference("Users").child(userid).child("Exercise Fullfillment");
 
 
         //declare programs reference
@@ -279,17 +237,9 @@ public class ExercisesFragment extends Fragment {
                 }
             }
 
-
             currentProgram = userPrograms.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
             currentProgram_exercises = currentProgram.child("Exercises");
             currentProgram.addChildEventListener(tableSwitchListener);
-
-            //fullfillment
-            FF_currentProgram = userFullfillment.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
-            FF_currentProgram_exercises = FF_currentProgram.child("Exercises");
-            FF_currentProgram.addChildEventListener(fullfillmentListener);
-
-
         });
 
 
@@ -319,13 +269,8 @@ public class ExercisesFragment extends Fragment {
                    currentProgram.addChildEventListener(tableSwitchListener);
                    programList.setSelection(programList.getCount() - 1);
 
-                   //fullfillment array and adapter
-                   ff_array = new ArrayList<>();
-                   ffAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, ff_array);
-
-                   FF_currentProgram = userFullfillment.child(currProgram);
-                   FF_currentProgram_exercises = FF_currentProgram.child("Exercises");
-
+                   Toast t2 = Toast.makeText(getContext(), "Program " + currProgram + " added. Please enter your first exercise for this program.", Toast.LENGTH_LONG);
+                   t2.show();
                    //forced add exercise box
                    LayoutInflater li = LayoutInflater.from(getContext());
                    View addExerciseView = li.inflate(R.layout.add_exercise_dialog, null);
@@ -377,26 +322,138 @@ public class ExercisesFragment extends Fragment {
                        String s5 = "";
 
 
-                       exercisesAdapter.add(s1);
-                       exercisesAdapter.add(s2);
-                       exercisesAdapter.add(s3);
-                       exercisesAdapter.add(s4);
-                       exercisesAdapter.add(s5);
-                       currentProgram_exercises.setValue(exercises);
-
-
-                       //fullfillment
-                       final int numofentries = Integer.parseInt(s2);
-                       if (numofentries != 0) {
-                           for (int f = 0; f < numofentries; ++f) {
-                               ff_array.add(s1);
-                               ff_array.add(s2);
-                               ff_array.add(s3);
-                               ff_array.add(s4);
-                               ff_array.add(s5);
+                       Toast t1;
+                       boolean s1check = true;
+                       boolean s2check = true;
+                       boolean s3check = true;
+                       boolean s4check = true;
+                       if(s1.length() == 0 && s2.length() == 0 && s3.length() == 0 && s4.length() == 0 ){
+                           s1check = false;
+                           s2check = false;
+                           s3check = false;
+                           s4check = false;
+                           t1 = Toast.makeText(getContext(), "No information entered. Please enter all information correctly.", Toast.LENGTH_LONG);
+                           t1.show();
+                           d.cancel();
+                           addExercise.performClick();
+                       }else {
+                           if (s1.length() == 0) {
+                               s1check = false;
+                               t1 = Toast.makeText(getContext(), "No exercise name entered.", Toast.LENGTH_SHORT);
+                               t1.show();
+                               d.cancel();
                            }
-                           FF_currentProgram_exercises.setValue(ff_array);
+                           if (s2.length() > 0) {
+
+                               if (s2.length() > 2) {
+                                   s2check = false;
+                                   t1 = Toast.makeText(getContext(), "Sets should be a 1 or 2 digit number.", Toast.LENGTH_SHORT);
+                                   t1.show();
+                                   d.cancel();
+                               }else {
+                                   int s2intcheck = 0;
+                                   try {
+                                       s2intcheck = Integer.parseInt(s2);
+                                   } catch (NumberFormatException nfe) {
+                                       s2check = false;
+                                       t1 = Toast.makeText(getContext(), "Sets is not in number format.", Toast.LENGTH_SHORT);
+                                       t1.show();
+                                       d.cancel();
+                                   }
+                                   if(s2intcheck < 1){
+                                       s2check = false;
+                                       t1 = Toast.makeText(getContext(), "You must have at least 1 set.", Toast.LENGTH_SHORT);
+                                       t1.show();
+                                       d.cancel();
+                                   }
+                               }
+
+                           } else {
+                               s2check = false;
+                               t1 = Toast.makeText(getContext(), "No set number entered.", Toast.LENGTH_SHORT);
+                               t1.show();
+                               d.cancel();
+                           }
+
+                           if (s3.length() > 0) {
+
+                               if (s3.length() > 2) {
+                                   s3check = false;
+                                   t1 = Toast.makeText(getContext(), "Reps should be a 1 or 2 digit number.", Toast.LENGTH_SHORT);
+                                   t1.show();
+                                   d.cancel();
+                               }else {
+                                   int s3intcheck = 0;
+                                   try {
+                                       s3intcheck = Integer.parseInt(s3);
+                                   } catch (NumberFormatException nfe) {
+                                       s3check = false;
+                                       t1 = Toast.makeText(getContext(), "Reps is not in number format.", Toast.LENGTH_SHORT);
+                                       t1.show();
+                                       d.cancel();
+                                   }
+                                   if(s3intcheck < 1){
+                                       s3check = false;
+                                       t1 = Toast.makeText(getContext(), "You must have at least 1 rep.", Toast.LENGTH_SHORT);
+                                       t1.show();
+                                       d.cancel();
+                                   }
+                               }
+
+                           } else {
+                               s3check = false;
+                               t1 = Toast.makeText(getContext(), "No rep number entered.", Toast.LENGTH_SHORT);
+                               t1.show();
+                               d.cancel();
+                           }
+
+                           if (s4.length() > 0) {
+
+                               if (s4.length() > 3) {
+                                   s4check = false;
+                                   t1 = Toast.makeText(getContext(), "Weight should be a 1, 2, or 3 digit number.", Toast.LENGTH_SHORT);
+                                   t1.show();
+                                   d.cancel();
+                               }else {
+                                   int s4intcheck = 0;
+                                   try {
+                                       s4intcheck = Integer.parseInt(s4);
+                                   } catch (NumberFormatException nfe) {
+                                       s4check = false;
+                                       t1 = Toast.makeText(getContext(), "Weight is not in number format.", Toast.LENGTH_SHORT);
+                                       t1.show();
+                                       d.cancel();
+                                   }
+                                   if(s4intcheck < 1){
+                                       s4check = false;
+                                       t1 = Toast.makeText(getContext(), "You must have at least 1 pound.", Toast.LENGTH_SHORT);
+                                       t1.show();
+                                       d.cancel();
+                                   }
+                               }
+
+                           } else {
+                               s4check = false;
+                               t1 = Toast.makeText(getContext(), "No weight entered.", Toast.LENGTH_SHORT);
+                               t1.show();
+                               d.cancel();
+                           }
+
+                           if(s1check && s2check && s3check && s4check) {
+                               exercisesAdapter.add(s1);
+                               exercisesAdapter.add(s2);
+                               exercisesAdapter.add(s3);
+                               exercisesAdapter.add(s4);
+                               exercisesAdapter.add(s5);
+                               currentProgram_exercises.setValue(exercises);
+                           }else{
+                               t1 = Toast.makeText(getContext(), "Information wasn't entered correctly. Please enter correctly.", Toast.LENGTH_LONG);
+                               t1.show();
+                               d.cancel();
+                               addExercise.performClick();
+                           }
                        }
+
                    });
                    forcedbuilder.show();
 
@@ -474,31 +531,137 @@ public class ExercisesFragment extends Fragment {
                 String s4 = weightAmt.getText().toString();
                 String s5 = "";
 
-
-                exercisesAdapter.add(s1);
-                exercisesAdapter.add(s2);
-                exercisesAdapter.add(s3);
-                exercisesAdapter.add(s4);
-                exercisesAdapter.add(s5);
-                currentProgram_exercises.setValue(exercises);
-
-
-                //fullfillment
-                final int numofentries = Integer.parseInt(s2);
-                if(numofentries != 0) {
-                    for (int f = 0; f < numofentries; ++f) {
-                        ff_array.add(s1);
-                        ff_array.add(s2);
-                        ff_array.add(s3);
-                        ff_array.add(s4);
-                        ff_array.add(s5);
+                Toast t;
+                boolean s1check = true;
+                boolean s2check = true;
+                boolean s3check = true;
+                boolean s4check = true;
+                if(s1.length() == 0 && s2.length() == 0 && s3.length() == 0 && s4.length() == 0 ){
+                    s1check = false;
+                    s2check = false;
+                    s3check = false;
+                    s4check = false;
+                    t = Toast.makeText(getContext(), "No information entered. Please enter all information correctly.", Toast.LENGTH_LONG);
+                    t.show();
+                    d.cancel();
+                    addExercise.performClick();
+                }else {
+                    if (s1.length() == 0) {
+                        s1check = false;
+                        t = Toast.makeText(getContext(), "No exercise name entered.", Toast.LENGTH_SHORT);
+                        t.show();
+                        d.cancel();
                     }
-                    FF_currentProgram_exercises.setValue(ff_array);
+                    if (s2.length() > 0) {
+
+                        if (s2.length() > 2) {
+                            s2check = false;
+                            t = Toast.makeText(getContext(), "Sets should be a 1 or 2 digit number.", Toast.LENGTH_SHORT);
+                            t.show();
+                            d.cancel();
+                        }else {
+                            int s2intcheck = 0;
+                            try {
+                                s2intcheck = Integer.parseInt(s2);
+                            } catch (NumberFormatException nfe) {
+                                s2check = false;
+                                t = Toast.makeText(getContext(), "Sets is not in number format.", Toast.LENGTH_SHORT);
+                                t.show();
+                                d.cancel();
+                            }
+                            if(s2intcheck < 1){
+                                s2check = false;
+                                t = Toast.makeText(getContext(), "You must have at least 1 set.", Toast.LENGTH_SHORT);
+                                t.show();
+                                d.cancel();
+                            }
+                        }
+
+                    } else {
+                        s2check = false;
+                        t = Toast.makeText(getContext(), "No set number entered.", Toast.LENGTH_SHORT);
+                        t.show();
+                        d.cancel();
+                    }
+
+                    if (s3.length() > 0) {
+
+                        if (s3.length() > 2) {
+                            s3check = false;
+                            t = Toast.makeText(getContext(), "Reps should be a 1 or 2 digit number.", Toast.LENGTH_SHORT);
+                            t.show();
+                            d.cancel();
+                        }else {
+                            int s3intcheck = 0;
+                            try {
+                                s3intcheck = Integer.parseInt(s3);
+                            } catch (NumberFormatException nfe) {
+                                s3check = false;
+                                t = Toast.makeText(getContext(), "Reps is not in number format.", Toast.LENGTH_SHORT);
+                                t.show();
+                                d.cancel();
+                            }
+                            if(s3intcheck < 1){
+                                s3check = false;
+                                t = Toast.makeText(getContext(), "You must have at least 1 rep.", Toast.LENGTH_SHORT);
+                                t.show();
+                                d.cancel();
+                            }
+                        }
+
+                    } else {
+                        s3check = false;
+                        t = Toast.makeText(getContext(), "No rep number entered.", Toast.LENGTH_SHORT);
+                        t.show();
+                        d.cancel();
+                    }
+
+                    if (s4.length() > 0) {
+
+                        if (s4.length() > 3) {
+                            s4check = false;
+                            t = Toast.makeText(getContext(), "Weight should be a 1, 2, or 3 digit number.", Toast.LENGTH_SHORT);
+                            t.show();
+                            d.cancel();
+                        }else {
+                            int s4intcheck = 0;
+                            try {
+                                s4intcheck = Integer.parseInt(s4);
+                            } catch (NumberFormatException nfe) {
+                                s4check = false;
+                                t = Toast.makeText(getContext(), "Weight is not in number format.", Toast.LENGTH_SHORT);
+                                t.show();
+                                d.cancel();
+                            }
+                            if(s4intcheck < 1){
+                                s4check = false;
+                                t = Toast.makeText(getContext(), "You must have at least 1 pound.", Toast.LENGTH_SHORT);
+                                t.show();
+                                d.cancel();
+                            }
+                        }
+
+                    } else {
+                        s4check = false;
+                        t = Toast.makeText(getContext(), "No weight entered.", Toast.LENGTH_SHORT);
+                        t.show();
+                        d.cancel();
+                    }
+
+                    if(s1check && s2check && s3check && s4check) {
+                        exercisesAdapter.add(s1);
+                        exercisesAdapter.add(s2);
+                        exercisesAdapter.add(s3);
+                        exercisesAdapter.add(s4);
+                        exercisesAdapter.add(s5);
+                        currentProgram_exercises.setValue(exercises);
+                    }else{
+                        t = Toast.makeText(getContext(), "Information wasn't entered correctly. Please enter correctly.", Toast.LENGTH_LONG);
+                        t.show();
+                        d.cancel();
+                        addExercise.performClick();
+                    }
                 }
-
-
-
-
             });
             builder.setNegativeButton("Cancel", (d, w) ->{
                 d.cancel();
@@ -538,9 +701,6 @@ public class ExercisesFragment extends Fragment {
                 String currProgram = input.getText().toString();
                 currentProgram.setValue(null);
                 programsAdapter.remove(currProgram);
-                //fullfillment program removal
-                FF_currentProgram.setValue(null);
-                ffAdapter.remove(currProgram);
 
                 if(programsAdapter.getCount() > 0) {
                     //clears the table
