@@ -248,13 +248,17 @@ public class ExercisesFragment extends Fragment {
 
             if(programsAdapter.getCount()>0) {
                 currentProgram = userPrograms.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
+                currentProgram_exercises = currentProgram.child("Exercises");
+                currentProgram.addChildEventListener(tableSwitchListener);
                 if(exercisesAdapter.getCount() == 0){
                     Toast t21 = Toast.makeText(getContext(), programsAdapter.getItem(pos) + " program has no exercises. Removing " + programsAdapter.getItem(pos) + ".", Toast.LENGTH_SHORT);
                     t21.show();
                     programsAdapter.remove(programsAdapter.getItem(pos));
+                    currentProgram = userPrograms.child(Objects.requireNonNull(programsAdapter.getItem(0)));
+                    currentProgram_exercises = currentProgram.child("Exercises");
+                    currentProgram.addChildEventListener(tableSwitchListener);
+                    programList.setSelection(0);
                 }
-                currentProgram_exercises = currentProgram.child("Exercises");
-                currentProgram.addChildEventListener(tableSwitchListener);
             }
         });
 
@@ -293,6 +297,14 @@ public class ExercisesFragment extends Fragment {
 
                        Toast t2 = Toast.makeText(getContext(), "Program " + currProgram + " added. Please enter your first exercise for this program.", Toast.LENGTH_LONG);
                        t2.show();
+                       //clears table before switch
+                       for(int j=1; j <= 12; j++) {
+                           TableRow r = (TableRow) exerciseTable.getChildAt(j);
+                           for (int k = 0; k < 5; k++) {
+                               TextView cell = (TextView) r.getChildAt(k);
+                               cell.setText("");
+                           }
+                       }
                        addExercise.performClick();
 
 
