@@ -19,6 +19,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
@@ -79,6 +80,37 @@ public class LoginActivity extends AppCompatActivity {
 
         findViewById(R.id.signOutButton).setOnClickListener(v -> signOut());
 
+        forgotPasswordButton.setOnClickListener(v ->{
+            String curremail = emailField.getText().toString();
+            boolean atSymbol = false;
+            boolean hasproperending = false;
+            if(curremail.length()>5) {
+                    if (curremail.contains("@") && (curremail.contains(".com")||curremail.contains(".edu"))) {
+                        atSymbol = true;
+                        hasproperending = true;
+                    }
+                    
+
+            }
+            if(emailField.getText().toString().equals("") || !(atSymbol && hasproperending)) {
+                Toast t3 = Toast.makeText(getApplicationContext(), "Enter a email to send the password reset link to in the email field.", Toast.LENGTH_LONG);
+                t3.show();
+            }else{
+                fAuth.sendPasswordResetEmail(curremail).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast t4 = Toast.makeText(getApplicationContext(), "Please check your email for the email we sent to you.", Toast.LENGTH_LONG);
+                            t4.show();
+                        } else {
+                            Toast t5 = Toast.makeText(getApplicationContext(), "Error Occured", Toast.LENGTH_SHORT);
+                            t5.show();
+                        }
+                    }
+                });
+            }
+
+        });
 
     }
 
