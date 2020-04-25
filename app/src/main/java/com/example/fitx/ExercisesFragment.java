@@ -254,10 +254,12 @@ public class ExercisesFragment extends Fragment {
                     Toast t21 = Toast.makeText(getContext(), programsAdapter.getItem(pos) + " program has no exercises. Removing " + programsAdapter.getItem(pos) + ".", Toast.LENGTH_SHORT);
                     t21.show();
                     programsAdapter.remove(programsAdapter.getItem(pos));
-                    currentProgram = userPrograms.child(Objects.requireNonNull(programsAdapter.getItem(0)));
-                    currentProgram_exercises = currentProgram.child("Exercises");
-                    currentProgram.addChildEventListener(tableSwitchListener);
-                    programList.setSelection(0);
+                    if(programsAdapter.getCount()>0) {
+                        currentProgram = userPrograms.child(Objects.requireNonNull(programsAdapter.getItem(0)));
+                        currentProgram_exercises = currentProgram.child("Exercises");
+                        currentProgram.addChildEventListener(tableSwitchListener);
+                        programList.setSelection(0);
+                    }
                 }
             }
         });

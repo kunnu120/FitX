@@ -81,6 +81,31 @@ public class HomeFragment extends Fragment {
                 }
 
 
+                if(programsAdapter.getCount() == 0) {
+                    programsAdapter.add("No Programs");
+                    programView.performItemClick(programView, 0, R.id.programList);
+                    exerciseView.performItemClick(exerciseView, 0, R.id.currentList);
+                }
+
+                if(programsAdapter.getCount() ==1 && !(programsAdapter.getItem(0).equals("No Programs"))){
+                    programView.performItemClick(programView, 0, R.id.programList);
+
+                }
+
+                if(programsAdapter.getCount()>1){
+                    for(int i=0; i< programsAdapter.getCount(); i++){
+                        if(programsAdapter.getItem(i).equals("No Programs")){
+                            programsAdapter.remove("No Programs");
+                            exercisesAdapter.remove("No Exercises");
+
+                        }
+                    }
+                }
+
+
+
+
+
             } catch (NullPointerException e) {
 
             }
@@ -115,7 +140,14 @@ public class HomeFragment extends Fragment {
                     }
 
                     exercisesAdapter.addAll(exercises);
+                    if(exercisesAdapter.getCount() == 1 && !(exercisesAdapter.getItem(0).equals("No Exercises"))){
+                        exerciseView.performItemClick(exerciseView, 0, R.id.currentList);
 
+                    }
+
+                    if(programsAdapter.getItem(0).equals("No Programs")){
+                        exercisesAdapter.add("No Exercises");
+                    }
                     setExerciseViews(dataSnapshot, exerciseInfoIndex);
 
                 } catch (NullPointerException e) {
@@ -163,6 +195,7 @@ public class HomeFragment extends Fragment {
         currentProgram.addValueEventListener(programListener);
         programsAdapter = new ArrayAdapter<>(Objects.requireNonNull(this.getActivity()), android.R.layout.simple_list_item_1, programs);
         programView.setAdapter(programsAdapter);
+
 
             logButton.setOnClickListener(v1 -> {
                 LayoutInflater li = LayoutInflater.from(getContext());
@@ -427,10 +460,15 @@ public class HomeFragment extends Fragment {
             exerciseProgress.setProgress(0);
             percent1.setText("0%");
 
-            progressLabel2.setText(programsAdapter.getItem(pos) + " Progress");
-            progProgress.setProgress(0);
-            percent2.setText("0%");
-            programCalled = true;
+            if(!programsAdapter.getItem(0).equals("No Programs")) {
+                progressLabel2.setText(programsAdapter.getItem(pos) + " Progress");
+                progProgress.setProgress(0);
+                percent2.setText("0%");
+                programCalled = true;
+            }else{
+                progressLabel2.setText("Add a program on the next page");
+                programCalled = true;
+            }
         });
 
         final Handler handler1 = new Handler();
@@ -461,12 +499,16 @@ public class HomeFragment extends Fragment {
             exerciseView.setAdapter(exercisesAdapter);
             exerciseView.setSelection(pos);
 
-            exerciseCalled = true;
-            ((logInfo) this.getActivity().getApplication()).setTotalLogWeight(0);
-            exerciseProgress.setProgress(0);
-            percent1.setText("0%");
-            progressLabel1.setText(exercisesAdapter.getItem(pos) + " Progress");
-
+            if(!programsAdapter.getItem(0).equals("No Programs")) {
+                exerciseCalled = true;
+                ((logInfo) this.getActivity().getApplication()).setTotalLogWeight(0);
+                exerciseProgress.setProgress(0);
+                percent1.setText("0%");
+                progressLabel1.setText(exercisesAdapter.getItem(pos) + " Progress");
+            }else{
+                exerciseCalled = true;
+                progressLabel1.setText("Add an exercise to a program");
+            }
         });
 
         final Handler handler2 = new Handler();
@@ -506,22 +548,28 @@ public class HomeFragment extends Fragment {
         loggingSets = "";
         loggingReps = "";
         loggingWeight = "";
-        for (DataSnapshot dss : ds.getChildren()) {
-            if (i == (index + 1)) {
-                s1 = s1 + (dss.getValue().toString());
-                loggingSets = dss.getValue().toString();
-                sets.setText(s1);
-            } else if (i == (index + 2)) {
-                s2 = s2 + (dss.getValue().toString());
-                loggingReps = dss.getValue().toString();
-                reps.setText(s2);
-            } else if (i == (index + 3)) {
-                s3 = s3 + (dss.getValue().toString());
-                loggingWeight = dss.getValue().toString();
-                weight.setText(s3);
-            }
-            i++;
+        if(!programsAdapter.getItem(0).equals("No Programs")) {
+            for (DataSnapshot dss : ds.getChildren()) {
+                if (i == (index + 1)) {
+                    s1 = s1 + (dss.getValue().toString());
+                    loggingSets = dss.getValue().toString();
+                    sets.setText(s1);
+                } else if (i == (index + 2)) {
+                    s2 = s2 + (dss.getValue().toString());
+                    loggingReps = dss.getValue().toString();
+                    reps.setText(s2);
+                } else if (i == (index + 3)) {
+                    s3 = s3 + (dss.getValue().toString());
+                    loggingWeight = dss.getValue().toString();
+                    weight.setText(s3);
+                }
+                i++;
 
+            }
+        }else{
+            sets.setText(s1);
+            reps.setText(s2);
+            weight.setText(s3);
         }
 
     }
