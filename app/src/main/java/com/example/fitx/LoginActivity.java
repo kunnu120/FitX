@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                         atSymbol = true;
                         hasproperending = true;
                     }
-                    
+
 
             }
             if(emailField.getText().toString().equals("") || !(atSymbol && hasproperending)) {
@@ -118,13 +118,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         progressBar.setVisibility(View.GONE);
-        FirebaseUser account = fAuth.getCurrentUser();
-        GoogleSignInAccount currentUser = GoogleSignIn.getLastSignedInAccount(this);
-        if (account != null){
-            updateUI(account);
-        }else if(currentUser != null){
-            updateUI(currentUser);
-        }
+        updateUI((GoogleSignInAccount) null);
     }
 
     private void createAccount(String email, String password) {
