@@ -274,7 +274,7 @@ public class LoginActivity extends AppCompatActivity {
             //passwordField.setText(getString(R.string.firebase_status_fmt, account.getUid()));
         } else {
             emailField.setText("");
-            // passwordField.setText(null);
+            passwordField.setText("");
         }
     }
 
@@ -286,7 +286,7 @@ public class LoginActivity extends AppCompatActivity {
 
         } else {
             emailField.setText("");
-           // passwordField.setText(null);
+            passwordField.setText("");
 
         }
     }
