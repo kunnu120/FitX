@@ -136,8 +136,10 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
                     String url = dataSnapshot.getValue(String.class);
-                    Glide.with(getContext()).load(url).into(img);
-                    prftxt.setVisibility(View.INVISIBLE);
+                    if (!url.isEmpty()) {
+                        Glide.with(getContext()).load(url).into(img);
+                        prftxt.setVisibility(View.INVISIBLE);
+                    }
                 } catch (NullPointerException e) {
 
                 }
