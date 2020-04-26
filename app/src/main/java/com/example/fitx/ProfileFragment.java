@@ -193,17 +193,22 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
     public void editGoalDialog(int pos) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
-        builder.setTitle("Add Goal");
+        builder.setTitle("Edit/Delete Goal");
         final EditText input = new EditText(this.getContext());
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setText(adapter.getItem(pos), TextView.BufferType.EDITABLE);
         builder.setView(input);
         builder.setPositiveButton("Edit", (d,w) -> {
             String s = input.getText().toString();
-            adapter.remove(adapter.getItem(pos));
-            adapter.insert(s,pos);
-            goalsEnc.set(pos,Security.encode(s));
-            goalsRef.setValue(goalsEnc);
+            if (s.isEmpty()) {
+                Toast.makeText(getContext(), "Goals cannot be empty!",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                adapter.remove(adapter.getItem(pos));
+                adapter.insert(s, pos);
+                goalsEnc.set(pos, Security.encode(s));
+                goalsRef.setValue(goalsEnc);
+            }
         });
         builder.setNegativeButton("Delete", (d,w) -> {
             adapter.remove(adapter.getItem(pos));
@@ -223,9 +228,14 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         builder.setView(input);
         builder.setPositiveButton("OK", (d, w) -> {
             String s = input.getText().toString();
-            adapter.add(s);
-            goalsEnc.add(Security.encode(s));
-            goalsRef.setValue(goalsEnc);
+            if (s.isEmpty()) {
+                Toast.makeText(getContext(), "Cannot add empty goal!",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                adapter.add(s);
+                goalsEnc.add(Security.encode(s));
+                goalsRef.setValue(goalsEnc);
+            }
         });
         builder.setNegativeButton("Cancel", (d, w) -> {
             d.cancel();
