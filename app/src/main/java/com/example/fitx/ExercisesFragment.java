@@ -67,20 +67,20 @@ public class ExercisesFragment extends Fragment {
                 exercisesAdapter.addAll((ArrayList<String>) dataSnapshot.getValue());
             }
 
-                Vector<String> data = new Vector<>();
-                for(DataSnapshot ds : dataSnapshot.getChildren()){
-                    data.add(ds.getValue().toString());
+            Vector<String> data = new Vector<>();
+            for(DataSnapshot ds : dataSnapshot.getChildren()){
+                data.add(ds.getValue().toString());
+            }
+            int i = 0;
+            for(int j=1; j <= data.size()/5; j++) {
+                TableRow r = (TableRow) exerciseTable.getChildAt(j);
+                for (int k = 0; k < 5; k++) {
+                    TextView cell = (TextView) r.getChildAt(k);
+                    cell.setText(data.get(i));
+                    i++;
                 }
-                int i = 0;
-                for(int j=1; j <= data.size()/5; j++) {
-                    TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                    for (int k = 0; k < 5; k++) {
-                        TextView cell = (TextView) r.getChildAt(k);
-                        cell.setText(data.get(i));
-                        i++;
-                    }
-                }
-                data.clear();
+            }
+            data.clear();
 
         }
 
@@ -196,10 +196,10 @@ public class ExercisesFragment extends Fragment {
                 }
             }
         }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError){
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError){
 
-            }
+        }
     };
 
 
@@ -279,44 +279,44 @@ public class ExercisesFragment extends Fragment {
             builder.setView(input);
             builder.setPositiveButton("Add", (d, w) -> {
 
-               exercises = new ArrayList<>();
-               exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, exercises);
-               String currProgram = input.getText().toString();
-               if(currProgram.length() == 0){
-                   Toast t12 = Toast.makeText(getContext(),"You entered nothing. Please enter a name for a workout program.", Toast.LENGTH_SHORT);
-                   t12.show();
-                   addProgram.performClick();
-               }else {
+                exercises = new ArrayList<>();
+                exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, exercises);
+                String currProgram = input.getText().toString();
+                if(currProgram.length() == 0){
+                    Toast t12 = Toast.makeText(getContext(),"You entered nothing. Please enter a name for a workout program.", Toast.LENGTH_SHORT);
+                    t12.show();
+                    addProgram.performClick();
+                }else {
 
-                   boolean program_exists = false;
-                   for (int i = 0; i < programsAdapter.getCount(); i++) {
-                       if (programsAdapter.getItem(i).equals(currProgram)) {
-                           program_exists = true;
-                       }
+                    boolean program_exists = false;
+                    for (int i = 0; i < programsAdapter.getCount(); i++) {
+                        if (programsAdapter.getItem(i).equals(currProgram)) {
+                            program_exists = true;
+                        }
 
-                   }
-                   if (!program_exists) {
-                       programsAdapter.add(currProgram);
-                       currentProgram = userPrograms.child(currProgram);
-                       currentProgram_exercises = currentProgram.child("Exercises");
-                       currentProgram.addChildEventListener(tableSwitchListener);
-                       programList.setSelection(programList.getCount() - 1);
+                    }
+                    if (!program_exists) {
+                        programsAdapter.add(currProgram);
+                        currentProgram = userPrograms.child(currProgram);
+                        currentProgram_exercises = currentProgram.child("Exercises");
+                        currentProgram.addChildEventListener(tableSwitchListener);
+                        programList.setSelection(programList.getCount() - 1);
 
-                       Toast t2 = Toast.makeText(getContext(), "Program " + currProgram + " added. Please enter your first exercise for this program.", Toast.LENGTH_LONG);
-                       t2.show();
-                       //clears table before switch
-                       for(int j=1; j <= 12; j++) {
-                           TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                           for (int k = 0; k < 5; k++) {
-                               TextView cell = (TextView) r.getChildAt(k);
-                               cell.setText("");
-                           }
-                       }
-                       addExercise.performClick();
+                        Toast t2 = Toast.makeText(getContext(), "Program " + currProgram + " added. Please enter your first exercise for this program.", Toast.LENGTH_LONG);
+                        t2.show();
+                        //clears table before switch
+                        for(int j=1; j <= 12; j++) {
+                            TableRow r = (TableRow) exerciseTable.getChildAt(j);
+                            for (int k = 0; k < 5; k++) {
+                                TextView cell = (TextView) r.getChildAt(k);
+                                cell.setText("");
+                            }
+                        }
+                        addExercise.performClick();
 
 
-                   }
-               }
+                    }
+                }
             });
             builder.setNegativeButton("Cancel", (d,w) ->{
                 d.cancel();
@@ -596,12 +596,12 @@ public class ExercisesFragment extends Fragment {
             Spinner sp = new Spinner(getActivity());
             sp.setAdapter(programsAdapter);
 
-        if(programsAdapter.getCount()>0) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
-            builder.setTitle("Remove What Program?");
+            if(programsAdapter.getCount()>0) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
+                builder.setTitle("Remove What Program?");
 
-            builder.setView(sp);
-            builder.setPositiveButton("Delete", (d, w) -> {
+                builder.setView(sp);
+                builder.setPositiveButton("Delete", (d, w) -> {
 
 
 
@@ -628,23 +628,23 @@ public class ExercisesFragment extends Fragment {
 
 
 
-            });
-            builder.setNegativeButton("Cancel", (d, w) -> {
-                d.cancel();
-            });
-            builder.show();
-        }else{
-            Toast t5 = Toast.makeText(getContext(), "You don't have any programs to remove.", Toast.LENGTH_SHORT);
-            t5.show();
-            //clears the table
-            for (int j = 1; j <= 12; j++) {
-                TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                for (int k = 0; k < 5; k++) {
-                    TextView cell = (TextView) r.getChildAt(k);
-                    cell.setText("");
+                });
+                builder.setNegativeButton("Cancel", (d, w) -> {
+                    d.cancel();
+                });
+                builder.show();
+            }else{
+                Toast t5 = Toast.makeText(getContext(), "You don't have any programs to remove.", Toast.LENGTH_SHORT);
+                t5.show();
+                //clears the table
+                for (int j = 1; j <= 12; j++) {
+                    TableRow r = (TableRow) exerciseTable.getChildAt(j);
+                    for (int k = 0; k < 5; k++) {
+                        TextView cell = (TextView) r.getChildAt(k);
+                        cell.setText("");
+                    }
                 }
             }
-        }
         });
 
 
