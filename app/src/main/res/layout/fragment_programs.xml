@@ -36,7 +36,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/select_date"
+        android:textColor="#000000"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/calendarView" />
@@ -55,12 +56,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
     -->
+
+    <Spinner
+        android:id="@+id/programspinner"
+        android:layout_width="172dp"
+        android:layout_height="44dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@+id/LT"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView" />
+
     <ListView
         android:id="@+id/LT"
         android:layout_width="172dp"
         android:layout_height="44dp"
         android:layout_marginTop="96dp"
-        android:background="@drawable/home_page_list_views"
+
         android:dividerHeight="50dp"
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
@@ -81,11 +93,12 @@
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="291dp"
-        android:layout_height="43dp"
+        android:layout_width="350dp"
+        android:layout_height="200dp"
         android:layout_marginTop="28dp"
-        android:background="@drawable/home_page_list_views"
-        android:text="@string/textview"
+        android:background="@color/colorPrimary"
+        android:textColor="#000000"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dateToProgram" />
