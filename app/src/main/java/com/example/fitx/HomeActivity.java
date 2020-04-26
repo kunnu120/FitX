@@ -331,6 +331,9 @@ public class HomeActivity extends AppCompatActivity {
         fAuth.addAuthStateListener(authStateListener);
     }
 
+    @Override
+    public void onBackPressed() {}
+
     protected void onStop() {
         super.onStop();
         if (authStateListener != null) {
