@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.signature.ObjectKey;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -114,7 +115,8 @@ public class PostAdapter extends
             }
         });
         glide.load(uploadRef.child(p.getPostid()+".jpg")).into(img);
-        glide.load(profileRef.child(p.getUserid()+".jpg")).into(pfpic);
+        glide.load(profileRef.child(p.getUserid()+".jpg")).signature(
+                new ObjectKey(System.currentTimeMillis())).into(pfpic);
     }
 
     // Returns the total count of items in the list

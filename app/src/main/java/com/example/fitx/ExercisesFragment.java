@@ -725,15 +725,12 @@ public class ExercisesFragment extends Fragment {
                     String s1 = exercisesAdapter.getItem(databaseIndex);
                     exerciseName.setText(s1, TextView.BufferType.EDITABLE);
                     final EditText setNum = editExerciseView.findViewById(R.id.add_exercise_sets);
-                    setNum.setInputType(InputType.TYPE_CLASS_TEXT);
                     String s2 = exercisesAdapter.getItem((databaseIndex + 1));
                     setNum.setText(s2, TextView.BufferType.EDITABLE);
                     final EditText repNum = editExerciseView.findViewById(R.id.add_exercise_reps);
-                    repNum.setInputType(InputType.TYPE_CLASS_TEXT);
                     String s3 = exercisesAdapter.getItem((databaseIndex + 2));
                     repNum.setText(s3, TextView.BufferType.EDITABLE);
                     final EditText weightAmt = editExerciseView.findViewById(R.id.add_exercise_weight);
-                    weightAmt.setInputType(InputType.TYPE_CLASS_TEXT);
                     String s4 = exercisesAdapter.getItem((databaseIndex + 3));
                     weightAmt.setText(s4, TextView.BufferType.EDITABLE);
 

@@ -58,6 +58,7 @@ public class SocialFragment extends Fragment {
     private DatabaseReference postListRef;
     private PostAdapter adapter;
     private RecyclerView rvPosts;
+    private LinearLayoutManager linearLayoutManager;
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
     private final StorageReference storageRef = FirebaseStorage.getInstance().getReference("uploads");
 
@@ -107,7 +108,7 @@ public class SocialFragment extends Fragment {
 
         btnupload = v.findViewById(R.id.btnPostUpload);
         btnupload.setOnClickListener(x -> {
-            if (uri == null & postTextField.getText().toString() == "") {
+            if (uri == null & postTextField.getText().toString().isEmpty()) {
                 Toast.makeText(getContext(), "Cannot upload empty post!",
                         Toast.LENGTH_SHORT).show();
             } else {
@@ -127,7 +128,10 @@ public class SocialFragment extends Fragment {
         // Attach the adapter to the recyclerview to populate items
         rvPosts.setAdapter(adapter);
         // Set layout manager to position the items
-        rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        rvPosts.setLayoutManager(linearLayoutManager);
 
         postListRef.addChildEventListener(postListener);
         return v;
