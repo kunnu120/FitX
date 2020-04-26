@@ -185,6 +185,8 @@ public class HomeActivity extends AppCompatActivity {
         a = (EditText) findViewById(R.id.userHeight);
         b = (EditText) findViewById(R.id.userWeight);
         c = (EditText) findViewById(R.id.user_age);
+     //   Spinner spinner = (Spinner) v.findViewById(R.id.spinner1);
+    //    String gendertext = spinner.getSelectedItem().toString();
         //d = (EditText) findViewById(R.id.);
         btn = (Button) findViewById(R.id.button3);
         reff = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("BMI");
@@ -194,10 +196,31 @@ public class HomeActivity extends AppCompatActivity {
                 String val = dataSnapshot.child("userHeight").getValue().toString();
                 String val2 = dataSnapshot.child("userWeight").getValue().toString();
                 String val3 = dataSnapshot.child("age").getValue().toString();
-                //    String val4 = dataSnapshot.child("bmi").getValue().toString();
-                a.setText(val + " inches");
-                b.setText(val2 + " lbs");
-                c.setText(val3 + " years");
+                    String val4 = dataSnapshot.child("gender").getValue().toString();
+
+                if(!val.contains("inches")) {
+                    a.setText(val + " inches");
+                } else
+                    a.setText(val);
+
+                if(!val2.contains("lbs")) {
+                    b.setText(val2 + " lbs");
+                } else
+                    b.setText(val2);
+
+                if(!val3.contains("years")) {
+                    c.setText(val3 + " years");
+                } else
+                    c.setText(val3);
+
+            /*    if(gendertext.equals("Male"))
+                    spinner.setSelection(0);
+                else if(gendertext.equals("Female"))
+                    spinner.setSelection(1);
+                else if(gendertext.equals("Other"))
+                    spinner.setSelection(2);
+
+             */
                 // d.setText(val4 + " bmi");
             }
 
@@ -322,18 +345,40 @@ public class HomeActivity extends AppCompatActivity {
         editTextWeight = (EditText) findViewById(R.id.userWeight);
         textViewResult = (TextView) findViewById(R.id.userBMI);
         editTextAge = (EditText) findViewById(R.id.user_age);
+
+        //adding
+
+     //   Spinner spinner = (Spinner) v.findViewById(R.id.spinner1);
+   //     String gender = spinner.getSelectedItem().toString();
         double height = 0.0;
         double weight = 0.0;
        if(!editTextHeight.getText().toString().equals("") && editTextHeight.getText().toString().length() > 0 )
         {
             // Get String
-            height = Double.parseDouble(editTextHeight.getText().toString());
+            String substrHeight = editTextHeight.getText().toString();
+            String temp = "";
+            for(int i = 0;i<substrHeight.length();i++) {
+                if(substrHeight.charAt(i) == ' ')
+                    break;
+                else
+                    temp+=substrHeight.charAt(i);
+            }
+            height = Double.parseDouble(temp);
         }
 
         if(!editTextWeight.getText().toString().equals("") && editTextWeight.getText().toString().length() > 0 )
         {
             // Get String
-            weight = Double.parseDouble(editTextWeight.getText().toString());
+            String substrWeight = editTextWeight.getText().toString();
+            String temp2 = "";
+            for(int i = 0;i<substrWeight.length();i++) {
+                if(substrWeight.charAt(i) == ' ')
+                    break;
+                else
+                    temp2+=substrWeight.charAt(i);
+            }
+
+            weight = Double.parseDouble(temp2);
         }
 
         //double weight = Double.parseDouble(editTextWeight.getText().toString());
@@ -401,8 +446,6 @@ public class HomeActivity extends AppCompatActivity {
         textViewResult.setText(calculation);
 
 
-
-        //resulttext.setText(calculation);
 
     }
 
