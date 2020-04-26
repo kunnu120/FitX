@@ -107,7 +107,7 @@ public class SocialFragment extends Fragment {
 
         btnupload = v.findViewById(R.id.btnPostUpload);
         btnupload.setOnClickListener(x -> {
-            if (uri == null & postTextField.getText().toString() == "") {
+            if (uri == null & postTextField.getText().toString().isEmpty()) {
                 Toast.makeText(getContext(), "Cannot upload empty post!",
                         Toast.LENGTH_SHORT).show();
             } else {
