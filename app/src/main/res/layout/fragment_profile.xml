@@ -158,8 +158,5 @@
         android:layout_marginStart="260dp"
         android:background="@drawable/showinfo"
         android:onClick="buttonClick2" />
-    />
-
-
 
 </RelativeLayout>
