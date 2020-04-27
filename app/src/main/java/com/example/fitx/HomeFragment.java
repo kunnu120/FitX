@@ -171,7 +171,7 @@ public class HomeFragment extends Fragment {
                         }
                         //new code above
                         index++;
-                        if (index == 5) {
+                        if (index == 4) {
 
                             index = 0;
                         }
@@ -249,58 +249,58 @@ public class HomeFragment extends Fragment {
 
 
 
+
             logButton.setOnClickListener(v1 -> {
-                LayoutInflater li = LayoutInflater.from(getContext());
-                View log = li.inflate(R.layout.log_layout, null);
-                AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
-                builder.setTitle("Log Your Set");
 
-                EditText numReps = log.findViewById(R.id.num_reps);
-                EditText numWeight = log.findViewById(R.id.num_weight);
+                if(programsAdapter.getItem(0).equals("No Programs")){
+                    Toast t = Toast.makeText(getContext(),"Cant log without a Program and Exercises",Toast.LENGTH_SHORT);
+                    t.show();
+                }else {
+                    LayoutInflater li = LayoutInflater.from(getContext());
+                    View log = li.inflate(R.layout.log_layout, null);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
+                    builder.setTitle("Log Your Set");
 
-                builder.setView(log);
+                    EditText numReps = log.findViewById(R.id.num_reps);
+                    EditText numWeight = log.findViewById(R.id.num_weight);
 
-
-                builder.setPositiveButton("Log", (d, w) -> {
-
-                    for(int i =0; i <= exercises.size() - 1; i++)  {
-                        System.out.println("ExerciseTest " + exercises.get(i));
-                    }
-
-                    double activityPercent = 0.0;
-                    double programPercent = 0.0;
+                    builder.setView(log);
 
 
-
-                    if(loggingSets == null || loggingReps == null || loggingWeight == null) {
-                        Toast.makeText(this.getActivity(), "Choose a program", Toast.LENGTH_SHORT).show();
-                    }
-
-                    //new code
-                    int currentlogweight = Integer.parseInt(numReps.getText().toString())*
-                            Integer.parseInt(numWeight.getText().toString());
-                    currentExerciseProgress = currentExerciseProgress + currentlogweight;
-                    currentProgramProgress = currentProgramProgress + currentlogweight;
-                    activityPercent = currentExerciseProgress/totalLogWeight;
-                    programPercent = currentProgramProgress/totalProgWeight;
-
-                    ///////new code above
+                    builder.setPositiveButton("Log", (d, w) -> {
 
 
+                        double activityPercent = 0.0;
+                        double programPercent = 0.0;
 
 
-                    DecimalFormat df = new DecimalFormat("#.##");
-                    activityPercent = Double.parseDouble(df.format(activityPercent));
-                    DecimalFormat df1 = new DecimalFormat("#.##");
-                    programPercent = Double.parseDouble(df1.format(programPercent));
+                        try {
+                            //new code
+                            int currentlogweight = Integer.parseInt(numReps.getText().toString()) *
+                                    Integer.parseInt(numWeight.getText().toString());
+                            currentExerciseProgress = currentExerciseProgress + currentlogweight;
+                            currentProgramProgress = currentProgramProgress + currentlogweight;
+                            activityPercent = currentExerciseProgress / totalLogWeight;
+                            programPercent = currentProgramProgress / totalProgWeight;
 
+                            ///////new code above
+                        } catch (NumberFormatException nfe) {
+                            Toast.makeText(this.getActivity(), "Please Log both Reps and Weight", Toast.LENGTH_SHORT).show();
+                            d.cancel();
+                        }
+
+
+                        DecimalFormat df = new DecimalFormat("#.##");
+                        activityPercent = Double.parseDouble(df.format(activityPercent));
+                        DecimalFormat df1 = new DecimalFormat("#.##");
+                        programPercent = Double.parseDouble(df1.format(programPercent));
 
 
                         double hundred = 100.0;
                         double progressBar = hundred * activityPercent;
                         int progressPercent = (int) progressBar;
-                        if(progressPercent >= 100.0){
-                            Toast t = Toast.makeText(getContext(),"Reached Your Goal! Move on to next exercise or keep grinding!", Toast.LENGTH_SHORT);
+                        if (progressPercent >= 100.0) {
+                            Toast t = Toast.makeText(getContext(), "Reached Your Goal! Move on to next exercise or keep grinding!", Toast.LENGTH_SHORT);
                             t.show();
                         }
                         percent1.setText(progressPercent + "%");
@@ -314,20 +314,20 @@ public class HomeFragment extends Fragment {
                         }
 
 
-
                         double hundred1 = 100.0;
                         double programProgress = hundred1 * programPercent;
                         int programProgressPercent = (int) programProgress;
                         percent2.setText(programProgressPercent + "%");
                         progProgress.setProgress(programProgressPercent);
 
-                });
+                    });
 
 
-                builder.setNegativeButton("Cancel", (d, w) -> {
-                    d.cancel();
-                });
-                builder.show();
+                    builder.setNegativeButton("Cancel", (d, w) -> {
+                        d.cancel();
+                    });
+                    builder.show();
+                }
 
 
             });
@@ -425,7 +425,7 @@ public class HomeFragment extends Fragment {
             }else{
                 progressLabel2.setText("Add a program on the next page");
                 percent2.setText("0%");
-
+                progProgress.setProgress(0);
             }
         });
 
@@ -446,7 +446,7 @@ public class HomeFragment extends Fragment {
 
         exerciseView.setOnItemClickListener((p, view, pos, id) -> {
 
-            exerciseInfoIndex = pos * 5;
+            exerciseInfoIndex = pos * 4;
             //selectProgram = currentProgram.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
             exerciseList = selectProgram.child("Exercises");
 

@@ -72,9 +72,9 @@ public class ExercisesFragment extends Fragment {
                 data.add(ds.getValue().toString());
             }
             int i = 0;
-            for(int j=1; j <= data.size()/5; j++) {
+            for(int j=1; j <= data.size()/4; j++) {
                 TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                for (int k = 0; k < 5; k++) {
+                for (int k = 0; k < 4; k++) {
                     TextView cell = (TextView) r.getChildAt(k);
                     cell.setText(data.get(i));
                     i++;
@@ -92,9 +92,9 @@ public class ExercisesFragment extends Fragment {
                 data.add(ds.getValue().toString());
             }
             int i = 0;
-            for(int j=1; j <= data.size()/5; j++) {
+            for(int j=1; j <= data.size()/4; j++) {
                 TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                for (int k = 0; k < 5; k++) {
+                for (int k = 0; k < 4; k++) {
                     TextView cell = (TextView) r.getChildAt(k);
                     cell.setText(data.get(i));
                     i++;
@@ -110,7 +110,7 @@ public class ExercisesFragment extends Fragment {
                 //clears the table for new program
                 for (int j = 1; j <= 12; j++) {
                     TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                    for (int k = 0; k < 5; k++) {
+                    for (int k = 0; k < 4; k++) {
                         TextView cell = (TextView) r.getChildAt(k);
                         cell.setText("");
                     }
@@ -122,14 +122,14 @@ public class ExercisesFragment extends Fragment {
                     data.add(ds.getValue().toString());
                 }
 
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < 4; i++) {
                     data.removeElementAt(data.size() - 1);
                 }
 
                 int i = 0;
-                for (int j = 1; j <= data.size() / 5; j++) {
+                for (int j = 1; j <= data.size() / 4; j++) {
                     TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                    for (int k = 0; k < 5; k++) {
+                    for (int k = 0; k < 4; k++) {
                         TextView cell = (TextView) r.getChildAt(k);
                         cell.setText(data.get(i));
                         i++;
@@ -140,7 +140,7 @@ public class ExercisesFragment extends Fragment {
                 if (programList.getCount() == 0) {
                     for (int j = 1; j <= 12; j++) {
                         TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                        for (int k = 0; k < 5; k++) {
+                        for (int k = 0; k < 4; k++) {
                             TextView cell = (TextView) r.getChildAt(k);
                             cell.setText("");
                         }
@@ -150,7 +150,7 @@ public class ExercisesFragment extends Fragment {
                 //clears table
                 for(int j=1; j <= 12; j++) {
                     TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                    for (int k = 0; k < 5; k++) {
+                    for (int k = 0; k < 4; k++) {
                         TextView cell = (TextView) r.getChildAt(k);
                         cell.setText("");
                     }
@@ -243,7 +243,7 @@ public class ExercisesFragment extends Fragment {
             //clears table before switch
             for(int j=1; j <= 12; j++) {
                 TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                for (int k = 0; k < 5; k++) {
+                for (int k = 0; k < 4; k++) {
                     TextView cell = (TextView) r.getChildAt(k);
                     cell.setText("");
                 }
@@ -307,7 +307,7 @@ public class ExercisesFragment extends Fragment {
                         //clears table before switch
                         for(int j=1; j <= 12; j++) {
                             TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                            for (int k = 0; k < 5; k++) {
+                            for (int k = 0; k < 4; k++) {
                                 TextView cell = (TextView) r.getChildAt(k);
                                 cell.setText("");
                             }
@@ -347,7 +347,7 @@ public class ExercisesFragment extends Fragment {
                         for (int j = 1; j <= 12; j++) {
                             TableRow r = (TableRow) exerciseTable.getChildAt(j);
                             TextView startCell = (TextView) r.getChildAt(0);
-                            for (int k = 0; k < 5; k++) {
+                            for (int k = 0; k < 4; k++) {
                                 if (startCell.getText().toString().equals("")) {
                                     j = 13;
                                 }
@@ -356,8 +356,8 @@ public class ExercisesFragment extends Fragment {
                                 data.add(cellData);
                             }
                         }
-                        //removes the 5 empty spaces added at the end of the vector
-                        for (int i = 0; i < 5; i++) {
+                        //removes the 4 empty spaces added at the end of the vector
+                        for (int i = 0; i < 4; i++) {
                             data.removeElementAt(data.size() - 1);
                         }
 
@@ -377,7 +377,7 @@ public class ExercisesFragment extends Fragment {
                     String s2 = setNum.getText().toString();
                     String s3 = repNum.getText().toString();
                     String s4 = weightAmt.getText().toString();
-                    String s5 = "";
+
 
                     Toast t;
                     boolean s1check = true;
@@ -508,7 +508,6 @@ public class ExercisesFragment extends Fragment {
                             exercisesAdapter.add(s2);
                             exercisesAdapter.add(s3);
                             exercisesAdapter.add(s4);
-                            exercisesAdapter.add(s5);
                             currentProgram_exercises.setValue(exercises);
                         } else {
                             t = Toast.makeText(getContext(), "Information wasn't entered correctly. Please enter correctly.", Toast.LENGTH_LONG);
@@ -538,7 +537,7 @@ public class ExercisesFragment extends Fragment {
             for(int h=1; h <= 12; h++) {
                 TableRow row = (TableRow) exerciseTable.getChildAt(h);
                 TextView namecell = (TextView)row.getChildAt(0);
-                for (int k = 0; k < 5; k++) {
+                for (int k = 0; k < 4; k++) {
                     if(namecell.getText().toString().equals("")){
                         h = 13;
                     }
@@ -547,15 +546,15 @@ public class ExercisesFragment extends Fragment {
                     data1.add(cellData);
                 }
             }
-            //removes the 5 empty spaces added at the end of the vector
-            for(int i=0; i < 5; i++) {
+            //removes the 4 empty spaces added at the end of the vector
+            for(int i=0; i < 4; i++) {
                 data1.removeElementAt(data1.size() - 1);
             }
 
             ArrayList<String> exercisenames = new ArrayList<>();
             ArrayAdapter<String> exercisenamesadapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, exercisenames);
             for(int i=0; i<data1.size(); i++){
-                if(i%5==0){
+                if(i%4==0){
                     exercisenamesadapter.add(data1.elementAt(i));
                 }
             }
@@ -615,7 +614,7 @@ public class ExercisesFragment extends Fragment {
                     //clears the table
                     for (int j = 1; j <= 12; j++) {
                         TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                        for (int k = 0; k < 5; k++) {
+                        for (int k = 0; k < 4; k++) {
                             TextView cell = (TextView) r.getChildAt(k);
                             cell.setText("");
                         }
@@ -634,12 +633,12 @@ public class ExercisesFragment extends Fragment {
                 });
                 builder.show();
             }else{
-                Toast t5 = Toast.makeText(getContext(), "You don't have any programs to remove.", Toast.LENGTH_SHORT);
-                t5.show();
+                Toast t4 = Toast.makeText(getContext(), "You don't have any programs to remove.", Toast.LENGTH_SHORT);
+                t4.show();
                 //clears the table
                 for (int j = 1; j <= 12; j++) {
                     TableRow r = (TableRow) exerciseTable.getChildAt(j);
-                    for (int k = 0; k < 5; k++) {
+                    for (int k = 0; k < 4; k++) {
                         TextView cell = (TextView) r.getChildAt(k);
                         cell.setText("");
                     }
@@ -656,7 +655,7 @@ public class ExercisesFragment extends Fragment {
             for(int h=1; h <= 12; h++) {
                 TableRow row = (TableRow) exerciseTable.getChildAt(h);
                 TextView namecell = (TextView)row.getChildAt(0);
-                for (int k = 0; k < 5; k++) {
+                for (int k = 0; k < 4; k++) {
                     if(namecell.getText().toString().equals("")){
                         h = 13;
                     }
@@ -665,15 +664,15 @@ public class ExercisesFragment extends Fragment {
                     data1.add(cellData);
                 }
             }
-            //removes the 5 empty spaces added at the end of the vector
-            for(int i=0; i < 5; i++) {
+            //removes the 4 empty spaces added at the end of the vector
+            for(int i=0; i < 4; i++) {
                 data1.removeElementAt(data1.size() - 1);
             }
 
             ArrayList<String> exercisenames = new ArrayList<>();
             ArrayAdapter<String> exercisenamesadapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, exercisenames);
             for(int i=0; i<data1.size(); i++){
-                if(i%5==0){
+                if(i%4==0){
                     exercisenamesadapter.add(data1.elementAt(i));
                 }
             }
@@ -692,7 +691,7 @@ public class ExercisesFragment extends Fragment {
                     for (int h = 1; h <= 12; h++) {
                         TableRow row = (TableRow) exerciseTable.getChildAt(h);
                         TextView namecell = (TextView) row.getChildAt(0);
-                        for (int k = 0; k < 5; k++) {
+                        for (int k = 0; k < 4; k++) {
                             if (namecell.getText().toString().equals("")) {
                                 h = 13;
                             }
@@ -701,8 +700,8 @@ public class ExercisesFragment extends Fragment {
                             data.add(cellData);
                         }
                     }
-                    //removes the 5 empty spaces added at the end of the vector
-                    for (int i = 0; i < 5; i++) {
+                    //removes the 4 empty spaces added at the end of the vector
+                    for (int i = 0; i < 4; i++) {
                         data.removeElementAt(data.size() - 1);
                     }
 
@@ -713,7 +712,7 @@ public class ExercisesFragment extends Fragment {
                     }
 
 
-                    int databaseIndex = sp.getSelectedItemPosition() * 5;
+                    int databaseIndex = sp.getSelectedItemPosition() * 4;
 
                     LayoutInflater lii = LayoutInflater.from(getContext());
                     View editExerciseView = lii.inflate(R.layout.add_exercise_dialog, null);
@@ -787,8 +786,8 @@ public class ExercisesFragment extends Fragment {
                                         int check_new_s3 = Integer.parseInt(new_s3);
                                     } catch (NumberFormatException nfe) {
                                         s3flag = false;
-                                        Toast t15 = Toast.makeText(getContext(), "Reps entered was not a 1 or 2 digit number.", Toast.LENGTH_SHORT);
-                                        t15.show();
+                                        Toast t14 = Toast.makeText(getContext(), "Reps entered was not a 1 or 2 digit number.", Toast.LENGTH_SHORT);
+                                        t14.show();
                                     }
                                 } else {
                                     s3flag = false;
@@ -862,12 +861,7 @@ public class ExercisesFragment extends Fragment {
                         d2.cancel();
                     });
                     builder.show();
-                    //}else{
-                    //    Toast t11 = Toast.makeText(getContext(), "The exercise you entered doesn't exist in the current program. Please enter a valid exercise name.", Toast.LENGTH_SHORT);
-                    //    t11.show();
-                    //    d.cancel();
-                    //    editExercise.performClick();
-                    //}
+
                 });
                 editPrompt.setNegativeButton("Cancel", (d, w) -> {
                     d.cancel();
@@ -885,14 +879,14 @@ public class ExercisesFragment extends Fragment {
     }
 
     private void exerciseToDelete(String exerciseStr, int pos){
-        pos = pos*5;
+        pos = pos*4;
         //copy whole table into exercises adapter for editing
         Vector<String> data = new Vector<>();
 
         for(int h=1; h <= 12; h++) {
             TableRow row = (TableRow) exerciseTable.getChildAt(h);
             TextView namecell = (TextView)row.getChildAt(0);
-            for (int k = 0; k < 5; k++) {
+            for (int k = 0; k < 4; k++) {
                 if(namecell.getText().toString().equals("")){
                     h = 13;
                 }
@@ -901,8 +895,8 @@ public class ExercisesFragment extends Fragment {
                 data.add(cellData);
             }
         }
-        //removes the 5 empty spaces added at the end of the vector
-        for(int i=0; i < 5; i++) {
+        //removes the 4 empty spaces added at the end of the vector
+        for(int i=0; i < 4; i++) {
             data.removeElementAt(data.size() - 1);
         }
 
@@ -910,7 +904,7 @@ public class ExercisesFragment extends Fragment {
         exercises = new ArrayList<>();
         exercisesAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, exercises);
         for(int m=0; m < data.size(); ++m){
-            if((m < pos) || (m >pos+4)) {
+            if((m < pos) || (m >pos+3)) {
                 exercisesAdapter.add(data.elementAt(m));
             }
         }

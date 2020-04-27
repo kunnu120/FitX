@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -49,6 +51,7 @@ public class HomeActivity extends AppCompatActivity {
     BottomNavigationView bottomNav;
     ViewPager2 viewPager;
     PageAdapter adapter;
+    private PagerAdapter pagerAdapter;
     private DatabaseReference heig;
     TextView a,b,c,d,f;
     Button btn;
@@ -61,125 +64,7 @@ public class HomeActivity extends AppCompatActivity {
     String BMIResult, calculation;
 
 
-   /* private ChildEventListener BMIListener = new ChildEventListener() {
 
-        @Override
-        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            int index = 0;
-            for(DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                if(index == 0) {
-                    editTextAge.setText(ds.getValue().toString());
-                } else if(index == 1) {
-                    textViewResult.setText(ds.getValue().toString());
-                } else if(index == 2) {
-                    if(ds.getValue().toString().equals("Male")) {
-                        dataField4.setSelection(0);
-                    } else if(ds.getValue().toString().equals("Female")) {
-                        dataField4.setSelection(1);
-                    } else {
-                        dataField4.setSelection(2);
-                    }
-
-                } else if(index == 3) {
-                    editTextHeight.setText(ds.getValue().toString());
-                } else if(index == 4) {
-                    editTextWeight.setText(ds.getValue().toString());
-                }
-                index++;
-                System.out.println("code " + ds.getValue().toString());
-            }
-        }
-
-        @Override
-        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            int index = 0;
-            for(DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                if(index == 0) {
-                    editTextAge.setText(ds.getValue().toString());
-                } else if(index == 1) {
-                    textViewResult.setText(ds.getValue().toString());
-                } else if(index == 2) {
-                    if(ds.getValue().toString().equals("Male")) {
-                        dataField4.setSelection(0);
-                    } else if(ds.getValue().toString().equals("Female")) {
-                        dataField4.setSelection(1);
-                    } else {
-                        dataField4.setSelection(2);
-                    }
-
-                } else if(index == 3) {
-                    editTextHeight.setText(ds.getValue().toString());
-                } else if(index == 4) {
-                    editTextWeight.setText(ds.getValue().toString());
-                }
-                index++;
-            }
-        }
-
-        @Override
-        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-            int index = 0;
-            for(DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                if(index == 0) {
-                    editTextAge.setText(ds.getValue().toString());
-                } else if(index == 1) {
-                    textViewResult.setText(ds.getValue().toString());
-                } else if(index == 2) {
-                    if(ds.getValue().toString().equals("Male")) {
-                        dataField4.setSelection(0);
-                    } else if(ds.getValue().toString().equals("Female")) {
-                        dataField4.setSelection(1);
-                    } else {
-                        dataField4.setSelection(2);
-                    }
-
-                } else if(index == 3) {
-                    editTextHeight.setText(ds.getValue().toString());
-                } else if(index == 4) {
-                    editTextWeight.setText(ds.getValue().toString());
-                }
-                index++;
-            }
-        }
-
-        @Override
-        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            int index = 0;
-            for(DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                if(index == 0) {
-                    editTextAge.setText(ds.getValue().toString());
-                } else if(index == 1) {
-                    textViewResult.setText(ds.getValue().toString());
-                } else if(index == 2) {
-                    if(ds.getValue().toString().equals("Male")) {
-                        dataField4.setSelection(0);
-                    } else if(ds.getValue().toString().equals("Female")) {
-                        dataField4.setSelection(1);
-                    } else {
-                        dataField4.setSelection(2);
-                    }
-
-                } else if(index == 3) {
-                    editTextHeight.setText(ds.getValue().toString());
-                } else if(index == 4) {
-                    editTextWeight.setText(ds.getValue().toString());
-                }
-                index++;
-            }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-        }
-
-    }; */
 
     public void buttonClick2(View v) {
         a = (EditText) findViewById(R.id.userHeight);
@@ -213,15 +98,7 @@ public class HomeActivity extends AppCompatActivity {
                 } else
                     c.setText(val3);
 
-            /*    if(gendertext.equals("Male"))
-                    spinner.setSelection(0);
-                else if(gendertext.equals("Female"))
-                    spinner.setSelection(1);
-                else if(gendertext.equals("Other"))
-                    spinner.setSelection(2);
 
-             */
-                // d.setText(val4 + " bmi");
             }
 
             @Override
@@ -229,7 +106,7 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
-        //a.setText("hi");
+
 
     }
     @Override
@@ -247,32 +124,7 @@ public class HomeActivity extends AppCompatActivity {
 
         TextView textViewResult = (TextView) findViewById(R.id.userBMI);
 
-      //  a = (TextView) findViewById(R.id.heighttext);
-     //   btn = (Button) findViewById(R.id.button3);
 
-     /*   btn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                reff = FirebaseDatabase.getInstance().getReference().child("Users").child("BMI");
-                reff.addValueEventListener(new ValueEventListener() {
-
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String he = dataSnapshot.child("userHeight").getValue().toString();
-                        a.setText(he);
-                    }
-
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-            }
-
-        }); */
 
 
         //initializing bottom navigation view
@@ -307,7 +159,7 @@ public class HomeActivity extends AppCompatActivity {
         adapter = new PageAdapter(getSupportFragmentManager(), getLifecycle());
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         viewPager.setAdapter(adapter);
-        viewPager.setPageTransformer(new MarginPageTransformer(1500));
+        viewPager.setPageTransformer(new ZoomOutPageTransformer());
         viewPager.setOffscreenPageLimit(4);
 
 
