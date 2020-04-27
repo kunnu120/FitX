@@ -36,6 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:text="Hold a Date to Schedule or Comment"
         android:textColor="#000000"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,13 +66,13 @@
         app:layout_constraintBottom_toTopOf="@+id/LT"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calendarView" />
+        app:layout_constraintTop_toBottomOf="@+id/dateBox" />
 
     <ListView
         android:id="@+id/LT"
         android:layout_width="172dp"
         android:layout_height="44dp"
-        android:layout_marginTop="96dp"
+        android:layout_marginTop="70dp"
 
         android:dividerHeight="50dp"
         android:textColor="@color/colorPrimary"
@@ -84,18 +85,19 @@
         android:id="@+id/dateToProgram"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="@string/comment_on_date"
+        android:layout_marginTop="30dp"
+        android:text="Comments"
         android:textColor="#000000"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LT" />
+        app:layout_constraintTop_toBottomOf="@+id/programspinner" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="350dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="28dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="5dp"
         android:background="@color/colorPrimary"
         android:textColor="#000000"
         android:textSize="20sp"
@@ -108,7 +110,7 @@
         android:layout_width="203dp"
         android:layout_height="54dp"
         android:layout_marginTop="28dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="0dp"
         app:layout_constraintBottom_toTopOf="@+id/LT"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
