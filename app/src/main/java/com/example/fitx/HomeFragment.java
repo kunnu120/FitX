@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.tv.TvContract;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,10 +44,12 @@ public class HomeFragment extends Fragment {
     private DatabaseReference currentProgram;
     private DatabaseReference exerciseList;
     private DatabaseReference selectProgram;
+    private DatabaseReference exerciseNumbers;
     private SharedPreferences sharedPreference;
 
 
     private ArrayList<String> exercises;
+    private ArrayList<String> exercises2;
     private ArrayAdapter<String> programsAdapter;
     private ArrayAdapter<String> exercisesAdapter;
     private ListView programView;
@@ -162,6 +165,33 @@ public class HomeFragment extends Fragment {
         }
     };
 
+    private ValueEventListener exerciseListener2 = new ValueEventListener() {
+
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            exercises2 = new ArrayList<>();
+
+            int index = 0;
+            try {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    if (index == 0) {
+                        exercises2.add(Objects.requireNonNull(ds.getValue()).toString());
+                    }
+                    index++;
+                }
+
+            } catch (NullPointerException e) {
+
+            }
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+
 
     @SuppressLint("SetTextI18n")
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -197,6 +227,7 @@ public class HomeFragment extends Fragment {
         programView.setAdapter(programsAdapter);
 
 
+
             logButton.setOnClickListener(v1 -> {
                 LayoutInflater li = LayoutInflater.from(getContext());
                 View log = li.inflate(R.layout.log_layout, null);
@@ -210,6 +241,10 @@ public class HomeFragment extends Fragment {
 
 
                 builder.setPositiveButton("Log", (d, w) -> {
+
+                    for(int i =0; i <= exercises.size() - 1; i++)  {
+                        System.out.println("ExerciseTest " + exercises.get(i));
+                    }
 
                     double totalLogWeight = 0;
                     double totalProgWeight = 0;
@@ -450,7 +485,6 @@ public class HomeFragment extends Fragment {
 
             exercisesAdapter = new ArrayAdapter<>(Objects.requireNonNull(this.getActivity()), android.R.layout.simple_list_item_1, exercises);
             exerciseList.addValueEventListener(exerciseListener);
-
             exerciseView.setAdapter(exercisesAdapter);
 
             ((logInfo) this.getActivity().getApplication()).setTotalLogWeight(0);
@@ -467,7 +501,7 @@ public class HomeFragment extends Fragment {
                 programCalled = true;
             }else{
                 progressLabel2.setText("Add a program on the next page");
-                programCalled = true;
+                //programCalled = true;
             }
         });
 
