@@ -38,7 +38,7 @@
         android:layout_marginTop="40dp"
         android:layout_marginRight="30dp"
         android:adjustViewBounds="true"
-        android:background="@color/colorPrimary"
+        android:background="#C5CDCB"
         android:contentDescription="@string/profile_pic" />
 
     <TextView
@@ -52,6 +52,7 @@
         android:layout_marginTop="1dp"
         android:layout_marginEnd="1dp"
         android:layout_marginBottom="1dp"
+        android:background="#C5CDCB"
         android:gravity="center"
         android:text="Add your image..."
         android:textColor="#000000" />
@@ -86,7 +87,7 @@
         android:layout_marginStart="10dp"
         android:layout_below="@id/ventilator_progress"
         android:layout_marginBottom="400dp"
-        android:background="@color/colorPrimary" />
+        android:background="#C5CDCB" />
 
     <TextView
         android:id="@+id/goalLabel"
@@ -113,6 +114,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="410dp"
         android:ems="10"
+        android:background="#C5CDCB"
         android:hint="Height(inch)"
         android:inputType="number" />
 
@@ -123,6 +125,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="460dp"
         android:ems="10"
+        android:background="#C5CDCB"
         android:hint="Weight(lbs)"
         android:inputType="number" />
 
@@ -133,6 +136,7 @@
         android:layout_marginStart="135dp"
         android:layout_marginTop="415dp"
         android:ems="10"
+        android:background="#C5CDCB"
         android:hint="Age"
         android:inputType="number" />
 
@@ -151,6 +155,7 @@
         android:layout_width="100dp"
         android:layout_height="40dp"
         android:hint="Gender2"
+        android:background="#C5CDCB"
         android:layout_marginStart="135dp"
         android:layout_marginTop="460dp" />
 
@@ -162,8 +167,7 @@
         android:layout_below="@+id/userWeight"
         android:layout_marginStart="10dp"
         android:layout_marginTop="11dp"
-        android:text="Result"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/button3"

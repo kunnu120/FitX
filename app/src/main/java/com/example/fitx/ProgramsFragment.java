@@ -97,9 +97,13 @@ public class ProgramsFragment extends Fragment{
                     commentsAdapter.add(ds.getValue().toString());
                 }
 
-                comText.setText("");
-                for(int i=0; i<commentsAdapter.getCount(); i++){
-                    comText.append(commentsAdapter.getItem(i) + "\n");
+                if(commentsAdapter.getCount()>0) {
+                    comText.setText("");
+                    for (int i = 0; i < commentsAdapter.getCount(); i++) {
+                        comText.append(commentsAdapter.getItem(i) + "\n");
+                    }
+                }else{
+                    comText.setText("      Welcome to FitX Programs page \n      here is where you add comments \n      and schedule workout programs \n           to whatever days you want\n\n                   Just hold on a day\n             to schedule or comment!\n    Make sure to check out the social\n     page to the right to meet friends\n                    to work out with!");
                 }
 
 
@@ -118,7 +122,7 @@ public class ProgramsFragment extends Fragment{
 
             try {
                 if(dataSnapshot.getValue() == null){
-                    String noVal = "No program scheduled";
+                    String noVal = "Hold on Date to Schedule or Comment";
                     dateSelected.setText(noVal);
                 }else {
                     dateSelected.setText(dataSnapshot.getValue().toString());
@@ -238,20 +242,60 @@ public class ProgramsFragment extends Fragment{
             if(programText!=null) {
                 Dates = currentUserRef.child("Dates");
                 currentDate = Dates.child(DateFormat.format("EEE, MMM dd", date).toString());
-                String prompt = "Do you want to schedule your " + programText + " program on " + DateFormat.format("EEE, MMM dd", date).toString() + "?";
+                String prompt = "Schedule your " + programText + " program \n" +"on " + DateFormat.format("EEE, MMM dd", date).toString() + "?";
                 LayoutInflater lii = LayoutInflater.from(getContext());
                 View scheduleProgram = lii.inflate(R.layout.schedule_program_dialog, null);
-                Button commentBtn = scheduleProgram.findViewById(R.id.commentbutton);
-                Button scheduleBtn = scheduleProgram.findViewById(R.id.schedulebutton);
+                //Button commentBtn = scheduleProgram.findViewById(R.id.commentbutton);
+                //Button scheduleBtn = scheduleProgram.findViewById(R.id.schedulebutton);
                 TextView tv = scheduleProgram.findViewById(R.id.schedule_or_comment);
                 String newprompt = prompt + " Or comment?";
                 tv.setText(newprompt);
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext(), R.style.AlertDialogStyle);
                 builder1.setView(scheduleProgram);
-                builder1.setNegativeButton("Cancel", (d,w)->{
+                builder1.setPositiveButton("Schedule", (d,w)->{
+                    Dates = currentUserRef.child("Dates");
+                    currentDate = Dates.child(DateFormat.format("EEE, MMM dd", date).toString());
+                    programOnDate = currentDate.child("ProgramsScheduled");
+                    programOnDate.addValueEventListener(programOnDateListener);
+                    currentComment = currentDate.child("Comments");
+                    currentComment.addValueEventListener(commentListener);
+                    if(programText!= null){
+                        programOnDate.setValue(programText);
+                    }
+                });
+                builder1.setNeutralButton("Comment", (d,w)->{
+                    currentComment = currentDate.child("Comments");
+                    currentComment.addValueEventListener(commentListener);
+                    if (programs != null) {
+                        LayoutInflater ci = LayoutInflater.from(getContext());
+                        View createComments = ci.inflate(R.layout.comment_dialog, null);
+                        AlertDialog.Builder cBuilder = new AlertDialog.Builder(getContext(), R.style.AlertDialogStyle);
+
+                        cBuilder.setTitle("Add a Comment");
+                        EditText cTV = createComments.findViewById(R.id.add_program_comment);
+                        cBuilder.setView(createComments);
+
+                        cBuilder.setPositiveButton("Add", (d1, w1) -> {
+
+                            if (!cTV.getText().toString().equals("")){
+                                commentsAdapter.add(cTV.getText().toString());
+                                currentComment.setValue(comments);
+                            }else{
+                                d1.cancel();
+                            }
+
+                        });
+                        cBuilder.setNegativeButton("Cancel", (d1, w1) -> {
+                            d1.cancel();
+                        });
+                        cBuilder.show();
+                    }
+                });
+                builder1.setNegativeButton("Close", (d,w)->{
+
                     d.cancel();
                 });
-                commentBtn.setOnClickListener(v -> {
+        /*        commentBtn.setOnClickListener(v -> {
 
                     currentComment = currentDate.child("Comments");
                         currentComment.addValueEventListener(commentListener);
@@ -264,7 +308,7 @@ public class ProgramsFragment extends Fragment{
                             EditText cTV = createComments.findViewById(R.id.add_program_comment);
                             cBuilder.setView(createComments);
 
-                            cBuilder.setPositiveButton("Done", (d1, w1) -> {
+                            cBuilder.setPositiveButton("Add", (d1, w1) -> {
 
                                 if (!cTV.getText().toString().equals("")){
                                     commentsAdapter.add(cTV.getText().toString());
@@ -274,13 +318,13 @@ public class ProgramsFragment extends Fragment{
                                 }
 
                             });
-                            cBuilder.setNegativeButton("Close", (d1, w1) -> {
+                            cBuilder.setNegativeButton("Cancel", (d1, w1) -> {
                                 d1.cancel();
                             });
                             cBuilder.show();
                         }
-                });
-                scheduleBtn.setOnClickListener(v -> {
+                });   */
+           /*     scheduleBtn.setOnClickListener(v -> {
                     Dates = currentUserRef.child("Dates");
                     currentDate = Dates.child(DateFormat.format("EEE, MMM dd", date).toString());
                     programOnDate = currentDate.child("ProgramsScheduled");
@@ -290,7 +334,7 @@ public class ProgramsFragment extends Fragment{
                     if(programText!= null){
                         programOnDate.setValue(programText);
                     }
-                });
+                }); */
 
             /*    builder1.setPositiveButton("Schedule" , (d, w)->{
                     Dates = currentUserRef.child("Dates");

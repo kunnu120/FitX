@@ -553,7 +553,7 @@ public class ExercisesFragment extends Fragment {
             }
 
             ArrayList<String> exercisenames = new ArrayList<>();
-            ArrayAdapter<String> exercisenamesadapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, exercisenames);
+            ArrayAdapter<String> exercisenamesadapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, exercisenames);
             for(int i=0; i<data1.size(); i++){
                 if(i%5==0){
                     exercisenamesadapter.add(data1.elementAt(i));
@@ -671,7 +671,7 @@ public class ExercisesFragment extends Fragment {
             }
 
             ArrayList<String> exercisenames = new ArrayList<>();
-            ArrayAdapter<String> exercisenamesadapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, exercisenames);
+            ArrayAdapter<String> exercisenamesadapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, exercisenames);
             for(int i=0; i<data1.size(); i++){
                 if(i%5==0){
                     exercisenamesadapter.add(data1.elementAt(i));

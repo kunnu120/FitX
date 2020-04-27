@@ -10,9 +10,10 @@
     </style>
 
     <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:colorAccent">#000000</item>
+        <item name="android:colorAccent">#C5CDCB</item>
         <item name="android:textColor">#000000</item>
-        <item name="android:textColorPrimary">#000</item>
+        <item name="android:textColorPrimary">#000000</item>
+        <item name="android:background">#C5CDCB</item>
     </style>
 
     <style name="ThemeOverlay.MyDarkButton" />
