@@ -53,9 +53,10 @@ import java.lang.String;
 import static android.app.Activity.RESULT_OK;
 
 
-
+//Creating public class profilefragment that extends the fragment and implements AdapterView.OnItemSelectedListener
 public class ProfileFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
+    //Setting the global variables we need for this class
     ArrayAdapter<String> myAdapter;
     private static final int PICK_IMAGE_REQUEST = 1;
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -75,10 +76,11 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
     TextView display_data;
 
 
-
+    //goallistener that is the valueeventlistner
     private ValueEventListener goalListener = new ValueEventListener() {
         @Override
         @SuppressWarnings("unchecked")
+        //when data is changed it go through the arraylist goals and decode it
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             try {
                 goalsEnc.addAll((ArrayList<String>) Objects.requireNonNull(dataSnapshot.getValue()));
@@ -103,19 +105,24 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
     @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //Creating a spinner for gender
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_profile, null);
 
         //  View v = inflater.inflate(R.layout.manual, container, false);
 
+        //Values in the spinner is going to be Male, female and other
         String [] values =
                 {"Male","Female","Other"};
+
+        //Looking to see what's in the spinner provided by the user
         Spinner spinner = (Spinner) v.findViewById(R.id.spinner1);
+        //Saving the infor to the ArrayAdapter<String> created myAdapter
         myAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, values);
         myAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(myAdapter);
 
-
+        //getting the profile pic, and information on the profile page and saving it to newly created variables
         img = v.findViewById(R.id.profile_pic);
         prftxt = v.findViewById(R.id.profile_txt);
         progressBar = v.findViewById(R.id.ventilator_progress);
@@ -123,6 +130,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
         //StorageReference imageRef = storageRef.child("1575623427796.jpg");
 
+        //saving the pictures to the firebase under profilepics reference
         storageRef = FirebaseStorage.getInstance().getReference("profilepics");
 
         btnupload = v.findViewById(R.id.btnUpload);
@@ -131,6 +139,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         ProfilePicUrlRef = db.getReference("Users").child(userid).child("ProfilePicURL");
 
 
+        //this automatically updated the changes on the profile page
         ProfilePicUrlRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -151,6 +160,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
             }
         });
 
+        //cliecked on upload button
         btnupload.setOnClickListener(v1 -> {
             Intent intent = new Intent();
             intent.setType("image/*");
@@ -160,6 +170,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
         goals = new ArrayList<>();
 
+        //saving the data to the firebase under users->child(GoalsEnc) reference
         goalsRef = db.getReference("Users").child(userid).child("GoalsEnc");
         goalsRef.addListenerForSingleValueEvent(goalListener);
         adapter = new ArrayAdapter<>(
@@ -176,17 +187,20 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         return v;
     }
 
+    //Converting the selected string at position passed in the parameter and then showing it as toast
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String text = parent.getItemAtPosition(position).toString();
         Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
     }
 
+    //onNothignselected void function
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
 //#################################### GOAL CODE ############################################
 
+    //EditGoalDialog that takes the parameter which is integer values named pos - can edit the goal.
     public void editGoalDialog(int pos) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
         builder.setTitle("Edit/Delete Goal");
@@ -196,6 +210,8 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         builder.setView(input);
         builder.setPositiveButton("Edit", (d,w) -> {
             String s = input.getText().toString();
+
+            //if string s is empty, user didn't provide any information and should toast - Goals cannot be empty
             if (s.isEmpty()) {
                 Toast.makeText(getContext(), "Goals cannot be empty!",
                         Toast.LENGTH_SHORT).show();
@@ -206,6 +222,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
                 goalsRef.setValue(goalsEnc);
             }
         });
+        //deleting the specific goal at a position
         builder.setNegativeButton("Delete", (d,w) -> {
             adapter.remove(adapter.getItem(pos));
             goalsEnc.remove(pos);
@@ -216,6 +233,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         builder.show();
     }
 
+    //Adding the goal for the user on the profile page
     public void addGoalDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
         builder.setTitle("Add Goal");
@@ -224,6 +242,8 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         builder.setView(input);
         builder.setPositiveButton("OK", (d, w) -> {
             String s = input.getText().toString();
+
+            //if string s empty tell user that cannot add empty goal, else it should add the goal if the string s is not empty
             if (s.isEmpty()) {
                 Toast.makeText(getContext(), "Cannot add empty goal!",
                         Toast.LENGTH_SHORT).show();
@@ -242,7 +262,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
 
 
-
+    //if the bmi button is clicked, show the user their BMI
     public void button2Clicked(View v) {
 
         EditText editTextHeight = (EditText) getView().findViewById(R.id.userHeight);
@@ -260,6 +280,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
     //#########################GOAL CODE END ###########################################
 
+    //Uploading the profile picture, when user wants to upload the picture and click the upload button - this function will be called
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -272,6 +293,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
             fileRef.putFile(uri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
+                        //successfully upload the picture
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
@@ -291,6 +313,8 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
+
+                        //Upload failed
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Toast.makeText(getContext(), "Upload failed...",
@@ -308,6 +332,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         }
     }
 
+    //Passing Uri and returning string uri after converting
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getActivity().getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();

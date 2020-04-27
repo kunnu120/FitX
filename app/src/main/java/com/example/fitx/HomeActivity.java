@@ -35,9 +35,10 @@ import android.widget.Toast;
 
 import static android.app.ProgressDialog.show;
 
-//implements BottomNavigationView.OnNavigationItemSelectedListener
+//Creaing class homeactivity that extends appcompatacitivity
 public class HomeActivity extends AppCompatActivity {
 
+    //Initializing global variables that we need
     DatabaseReference reff;
     EditText dataField;
     EditText editTextHeight;
@@ -53,7 +54,6 @@ public class HomeActivity extends AppCompatActivity {
     TextView a,b,c,d,f;
     Button btn;
 
-
     FirebaseAuth fAuth = FirebaseAuth.getInstance();
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
     private ArrayList<Fragment> fragments = new ArrayList<>();
@@ -61,143 +61,29 @@ public class HomeActivity extends AppCompatActivity {
     String BMIResult, calculation;
 
 
-   /* private ChildEventListener BMIListener = new ChildEventListener() {
-
-        @Override
-        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            int index = 0;
-            for(DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                if(index == 0) {
-                    editTextAge.setText(ds.getValue().toString());
-                } else if(index == 1) {
-                    textViewResult.setText(ds.getValue().toString());
-                } else if(index == 2) {
-                    if(ds.getValue().toString().equals("Male")) {
-                        dataField4.setSelection(0);
-                    } else if(ds.getValue().toString().equals("Female")) {
-                        dataField4.setSelection(1);
-                    } else {
-                        dataField4.setSelection(2);
-                    }
-
-                } else if(index == 3) {
-                    editTextHeight.setText(ds.getValue().toString());
-                } else if(index == 4) {
-                    editTextWeight.setText(ds.getValue().toString());
-                }
-                index++;
-                System.out.println("code " + ds.getValue().toString());
-            }
-        }
-
-        @Override
-        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            int index = 0;
-            for(DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                if(index == 0) {
-                    editTextAge.setText(ds.getValue().toString());
-                } else if(index == 1) {
-                    textViewResult.setText(ds.getValue().toString());
-                } else if(index == 2) {
-                    if(ds.getValue().toString().equals("Male")) {
-                        dataField4.setSelection(0);
-                    } else if(ds.getValue().toString().equals("Female")) {
-                        dataField4.setSelection(1);
-                    } else {
-                        dataField4.setSelection(2);
-                    }
-
-                } else if(index == 3) {
-                    editTextHeight.setText(ds.getValue().toString());
-                } else if(index == 4) {
-                    editTextWeight.setText(ds.getValue().toString());
-                }
-                index++;
-            }
-        }
-
-        @Override
-        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-            int index = 0;
-            for(DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                if(index == 0) {
-                    editTextAge.setText(ds.getValue().toString());
-                } else if(index == 1) {
-                    textViewResult.setText(ds.getValue().toString());
-                } else if(index == 2) {
-                    if(ds.getValue().toString().equals("Male")) {
-                        dataField4.setSelection(0);
-                    } else if(ds.getValue().toString().equals("Female")) {
-                        dataField4.setSelection(1);
-                    } else {
-                        dataField4.setSelection(2);
-                    }
-
-                } else if(index == 3) {
-                    editTextHeight.setText(ds.getValue().toString());
-                } else if(index == 4) {
-                    editTextWeight.setText(ds.getValue().toString());
-                }
-                index++;
-            }
-        }
-
-        @Override
-        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            int index = 0;
-            for(DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                if(index == 0) {
-                    editTextAge.setText(ds.getValue().toString());
-                } else if(index == 1) {
-                    textViewResult.setText(ds.getValue().toString());
-                } else if(index == 2) {
-                    if(ds.getValue().toString().equals("Male")) {
-                        dataField4.setSelection(0);
-                    } else if(ds.getValue().toString().equals("Female")) {
-                        dataField4.setSelection(1);
-                    } else {
-                        dataField4.setSelection(2);
-                    }
-
-                } else if(index == 3) {
-                    editTextHeight.setText(ds.getValue().toString());
-                } else if(index == 4) {
-                    editTextWeight.setText(ds.getValue().toString());
-                }
-                index++;
-            }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-        }
-
-    }; */
-
+    //When clicked on the showInfo  button on profile page, this function will be called
     public void buttonClick2(View v) {
+
+        //getting info from the edittext content - height, weight and age
         a = (EditText) findViewById(R.id.userHeight);
         b = (EditText) findViewById(R.id.userWeight);
         c = (EditText) findViewById(R.id.user_age);
-     //   Spinner spinner = (Spinner) v.findViewById(R.id.spinner1);
-    //    String gendertext = spinner.getSelectedItem().toString();
-        //d = (EditText) findViewById(R.id.);
+
         btn = (Button) findViewById(R.id.button3);
+
+        //getting info from the database firebase
         reff = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("BMI");
         reff.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                //saving the info retrieved from the database and storing them in the strings
                 String val = dataSnapshot.child("userHeight").getValue().toString();
                 String val2 = dataSnapshot.child("userWeight").getValue().toString();
                 String val3 = dataSnapshot.child("age").getValue().toString();
                     String val4 = dataSnapshot.child("gender").getValue().toString();
 
+                //Printing out the information when clicked on show info to editText
                 if(!val.contains("inches")) {
                     a.setText(val + " inches");
                 } else
@@ -213,15 +99,6 @@ public class HomeActivity extends AppCompatActivity {
                 } else
                     c.setText(val3);
 
-            /*    if(gendertext.equals("Male"))
-                    spinner.setSelection(0);
-                else if(gendertext.equals("Female"))
-                    spinner.setSelection(1);
-                else if(gendertext.equals("Other"))
-                    spinner.setSelection(2);
-
-             */
-                // d.setText(val4 + " bmi");
             }
 
             @Override
@@ -238,41 +115,12 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        //databaseReference = db.getReference("Users");
         //initializing view pager
         viewPager = findViewById(R.id.viewpager);
 
         //retrieving bmi values
         editTextHeight = (EditText) findViewById(R.id.userHeight);
-
         TextView textViewResult = (TextView) findViewById(R.id.userBMI);
-
-      //  a = (TextView) findViewById(R.id.heighttext);
-     //   btn = (Button) findViewById(R.id.button3);
-
-     /*   btn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                reff = FirebaseDatabase.getInstance().getReference().child("Users").child("BMI");
-                reff.addValueEventListener(new ValueEventListener() {
-
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String he = dataSnapshot.child("userHeight").getValue().toString();
-                        a.setText(he);
-                    }
-
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-            }
-
-        }); */
 
 
         //initializing bottom navigation view
@@ -310,7 +158,6 @@ public class HomeActivity extends AppCompatActivity {
         viewPager.setPageTransformer(new MarginPageTransformer(1500));
         viewPager.setOffscreenPageLimit(4);
 
-
         authStateListener = firebaseAuth -> {
             FirebaseUser user = fAuth.getCurrentUser();
             if (user == null) {
@@ -322,8 +169,6 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
-
-
 
     @Override
     protected void onStart() {
@@ -341,25 +186,27 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    //When clicked on BMI button, it will call this function
     public void buttonClick(View v) {
 
-
+        //getting info from the editext view and setting them to this editText variables
         editTextHeight = (EditText) findViewById(R.id.userHeight);
         editTextWeight = (EditText) findViewById(R.id.userWeight);
         textViewResult = (TextView) findViewById(R.id.userBMI);
         editTextAge = (EditText) findViewById(R.id.user_age);
 
-        //adding
-
-     //   Spinner spinner = (Spinner) v.findViewById(R.id.spinner1);
-   //     String gender = spinner.getSelectedItem().toString();
+        //Initializing height and weight as doubles
         double height = 0.0;
         double weight = 0.0;
+
+       //if height has some values in it, we convert that value to a string
        if(!editTextHeight.getText().toString().equals("") && editTextHeight.getText().toString().length() > 0 )
         {
             // Get String
             String substrHeight = editTextHeight.getText().toString();
             String temp = "";
+
+            //Going through the string to check when we see it has space, we break the loop so that we only get numbers values in our string 50 inches --> see a space and save the 50 to the string
             for(int i = 0;i<substrHeight.length();i++) {
                 if(substrHeight.charAt(i) == ' ')
                     break;
@@ -369,11 +216,14 @@ public class HomeActivity extends AppCompatActivity {
             height = Double.parseDouble(temp);
         }
 
+        //if weight has some values in it, we convert that value to a string
         if(!editTextWeight.getText().toString().equals("") && editTextWeight.getText().toString().length() > 0 )
         {
             // Get String
             String substrWeight = editTextWeight.getText().toString();
             String temp2 = "";
+
+            //Going through the string to check when we see it has space, we break the loop so that we only get numbers values in our string 110 lbs --> see a space and save the 50 to the string
             for(int i = 0;i<substrWeight.length();i++) {
                 if(substrWeight.charAt(i) == ' ')
                     break;
@@ -384,32 +234,25 @@ public class HomeActivity extends AppCompatActivity {
             weight = Double.parseDouble(temp2);
         }
 
-        //double weight = Double.parseDouble(editTextWeight.getText().toString());
+        //Calculate the BMI
         double BMI = (weight * 703 )/ (height * height);
-
         dataField = findViewById(R.id.userHeight);
         dataField2 = findViewById(R.id.userWeight);
         EditText dataField3 = findViewById(R.id.user_age);
         dataField4 = findViewById(R.id.spinner1);
         String bmitext = Double.toString(BMI);
+
+        //Converting the datafield to strings and saving to newly created string variables
         String dataFieldText = dataField.getText().toString();
         String dataFieldText2 = dataField2.getText().toString();
         String dataFieldText3 = dataField3.getText().toString();
         String dataFieldText4 = dataField4.getSelectedItem().toString();
-
-
-
-        //String dataFieldText5 = toString();
         String BMI2 = String.valueOf(BMI);
+
+        //Converting the BMI double to string so we can show it to the user in textview
         BMI2 = String.format("%.2f", BMI);
-      //  String dataFieldText4 = dataField4.toString();
-        //String heighttext = Double.toString(height);
-      //  String weighttext = Double.toString(weight);
-        //String bmitext = Double.toString(BMI);
-        //String agetext = editTextAge.getText().toString();
 
-    //    String id = databaseReference.push().getKey();
-
+        //Saving the user's info(height, weight, age, gender and BMI to the firebase!
         if(!TextUtils.isEmpty(dataFieldText)) {
             Data data = new Data(dataFieldText,dataFieldText2,dataFieldText3,dataFieldText4,BMI2);
             DatabaseReference currentFirebaseUser = db.getReference().child("Users");
@@ -417,17 +260,12 @@ public class HomeActivity extends AppCompatActivity {
 
             DatabaseReference currentUser = currentFirebaseUser.child(uID);
             DatabaseReference currentUserBMI = currentUser.child("BMI");
-        //    currentUserBMI.addChildEventListener(BMIListener);
             currentUserBMI.setValue(data);
-
-
-
-
         } else {
             Toast.makeText(HomeActivity.this, "Please enter the data", Toast.LENGTH_SHORT).show();
         }
-     //   textViewResult.setText(Double.toString(BMI));
 
+        //What category the user's falls into based on the information provided.
         if(Double.isNaN(BMI)) {
             BMIResult = "Can't determine";
         }
@@ -443,9 +281,9 @@ public class HomeActivity extends AppCompatActivity {
             BMIResult = "Obese";
         }
 
-        //String BMI2 = String.valueOf(BMI);
-       // BMI2 = String.format("%.2f", BMI);
+        //Saving the result in String calculation
         calculation = BMI2 + "\n" + BMIResult;
+        //Viewing the resulted string to the textview
         textViewResult.setText(calculation);
 
 
