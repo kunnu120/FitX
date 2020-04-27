@@ -4,14 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.signature.ObjectKey;
 import com.google.firebase.database.DataSnapshot;
@@ -22,7 +20,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -114,9 +111,20 @@ public class PostAdapter extends
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-        glide.load(uploadRef.child(p.getPostid()+".jpg")).into(img);
-        glide.load(profileRef.child(p.getUserid()+".jpg")).signature(
-                new ObjectKey(System.currentTimeMillis())).into(pfpic);
+
+        if (p.getHasImg()) {
+            glide.load(uploadRef.child(p.getPostid() + ".jpg")).into(img);
+        } else {
+            glide.clear(img);
+        }
+
+        StorageReference profilePointer = profileRef.child(p.getUserid()+".jpg");
+        profilePointer.getMetadata().addOnSuccessListener(storageMetadata -> {
+            glide.load(profilePointer).signature(
+                    new ObjectKey(storageMetadata.getUpdatedTimeMillis())).into(pfpic);
+        }).addOnFailureListener(exception -> {
+            glide.clear(pfpic);
+        });
     }
 
     // Returns the total count of items in the list
