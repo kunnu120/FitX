@@ -29,8 +29,7 @@ public class PostAdapter extends
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
     public class ViewHolder extends RecyclerView.ViewHolder {
-        // Your holder should contain a member variable
-        // for any view that will be set as you render a row
+        // Contains a member variable for each element in the recyclerview
         public TextView name;
         public TextView text;
         public TextView date;
@@ -95,13 +94,14 @@ public class PostAdapter extends
         TextView date = viewHolder.date;
         ImageView img = viewHolder.img;
         ImageView pfpic = viewHolder.pfpic;
-
+        
         text.setText(p.getPostText());
         date.setText("" + new Date(Long.parseLong(p.getPostid())));
         userRef.child(p.getUserid()+"/Email").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
+                    // get name from user's entry in database, not from post
                     name.setText(dataSnapshot.getValue(String.class));
                 } catch (NullPointerException e) {
                 }
@@ -120,6 +120,7 @@ public class PostAdapter extends
 
         StorageReference profilePointer = profileRef.child(p.getUserid()+".jpg");
         profilePointer.getMetadata().addOnSuccessListener(storageMetadata -> {
+            // load profile image only if metadata update time is different from before
             glide.load(profilePointer).signature(
                     new ObjectKey(storageMetadata.getUpdatedTimeMillis())).into(pfpic);
         }).addOnFailureListener(exception -> {
