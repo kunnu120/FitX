@@ -12,12 +12,14 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="number"
         android:hint="Sets"
         android:id="@+id/add_exercise_sets" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="number"
         android:hint="Reps"
         android:id="@+id/add_exercise_reps"
         android:layout_gravity="center_horizontal" />
@@ -25,6 +27,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="number"
         android:hint="Weight"
         android:id="@+id/add_exercise_weight" />
 </LinearLayout>

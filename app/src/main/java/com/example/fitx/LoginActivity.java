@@ -19,6 +19,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
@@ -79,16 +80,45 @@ public class LoginActivity extends AppCompatActivity {
 
         findViewById(R.id.signOutButton).setOnClickListener(v -> signOut());
 
+        forgotPasswordButton.setOnClickListener(v ->{
+            String curremail = emailField.getText().toString();
+            boolean atSymbol = false;
+            boolean hasproperending = false;
+            if(curremail.length()>5) {
+                    if (curremail.contains("@") && (curremail.contains(".com")||curremail.contains(".edu"))) {
+                        atSymbol = true;
+                        hasproperending = true;
+                    }
+
+
+            }
+            if(emailField.getText().toString().equals("") || !(atSymbol && hasproperending)) {
+                Toast t3 = Toast.makeText(getApplicationContext(), "Enter a email to send the password reset link to in the email field.", Toast.LENGTH_LONG);
+                t3.show();
+            }else{
+                fAuth.sendPasswordResetEmail(curremail).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast t4 = Toast.makeText(getApplicationContext(), "Please check your email for the email we sent to you.", Toast.LENGTH_LONG);
+                            t4.show();
+                        } else {
+                            Toast t5 = Toast.makeText(getApplicationContext(), "Error Occured", Toast.LENGTH_SHORT);
+                            t5.show();
+                        }
+                    }
+                });
+            }
+
+        });
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser currentUser = fAuth.getCurrentUser();
-        if (currentUser != null) {
-            updateUI(currentUser);
-        }
+        progressBar.setVisibility(View.GONE);
+        updateUI((GoogleSignInAccount) null);
     }
 
     private void createAccount(String email, String password) {
@@ -119,13 +149,15 @@ public class LoginActivity extends AppCompatActivity {
                             saltRef.addListenerForSingleValueEvent(saltListener(password,uid));
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             updateUI(user);
+                            progressBar.setVisibility(View.GONE);
                         }
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "createUserWithEmail:failure", task.getException());
                         Toast.makeText(LoginActivity.this, "Authentication failed.",
                                 Toast.LENGTH_SHORT).show();
-                        updateUI(null);
+                        updateUI((FirebaseUser) null);
+                        progressBar.setVisibility(View.GONE);
                     }
 
 
@@ -162,7 +194,7 @@ public class LoginActivity extends AppCompatActivity {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithEmail:failure", task.getException());
                         Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                        updateUI(null);
+                        updateUI((FirebaseUser) null);
                     }
 
                     if (!task.isSuccessful()) emailField.setText(R.string.auth_failure);
@@ -177,7 +209,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void signOut() {
         fAuth.signOut();
-        updateUI(null);
+        updateUI((FirebaseUser) null);
     }
 
     private boolean validateForm() {
@@ -204,6 +236,9 @@ public class LoginActivity extends AppCompatActivity {
 
     //Google sign in
     private void GoogleSignIn() {
+        Toast t1 = Toast.makeText(getApplicationContext(), "Google Sign In: No Password Required", Toast.LENGTH_SHORT);
+        t1.show();
+        progressBar.setVisibility(View.VISIBLE);
         Intent intent = gsiClient.getSignInIntent();
         startActivityForResult(intent, RC_SIGN_IN);
     }
@@ -213,21 +248,24 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-                GoogleSignInAccount account = task.getResult(ApiException.class);
+                GoogleSignInAccount account = GoogleSignIn.getSignedInAccountFromIntent(data).getResult(ApiException.class);
                 if (account != null) {
+                    updateUI(account);
                     authThruGoogle(account);
                 }
             } catch (ApiException e) {
+                Toast t = Toast.makeText(getApplicationContext(), "Google Sign In Failed", Toast.LENGTH_SHORT);
+                t.show();
                 Log.w(TAG, "Google sign in failed", e);
+                //updateUI((GoogleSignInAccount) null);
             }
         }
     }
 
 
     private void authThruGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getEmail());
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         fAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
@@ -238,38 +276,44 @@ public class LoginActivity extends AppCompatActivity {
                         if (user != null) {
                             String uid = fAuth.getCurrentUser().getUid();
                             emailRef = db.getReference("Users").child(uid).child("Email");
-                            emailRef.setValue(acct.getId());
+                            emailRef.setValue(acct.getEmail());
                             saltRef = db.getReference("Users").child(uid).child("PrivateSalt");
                             saltRef.addListenerForSingleValueEvent(saltListener(acct.getId(),uid));
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                            //} else {
-                            // updateUI(null);
+                            updateUI(user);
                         }
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
                         //Toast.makeText( "Authentication Failed.", Toast.LENGTH_SHORT).show();
-                        updateUI(null);
+                        updateUI((GoogleSignInAccount) null);
                     }
 
 
                 });
     }
 
+    private void updateUI(GoogleSignInAccount account) {
+        progressBar.setVisibility(View.GONE);
+        if (account != null) {
+            emailField.setText(account.getEmail());
+            //passwordField.setText(getString(R.string.firebase_status_fmt, account.getUid()));
+        } else {
+            emailField.setText("");
+            passwordField.setText("");
+        }
+    }
 
     private void updateUI(FirebaseUser account) {
         progressBar.setVisibility(View.GONE);
         if (account != null) {
-            emailField.setText(getString(R.string.google_status_fmt, account.getEmail()));
+            emailField.setText(account.getEmail());
             //passwordField.setText(getString(R.string.firebase_status_fmt, account.getUid()));
 
-            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            findViewById(R.id.signOutButton).setVisibility(View.VISIBLE);
         } else {
             emailField.setText("");
-           // passwordField.setText(null);
+            passwordField.setText("");
 
-            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
         }
     }
 

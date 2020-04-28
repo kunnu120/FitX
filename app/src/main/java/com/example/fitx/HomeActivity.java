@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -49,6 +51,7 @@ public class HomeActivity extends AppCompatActivity {
     BottomNavigationView bottomNav;
     ViewPager2 viewPager;
     PageAdapter adapter;
+    private PagerAdapter pagerAdapter;
     private DatabaseReference heig;
     TextView a,b,c,d,f;
     Button btn;
@@ -61,130 +64,14 @@ public class HomeActivity extends AppCompatActivity {
     String BMIResult, calculation;
 
 
-   /* private ChildEventListener BMIListener = new ChildEventListener() {
 
-        @Override
-        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            int index = 0;
-            for(DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                if(index == 0) {
-                    editTextAge.setText(ds.getValue().toString());
-                } else if(index == 1) {
-                    textViewResult.setText(ds.getValue().toString());
-                } else if(index == 2) {
-                    if(ds.getValue().toString().equals("Male")) {
-                        dataField4.setSelection(0);
-                    } else if(ds.getValue().toString().equals("Female")) {
-                        dataField4.setSelection(1);
-                    } else {
-                        dataField4.setSelection(2);
-                    }
-
-                } else if(index == 3) {
-                    editTextHeight.setText(ds.getValue().toString());
-                } else if(index == 4) {
-                    editTextWeight.setText(ds.getValue().toString());
-                }
-                index++;
-                System.out.println("code " + ds.getValue().toString());
-            }
-        }
-
-        @Override
-        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            int index = 0;
-            for(DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                if(index == 0) {
-                    editTextAge.setText(ds.getValue().toString());
-                } else if(index == 1) {
-                    textViewResult.setText(ds.getValue().toString());
-                } else if(index == 2) {
-                    if(ds.getValue().toString().equals("Male")) {
-                        dataField4.setSelection(0);
-                    } else if(ds.getValue().toString().equals("Female")) {
-                        dataField4.setSelection(1);
-                    } else {
-                        dataField4.setSelection(2);
-                    }
-
-                } else if(index == 3) {
-                    editTextHeight.setText(ds.getValue().toString());
-                } else if(index == 4) {
-                    editTextWeight.setText(ds.getValue().toString());
-                }
-                index++;
-            }
-        }
-
-        @Override
-        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-            int index = 0;
-            for(DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                if(index == 0) {
-                    editTextAge.setText(ds.getValue().toString());
-                } else if(index == 1) {
-                    textViewResult.setText(ds.getValue().toString());
-                } else if(index == 2) {
-                    if(ds.getValue().toString().equals("Male")) {
-                        dataField4.setSelection(0);
-                    } else if(ds.getValue().toString().equals("Female")) {
-                        dataField4.setSelection(1);
-                    } else {
-                        dataField4.setSelection(2);
-                    }
-
-                } else if(index == 3) {
-                    editTextHeight.setText(ds.getValue().toString());
-                } else if(index == 4) {
-                    editTextWeight.setText(ds.getValue().toString());
-                }
-                index++;
-            }
-        }
-
-        @Override
-        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            int index = 0;
-            for(DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                if(index == 0) {
-                    editTextAge.setText(ds.getValue().toString());
-                } else if(index == 1) {
-                    textViewResult.setText(ds.getValue().toString());
-                } else if(index == 2) {
-                    if(ds.getValue().toString().equals("Male")) {
-                        dataField4.setSelection(0);
-                    } else if(ds.getValue().toString().equals("Female")) {
-                        dataField4.setSelection(1);
-                    } else {
-                        dataField4.setSelection(2);
-                    }
-
-                } else if(index == 3) {
-                    editTextHeight.setText(ds.getValue().toString());
-                } else if(index == 4) {
-                    editTextWeight.setText(ds.getValue().toString());
-                }
-                index++;
-            }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-        }
-
-    }; */
 
     public void buttonClick2(View v) {
         a = (EditText) findViewById(R.id.userHeight);
         b = (EditText) findViewById(R.id.userWeight);
         c = (EditText) findViewById(R.id.user_age);
+     //   Spinner spinner = (Spinner) v.findViewById(R.id.spinner1);
+    //    String gendertext = spinner.getSelectedItem().toString();
         //d = (EditText) findViewById(R.id.);
         btn = (Button) findViewById(R.id.button3);
         reff = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("BMI");
@@ -194,11 +81,24 @@ public class HomeActivity extends AppCompatActivity {
                 String val = dataSnapshot.child("userHeight").getValue().toString();
                 String val2 = dataSnapshot.child("userWeight").getValue().toString();
                 String val3 = dataSnapshot.child("age").getValue().toString();
-                //    String val4 = dataSnapshot.child("bmi").getValue().toString();
-                a.setText(val + " inches");
-                b.setText(val2 + " lbs");
-                c.setText(val3 + " years");
-                // d.setText(val4 + " bmi");
+                    String val4 = dataSnapshot.child("gender").getValue().toString();
+
+                if(!val.contains("inches")) {
+                    a.setText(val + " inches");
+                } else
+                    a.setText(val);
+
+                if(!val2.contains("lbs")) {
+                    b.setText(val2 + " lbs");
+                } else
+                    b.setText(val2);
+
+                if(!val3.contains("years")) {
+                    c.setText(val3 + " years");
+                } else
+                    c.setText(val3);
+
+
             }
 
             @Override
@@ -206,7 +106,7 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
-        //a.setText("hi");
+
 
     }
     @Override
@@ -224,32 +124,7 @@ public class HomeActivity extends AppCompatActivity {
 
         TextView textViewResult = (TextView) findViewById(R.id.userBMI);
 
-      //  a = (TextView) findViewById(R.id.heighttext);
-     //   btn = (Button) findViewById(R.id.button3);
 
-     /*   btn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                reff = FirebaseDatabase.getInstance().getReference().child("Users").child("BMI");
-                reff.addValueEventListener(new ValueEventListener() {
-
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String he = dataSnapshot.child("userHeight").getValue().toString();
-                        a.setText(he);
-                    }
-
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-            }
-
-        }); */
 
 
         //initializing bottom navigation view
@@ -284,7 +159,7 @@ public class HomeActivity extends AppCompatActivity {
         adapter = new PageAdapter(getSupportFragmentManager(), getLifecycle());
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         viewPager.setAdapter(adapter);
-        viewPager.setPageTransformer(new MarginPageTransformer(1500));
+        viewPager.setPageTransformer(new ZoomOutPageTransformer());
         viewPager.setOffscreenPageLimit(4);
 
 
@@ -308,6 +183,9 @@ public class HomeActivity extends AppCompatActivity {
         fAuth.addAuthStateListener(authStateListener);
     }
 
+    @Override
+    public void onBackPressed() {}
+
     protected void onStop() {
         super.onStop();
         if (authStateListener != null) {
@@ -322,18 +200,40 @@ public class HomeActivity extends AppCompatActivity {
         editTextWeight = (EditText) findViewById(R.id.userWeight);
         textViewResult = (TextView) findViewById(R.id.userBMI);
         editTextAge = (EditText) findViewById(R.id.user_age);
+
+        //adding
+
+     //   Spinner spinner = (Spinner) v.findViewById(R.id.spinner1);
+   //     String gender = spinner.getSelectedItem().toString();
         double height = 0.0;
         double weight = 0.0;
        if(!editTextHeight.getText().toString().equals("") && editTextHeight.getText().toString().length() > 0 )
         {
             // Get String
-            height = Double.parseDouble(editTextHeight.getText().toString());
+            String substrHeight = editTextHeight.getText().toString();
+            String temp = "";
+            for(int i = 0;i<substrHeight.length();i++) {
+                if(substrHeight.charAt(i) == ' ')
+                    break;
+                else
+                    temp+=substrHeight.charAt(i);
+            }
+            height = Double.parseDouble(temp);
         }
 
         if(!editTextWeight.getText().toString().equals("") && editTextWeight.getText().toString().length() > 0 )
         {
             // Get String
-            weight = Double.parseDouble(editTextWeight.getText().toString());
+            String substrWeight = editTextWeight.getText().toString();
+            String temp2 = "";
+            for(int i = 0;i<substrWeight.length();i++) {
+                if(substrWeight.charAt(i) == ' ')
+                    break;
+                else
+                    temp2+=substrWeight.charAt(i);
+            }
+
+            weight = Double.parseDouble(temp2);
         }
 
         //double weight = Double.parseDouble(editTextWeight.getText().toString());
@@ -401,8 +301,6 @@ public class HomeActivity extends AppCompatActivity {
         textViewResult.setText(calculation);
 
 
-
-        //resulttext.setText(calculation);
 
     }
 

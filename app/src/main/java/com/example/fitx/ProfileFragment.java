@@ -41,7 +41,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
 
 import org.w3c.dom.Text;
@@ -54,14 +53,16 @@ import java.lang.String;
 import static android.app.Activity.RESULT_OK;
 
 
-
+//Creating public class profilefragment that extends the fragment and implements AdapterView.OnItemSelectedListener
 public class ProfileFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
+    //Setting the global variables we need for this class
     ArrayAdapter<String> myAdapter;
     private static final int PICK_IMAGE_REQUEST = 1;
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
     private Uri uri;
     private Button btnupload;
+    private TextView prftxt;
     private ImageView img;
     private ProgressBar progressBar;
 
@@ -75,16 +76,20 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
     TextView display_data;
 
 
-
+    //goallistener that is the valueeventlistner
     private ValueEventListener goalListener = new ValueEventListener() {
         @Override
         @SuppressWarnings("unchecked")
+        //when data is changed it go through the arraylist goals and decode it
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             try {
-                goalsEnc.addAll((ArrayList<String>)dataSnapshot.getValue());
-                for (int i = 0; i < goalsEnc.size(); ++i) {
-                    adapter.add(Security.decode(goalsEnc.get(i)));
-                }
+                goalsEnc.addAll((ArrayList<String>) Objects.requireNonNull(dataSnapshot.getValue()));
+                Handler handler = new Handler();
+                handler.postDelayed(() -> {
+                    for (int i = 0; i < goalsEnc.size(); ++i) {
+                        adapter.add(Security.decode(goalsEnc.get(i)));
+                    }
+                }, 100);
             } catch (Exception e) {
 
             }
@@ -100,41 +105,50 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
     @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //Creating a spinner for gender
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_profile, null);
 
         //  View v = inflater.inflate(R.layout.manual, container, false);
 
+        //Values in the spinner is going to be Male, female and other
         String [] values =
                 {"Male","Female","Other"};
+
+        //Looking to see what's in the spinner provided by the user
         Spinner spinner = (Spinner) v.findViewById(R.id.spinner1);
+        //Saving the infor to the ArrayAdapter<String> created myAdapter
         myAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, values);
         myAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(myAdapter);
 
-
+        //getting the profile pic, and information on the profile page and saving it to newly created variables
         img = v.findViewById(R.id.profile_pic);
+        prftxt = v.findViewById(R.id.profile_txt);
         progressBar = v.findViewById(R.id.ventilator_progress);
         progressBar.setVisibility(View.INVISIBLE);
 
         //StorageReference imageRef = storageRef.child("1575623427796.jpg");
 
+        //saving the pictures to the firebase under profilepics reference
         storageRef = FirebaseStorage.getInstance().getReference("profilepics");
 
         btnupload = v.findViewById(R.id.btnUpload);
-        btnupload.setEnabled(false);
         ListView goalView = v.findViewById(R.id.goalList);
         userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         ProfilePicUrlRef = db.getReference("Users").child(userid).child("ProfilePicURL");
 
 
-        ProfilePicUrlRef.addValueEventListener(new ValueEventListener() {
+        //this automatically updated the changes on the profile page
+        ProfilePicUrlRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
                     String url = dataSnapshot.getValue(String.class);
-                    //Picasso.get().load(url).into(img);
-                    Glide.with(getContext()).load(url).into(img);
+                    if (!url.isEmpty()) {
+                        Glide.with(getContext()).load(url).into(img);
+                        prftxt.setVisibility(View.INVISIBLE);
+                    }
                 } catch (NullPointerException e) {
 
                 }
@@ -146,16 +160,17 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
             }
         });
 
-        img.setOnClickListener(v1 -> {
-            openFileChooser();
-        });
-
-        btnupload.setOnClickListener(v12 -> {
-            uploadFile();
+        //cliecked on upload button
+        btnupload.setOnClickListener(v1 -> {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(intent, PICK_IMAGE_REQUEST);
         });
 
         goals = new ArrayList<>();
 
+        //saving the data to the firebase under users->child(GoalsEnc) reference
         goalsRef = db.getReference("Users").child(userid).child("GoalsEnc");
         goalsRef.addListenerForSingleValueEvent(goalListener);
         adapter = new ArrayAdapter<>(
@@ -172,39 +187,42 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         return v;
     }
 
+    //Converting the selected string at position passed in the parameter and then showing it as toast
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String text = parent.getItemAtPosition(position).toString();
         Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
     }
 
+    //onNothignselected void function
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
 //#################################### GOAL CODE ############################################
 
-
-    private void openFileChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
-    }
-
+    //EditGoalDialog that takes the parameter which is integer values named pos - can edit the goal.
     public void editGoalDialog(int pos) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
-        builder.setTitle("Add Goal");
+        builder.setTitle("Edit/Delete Goal");
         final EditText input = new EditText(this.getContext());
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setText(adapter.getItem(pos), TextView.BufferType.EDITABLE);
         builder.setView(input);
         builder.setPositiveButton("Edit", (d,w) -> {
             String s = input.getText().toString();
-            adapter.remove(adapter.getItem(pos));
-            adapter.insert(s,pos);
-            goalsEnc.set(pos,Security.encode(s));
-            goalsRef.setValue(goalsEnc);
+
+            //if string s is empty, user didn't provide any information and should toast - Goals cannot be empty
+            if (s.isEmpty()) {
+                Toast.makeText(getContext(), "Goals cannot be empty!",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                adapter.remove(adapter.getItem(pos));
+                adapter.insert(s, pos);
+                goalsEnc.set(pos, Security.encode(s));
+                goalsRef.setValue(goalsEnc);
+            }
         });
+        //deleting the specific goal at a position
         builder.setNegativeButton("Delete", (d,w) -> {
             adapter.remove(adapter.getItem(pos));
             goalsEnc.remove(pos);
@@ -215,6 +233,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         builder.show();
     }
 
+    //Adding the goal for the user on the profile page
     public void addGoalDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
         builder.setTitle("Add Goal");
@@ -223,9 +242,16 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
         builder.setView(input);
         builder.setPositiveButton("OK", (d, w) -> {
             String s = input.getText().toString();
-            adapter.add(s);
-            goalsEnc.add(Security.encode(s));
-            goalsRef.setValue(goalsEnc);
+
+            //if string s empty tell user that cannot add empty goal, else it should add the goal if the string s is not empty
+            if (s.isEmpty()) {
+                Toast.makeText(getContext(), "Cannot add empty goal!",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                adapter.add(s);
+                goalsEnc.add(Security.encode(s));
+                goalsRef.setValue(goalsEnc);
+            }
         });
         builder.setNegativeButton("Cancel", (d, w) -> {
             d.cancel();
@@ -236,7 +262,7 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
 
 
-
+    //if the bmi button is clicked, show the user their BMI
     public void button2Clicked(View v) {
 
         EditText editTextHeight = (EditText) getView().findViewById(R.id.userHeight);
@@ -254,39 +280,29 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
 
     //#########################GOAL CODE END ###########################################
 
+    //Uploading the profile picture, when user wants to upload the picture and click the upload button - this function will be called
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-
             uri = data.getData();
-            //Picasso.get().load(uri).into(img);
-            Glide.with(getContext()).load(uri).into(img);
             ProfilePicUrlRef.setValue(uri.toString());
-            btnupload.setEnabled(true);
-        }
-    }
-
-    private String getFileExtension(Uri uri) {
-        ContentResolver cR = getActivity().getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(cR.getType(uri));
-    }
-
-    private void uploadFile() {
-        if (img != null) {
+            btnupload.setEnabled(false);
             StorageReference fileRef = storageRef.child(userid + "." + getFileExtension(uri));
             progressBar.setVisibility(View.VISIBLE);
             fileRef.putFile(uri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
+                        //successfully upload the picture
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
+                                    btnupload.setEnabled(true);
                                     progressBar.setVisibility(View.INVISIBLE);
+                                    Glide.with(getContext()).load(uri).into(img);
+                                    prftxt.setVisibility(View.INVISIBLE);
                                 }
                             }, 5000);
 
@@ -297,9 +313,13 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
+
+                        //Upload failed
                         @Override
                         public void onFailure(@NonNull Exception e) {
-
+                            Toast.makeText(getContext(), "Upload failed...",
+                                    Toast.LENGTH_SHORT).show();
+                            btnupload.setEnabled(true);
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -310,7 +330,13 @@ public class ProfileFragment extends Fragment implements AdapterView.OnItemSelec
                         }
                     });
         }
+    }
 
+    //Passing Uri and returning string uri after converting
+    private String getFileExtension(Uri uri) {
+        ContentResolver cR = getActivity().getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
 }

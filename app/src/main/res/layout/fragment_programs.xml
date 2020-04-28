@@ -36,7 +36,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/select_date"
+        android:text="Hold on Date to Schedule or Comment"
+        android:textColor="#000000"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/calendarView" />
@@ -55,12 +57,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
     -->
+
+    <Spinner
+        android:id="@+id/programspinner"
+        android:layout_width="172dp"
+        android:layout_height="44dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@+id/LT"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateBox" />
+
     <ListView
         android:id="@+id/LT"
         android:layout_width="172dp"
         android:layout_height="44dp"
-        android:layout_marginTop="96dp"
-        android:background="@drawable/home_page_list_views"
+        android:layout_marginTop="70dp"
+
         android:dividerHeight="50dp"
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,20 +85,24 @@
         android:id="@+id/dateToProgram"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="@string/comment_on_date"
+        android:layout_marginTop="30dp"
+        android:text="Comments"
         android:textColor="#000000"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LT" />
+        app:layout_constraintTop_toBottomOf="@+id/programspinner" />
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="291dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="28dp"
-        android:background="@drawable/home_page_list_views"
-        android:text="@string/textview"
+        android:layout_width="350dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="5dp"
+        android:text="No comments"
+        android:background="#C5CDCB"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dateToProgram" />
@@ -95,7 +112,7 @@
         android:layout_width="203dp"
         android:layout_height="54dp"
         android:layout_marginTop="28dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="0dp"
         app:layout_constraintBottom_toTopOf="@+id/LT"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

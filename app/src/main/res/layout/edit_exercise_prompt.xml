@@ -3,10 +3,9 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
+    <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Name"
         android:id="@+id/edit_exercise_name" />
 
 </LinearLayout>
