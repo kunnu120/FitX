@@ -33,12 +33,17 @@
       studio. For this to happen the users phone must be in Developer mode
     
 ### Testing ###
+    - Before Testing Note: These were recorded with espresso test recorder in Android Studio. Espresso
+      from our experience with it has not been good. It is really slow, laggy, and takes a large toll
+      on your CPU. So recording tests is very difficult with this. Also the test run and fail with the same 
+      exception each time. (android.test.espresso.nomatchingviewexception) I have looked into this exception
+      and there is no clear answer to how to fix it. 
     - To run tests: Go to test in project directory, right click it and hit run.
-    - Behavioral Test Location: FitX\app\src\androidTest\java\com\example\fitx\LoginActivityTest2.java
-    - Unit Test Location: FitX\app\src\test\java\com\example\fitx\HomeTest.java
+    - Behavioral Tests Location: FitX\app\src\androidTest\java\com\example\fitx\
+    - Unit Tests Location: FitX\app\src\test\java\com\example\fitx\
 
 ### Authors ###
-    - William Simmons, simzwill98@gmail.com
     - Brett Noltkamper, brettn@email.sc.edu
     - Everett Bishop, ebassman77@gmail.com
     - Vishwajeet Singh, vs2@email.sc.edu
+    - William Simmons, simzwill98@gmail.com
