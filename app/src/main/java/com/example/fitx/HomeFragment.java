@@ -317,6 +317,10 @@ public class HomeFragment extends Fragment {
                         double hundred1 = 100.0;
                         double programProgress = hundred1 * programPercent;
                         int programProgressPercent = (int) programProgress;
+                        if(programProgressPercent >= 100) {
+                            Toast t = Toast.makeText(getContext(), "You completed 100% of your program! You're a true FitX athlete!", Toast.LENGTH_SHORT);
+                            t.show();
+                        }
                         percent2.setText(programProgressPercent + "%");
                         progProgress.setProgress(programProgressPercent);
 
@@ -430,7 +434,6 @@ public class HomeFragment extends Fragment {
         });
 
 
-
         exerciseView.setOnItemClickListener((p, view, pos, id) -> {
 
             exerciseInfoIndex = pos * 4;
@@ -454,7 +457,6 @@ public class HomeFragment extends Fragment {
                 progressLabel1.setText("Add an exercise to a program");
             }
         });
-
 
         logoutButton.setOnClickListener(v1 -> {
             fAuth.signOut();
