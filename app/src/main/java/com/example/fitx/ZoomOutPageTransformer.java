@@ -2,7 +2,7 @@
         https://developer.android.com/training/animation/screen-slide-2
         It is a zoom out transition for sliding between fragments.
         Originally we were using a regular viewpager but we found this online
-        when looking for cool sliding transitions. 
+        when looking for cool sliding transitions.
  */
 
 package com.example.fitx;
