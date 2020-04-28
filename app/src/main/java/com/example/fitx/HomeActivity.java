@@ -67,7 +67,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     public void buttonClick2(View v) {
-        if(reff!=null) {
+
             a = (EditText) findViewById(R.id.userHeight);
             b = (EditText) findViewById(R.id.userWeight);
             c = (EditText) findViewById(R.id.user_age);
@@ -79,27 +79,31 @@ public class HomeActivity extends AppCompatActivity {
             reff.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    String val = dataSnapshot.child("userHeight").getValue().toString();
-                    String val2 = dataSnapshot.child("userWeight").getValue().toString();
-                    String val3 = dataSnapshot.child("age").getValue().toString();
-                    String val4 = dataSnapshot.child("gender").getValue().toString();
+                   try {
+                       String val = dataSnapshot.child("userHeight").getValue().toString();
+                       String val2 = dataSnapshot.child("userWeight").getValue().toString();
+                       String val3 = dataSnapshot.child("age").getValue().toString();
+                       String val4 = dataSnapshot.child("gender").getValue().toString();
 
-                    if (!val.contains("inches")) {
-                        a.setText(val + " inches");
-                    } else
-                        a.setText(val);
+                       if (!val.contains("inches")) {
+                           a.setText(val + " inches");
+                       } else
+                           a.setText(val);
 
-                    if (!val2.contains("lbs")) {
-                        b.setText(val2 + " lbs");
-                    } else
-                        b.setText(val2);
+                       if (!val2.contains("lbs")) {
+                           b.setText(val2 + " lbs");
+                       } else
+                           b.setText(val2);
 
-                    if (!val3.contains("years")) {
-                        c.setText(val3 + " years");
-                    } else
-                        c.setText(val3);
-
-
+                       if (!val3.contains("years")) {
+                           c.setText(val3 + " years");
+                       } else {
+                           c.setText(val3);
+                       }
+                   }catch(NullPointerException n){
+                       Toast t = Toast.makeText(getApplicationContext(), "Enter in your BMI Info first then hit the BMI button.", Toast.LENGTH_SHORT);
+                       t.show();
+                    }
                 }
 
                 @Override
@@ -108,10 +112,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
             });
 
-        }else{
-            Toast t = Toast.makeText(getApplicationContext(), "Enter in your BMI Info first then hit the BMI button.", Toast.LENGTH_SHORT);
-            t.show();
-        }
+
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
