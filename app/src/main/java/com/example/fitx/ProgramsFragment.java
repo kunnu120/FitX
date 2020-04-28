@@ -1,3 +1,8 @@
+/****
+*Base of the horizontal calendar is from https://github.com/Mulham-Raee/Horizontal-Calendar
+ * builder and two methods onDate and onDateLongClicked were utilized as base methods to be
+ * overwritten
+ ****/
 package com.example.fitx;
 
 import android.annotation.SuppressLint;
