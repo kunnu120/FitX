@@ -212,37 +212,36 @@ public class HomeActivity extends AppCompatActivity {
    //     String gender = spinner.getSelectedItem().toString();
         double height = 0.0;
         double weight = 0.0;
-       if(!editTextHeight.getText().toString().equals("") && editTextHeight.getText().toString().length() > 0 )
-        {
-            // Get String
-            String substrHeight = editTextHeight.getText().toString();
-            String temp = "";
-            for(int i = 0;i<substrHeight.length();i++) {
-                if(substrHeight.charAt(i) == ' ')
-                    break;
-                else
-                    temp+=substrHeight.charAt(i);
-            }
-            height = Double.parseDouble(temp);
-        }
-
-        if(!editTextWeight.getText().toString().equals("") && editTextWeight.getText().toString().length() > 0 )
-        {
-            // Get String
-            String substrWeight = editTextWeight.getText().toString();
-            String temp2 = "";
-            for(int i = 0;i<substrWeight.length();i++) {
-                if(substrWeight.charAt(i) == ' ')
-                    break;
-                else
-                    temp2+=substrWeight.charAt(i);
+        try {
+            if (!editTextHeight.getText().toString().equals("") && editTextHeight.getText().toString().length() > 0) {
+                // Get String
+                String substrHeight = editTextHeight.getText().toString();
+                String temp = "";
+                for (int i = 0; i < substrHeight.length(); i++) {
+                    if (substrHeight.charAt(i) == ' ')
+                        break;
+                    else
+                        temp += substrHeight.charAt(i);
+                }
+                height = Double.parseDouble(temp);
             }
 
-            weight = Double.parseDouble(temp2);
-        }
+            if (!editTextWeight.getText().toString().equals("") && editTextWeight.getText().toString().length() > 0) {
+                // Get String
+                String substrWeight = editTextWeight.getText().toString();
+                String temp2 = "";
+                for (int i = 0; i < substrWeight.length(); i++) {
+                    if (substrWeight.charAt(i) == ' ')
+                        break;
+                    else
+                        temp2 += substrWeight.charAt(i);
+                }
 
-        //double weight = Double.parseDouble(editTextWeight.getText().toString());
-        double BMI = (weight * 703 )/ (height * height);
+                weight = Double.parseDouble(temp2);
+            }
+
+
+            double BMI = (weight * 703) / (height * height);
 
         dataField = findViewById(R.id.userHeight);
         dataField2 = findViewById(R.id.userWeight);
@@ -259,13 +258,7 @@ public class HomeActivity extends AppCompatActivity {
         //String dataFieldText5 = toString();
         String BMI2 = String.valueOf(BMI);
         BMI2 = String.format("%.2f", BMI);
-      //  String dataFieldText4 = dataField4.toString();
-        //String heighttext = Double.toString(height);
-      //  String weighttext = Double.toString(weight);
-        //String bmitext = Double.toString(BMI);
-        //String agetext = editTextAge.getText().toString();
 
-    //    String id = databaseReference.push().getKey();
 
         if(!TextUtils.isEmpty(dataFieldText)) {
             Data data = new Data(dataFieldText,dataFieldText2,dataFieldText3,dataFieldText4,BMI2);
@@ -304,7 +297,10 @@ public class HomeActivity extends AppCompatActivity {
        // BMI2 = String.format("%.2f", BMI);
         calculation = BMI2 + "\n" + BMIResult;
         textViewResult.setText(calculation);
-
+        }catch(NumberFormatException nfe){
+            Toast t = Toast.makeText(getApplicationContext(), "Incorrect input for BMI", Toast.LENGTH_SHORT);
+            t.show();
+        }
 
 
     }
