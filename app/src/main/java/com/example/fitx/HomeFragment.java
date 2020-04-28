@@ -429,19 +429,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-   /*     final Handler handler1 = new Handler();
-        handler1.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if(!programsAdapter.isEmpty()) {
-                        programView.performItemClick(programView, 0, programView.getAdapter().getItemId(0));
-                    }
-                } catch(NullPointerException e) {
-
-                }
-            }
-        }, 1500); */
 
 
         exerciseView.setOnItemClickListener((p, view, pos, id) -> {
@@ -468,19 +455,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
- /*       final Handler handler2 = new Handler();
-        handler2.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if(!exercisesAdapter.isEmpty()) {
-                        exerciseView.performItemClick(exerciseView, 0, exerciseView.getAdapter().getItemId(0));
-                    }
-                }catch (NullPointerException e) {
-
-                }
-            }
-        }, 1600);   */
 
         logoutButton.setOnClickListener(v1 -> {
             fAuth.signOut();

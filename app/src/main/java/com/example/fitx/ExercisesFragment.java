@@ -49,7 +49,7 @@ public class ExercisesFragment extends Fragment {
 
     //initialize and declare database reference
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
-    //initalized reference for Programs
+    //initalized references for Programs, current program and current program exercises
     private DatabaseReference userPrograms;
     private DatabaseReference currentProgram;
     private DatabaseReference currentProgram_exercises;
@@ -57,6 +57,12 @@ public class ExercisesFragment extends Fragment {
 
 
 
+    /* This a child event listener for the table. It is attached to the current program reference so that the table displays
+       the contents of the correct current program. The exercisesAdapter is where the current programs exercise data is held.
+       So in here we get the datasnapshot from our database for the current program exercises. And under that reference we have
+       a list of the exercise data. We store that into a vector of strings to insert index by index into the table.
+       Each method of this listener does about the same thing, whenever a child is added, changed, or removed from the reference.
+     */
     private ChildEventListener tableSwitchListener = new ChildEventListener() {
 
         @Override
@@ -169,6 +175,11 @@ public class ExercisesFragment extends Fragment {
         }
     };
 
+
+    /*  This is a single valueEventListener for the user programs reference. The programsAdapter is set to the
+        program list on the exercise page so the adapter gets updated with the snapshot every time a new value is
+        added to user programs reference.
+     */
     private ValueEventListener programListener = new ValueEventListener(){
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -237,7 +248,11 @@ public class ExercisesFragment extends Fragment {
         programList.setAdapter(programsAdapter);
 
 
-
+        /*  Click listener for the program list
+            This clears the table and sets the new current program reference to whatever the
+            user clicked. There is also a check in this listener for if a program has no exercises
+            to remove it. This is for the case when a user removes all exercises from a program.
+         */
         programList.setOnItemClickListener((p, view, pos, id) -> {
 
             //clears table before switch
@@ -270,7 +285,12 @@ public class ExercisesFragment extends Fragment {
         });
 
 
-        //add program click listener
+        /*  Add program button listener
+            An alert dialog is launched asking for the user to input text for a program name
+            Contains error checking for no entry and for programs that already have that name
+            Also has a forced dialog that asks user to enter their first exercise however if they dont
+            it will remove the newly added program so you cant have an empty program
+         */
         addProgram.setOnClickListener(v1 -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext(), R.style.AlertDialogStyle);
             builder.setTitle("Add Program");
@@ -327,7 +347,9 @@ public class ExercisesFragment extends Fragment {
 
         });
 
-        //add exercise click listener
+        /*  Add Exercise Button Click Listener
+            Launches an alert dialog
+         */
         addExercise.setOnClickListener(v1 -> {
             if(programsAdapter.getCount()>0) {
                 LayoutInflater li = LayoutInflater.from(getContext());
