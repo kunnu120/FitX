@@ -1,8 +1,8 @@
 # FitX Android App #
 
 ### Technologies Requirements ###
-    - Computer or Android phone
-#### Windows Installation: #### 
+
+#### Windows Installation: ####
     - Download the latest version of Android Studio
     - If you downloaded a .zip file, unpack the .zip and copy the android-studio folder into your
       Program Files folder
@@ -20,13 +20,14 @@
         $ sudo yum install zlib.i686 ncurses-libs.i686 bzip2-libs.i686
         
 ### Setup ###
-    - (Phone) Download the apk and copy to your phone, then install
-    - (Android Studio) Open the project folder, Download the Pixel 3XL Android Virtual Device
+    - N/A
 ### Running ###
-    - Run the app with the Pixel 3XL AVD
+    -
+    -
+    -
 ### Deployment ###
     - Our user database will be supported by a google firebase backend. This firebase backend will 
-      allow for easy internet redeployment if necessary
+      allow for easy internet redeployment     if necessary
 #### Phone Installation ####
     - To run FitX on a mobile device a user must connect via  USB cable and click "Run" on Android 
       studio. For this to happen the users phone must be in Developer mode
@@ -46,3 +47,4 @@
     - Everett Bishop, ebassman77@gmail.com
     - Vishwajeet Singh, vs2@email.sc.edu
     - William Simmons, simzwill98@gmail.com
+    - Sean Wiig, swiig@email.sc.edu
