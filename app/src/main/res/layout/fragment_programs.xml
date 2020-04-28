@@ -98,10 +98,11 @@
         android:layout_width="350dp"
         android:layout_height="250dp"
         android:layout_marginTop="5dp"
-        android:text="      Welcome to FitX Programs page \n      here is where you add comments \n      and schedule workout programs \n           to whatever days you want\n\n                   Just hold on a day\n             to schedule or comment!\n    Make sure to check out the social\n     page to the right to meet friends\n                    to work out with!"
+        android:text="No comments"
         android:background="#C5CDCB"
         android:textColor="#000000"
         android:textSize="20sp"
+        android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dateToProgram" />

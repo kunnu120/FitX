@@ -317,6 +317,10 @@ public class HomeFragment extends Fragment {
                         double hundred1 = 100.0;
                         double programProgress = hundred1 * programPercent;
                         int programProgressPercent = (int) programProgress;
+                        if(programProgressPercent >= 100) {
+                            Toast t = Toast.makeText(getContext(), "You completed 100% of your program! You're a true FitX athlete!", Toast.LENGTH_SHORT);
+                            t.show();
+                        }
                         percent2.setText(programProgressPercent + "%");
                         progProgress.setProgress(programProgressPercent);
 
@@ -429,20 +433,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-   /*     final Handler handler1 = new Handler();
-        handler1.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if(!programsAdapter.isEmpty()) {
-                        programView.performItemClick(programView, 0, programView.getAdapter().getItemId(0));
-                    }
-                } catch(NullPointerException e) {
-
-                }
-            }
-        }, 1500); */
-
 
         exerciseView.setOnItemClickListener((p, view, pos, id) -> {
 
@@ -467,20 +457,6 @@ public class HomeFragment extends Fragment {
                 progressLabel1.setText("Add an exercise to a program");
             }
         });
-
- /*       final Handler handler2 = new Handler();
-        handler2.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if(!exercisesAdapter.isEmpty()) {
-                        exerciseView.performItemClick(exerciseView, 0, exerciseView.getAdapter().getItemId(0));
-                    }
-                }catch (NullPointerException e) {
-
-                }
-            }
-        }, 1600);   */
 
         logoutButton.setOnClickListener(v1 -> {
             fAuth.signOut();

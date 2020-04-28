@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,7 +104,7 @@ public class ProgramsFragment extends Fragment{
                         comText.append(commentsAdapter.getItem(i) + "\n");
                     }
                 }else{
-                    comText.setText("      Welcome to FitX Programs page \n      here is where you add comments \n      and schedule workout programs \n           to whatever days you want\n\n                   Just hold on a day\n             to schedule or comment!\n    Make sure to check out the social\n     page to the right to meet friends\n                    to work out with!");
+                    comText.setText("No comments");
                 }
 
 
@@ -169,6 +170,7 @@ public class ProgramsFragment extends Fragment{
        //commentInput = rootView.findViewById(R.id.CommentList);
         dateSelected = rootView.findViewById(R.id.dateBox);
         comText = rootView.findViewById(R.id.textView3);
+        comText.setMovementMethod(new ScrollingMovementMethod());
         dateOfProgram = rootView.findViewById(R.id.dateOfProgram);
         //commentToProgramText = rootView.findViewById(R.id.dateToProgram);
         //programList= rootView.findViewById(R.id.LT);
@@ -189,13 +191,12 @@ public class ProgramsFragment extends Fragment{
         comments = new ArrayList<>();
         commentsAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, comments);
 
-        if (programs == null) {
+
             programs = new ArrayList<>();
             programsAdapter = new ArrayAdapter<>((this.getActivity()), android.R.layout.simple_list_item_1, programs);
             //programList.setAdapter(programsAdapter);
             sp.setAdapter(programsAdapter);
 
-        }
 
 
         horizontalCalendar = new HorizontalCalendar.Builder(rootView, R.id.calendarView)
@@ -236,9 +237,18 @@ public class ProgramsFragment extends Fragment{
                 currentComment.addValueEventListener(commentListener);
 
             }
+
             @Override
             public boolean onDateLongClicked(Calendar date, int position) {
-                programText = sp.getSelectedItem().toString();
+                try{
+                    programText = sp.getSelectedItem().toString();
+                } catch (NullPointerException e) {
+
+                    Toast t = Toast.makeText(getContext(), "No programs to schedule", Toast.LENGTH_SHORT);
+                    t.show();
+                }
+
+
             if(programText!=null) {
                 Dates = currentUserRef.child("Dates");
                 currentDate = Dates.child(DateFormat.format("EEE, MMM dd", date).toString());
@@ -285,6 +295,10 @@ public class ProgramsFragment extends Fragment{
                             }
 
                         });
+                        cBuilder.setNeutralButton("Clear comments", (d1, w1) -> {
+                           commentsAdapter.clear();
+                           currentComment.setValue(comments);
+                        });
                         cBuilder.setNegativeButton("Cancel", (d1, w1) -> {
                             d1.cancel();
                         });
@@ -295,94 +309,8 @@ public class ProgramsFragment extends Fragment{
 
                     d.cancel();
                 });
-        /*        commentBtn.setOnClickListener(v -> {
 
-                    currentComment = currentDate.child("Comments");
-                        currentComment.addValueEventListener(commentListener);
-                        if (programs != null) {
-                            LayoutInflater ci = LayoutInflater.from(getContext());
-                            View createComments = ci.inflate(R.layout.comment_dialog, null);
-                            AlertDialog.Builder cBuilder = new AlertDialog.Builder(getContext(), R.style.AlertDialogStyle);
-
-                        cBuilder.setTitle("Add a Comment");
-                            EditText cTV = createComments.findViewById(R.id.add_program_comment);
-                            cBuilder.setView(createComments);
-
-                            cBuilder.setPositiveButton("Add", (d1, w1) -> {
-
-                                if (!cTV.getText().toString().equals("")){
-                                    commentsAdapter.add(cTV.getText().toString());
-                                    currentComment.setValue(comments);
-                                }else{
-                                    d1.cancel();
-                                }
-
-                            });
-                            cBuilder.setNegativeButton("Cancel", (d1, w1) -> {
-                                d1.cancel();
-                            });
-                            cBuilder.show();
-                        }
-                });   */
-           /*     scheduleBtn.setOnClickListener(v -> {
-                    Dates = currentUserRef.child("Dates");
-                    currentDate = Dates.child(DateFormat.format("EEE, MMM dd", date).toString());
-                    programOnDate = currentDate.child("ProgramsScheduled");
-                    programOnDate.addValueEventListener(programOnDateListener);
-                    currentComment = currentDate.child("Comments");
-                    currentComment.addValueEventListener(commentListener);
-                    if(programText!= null){
-                        programOnDate.setValue(programText);
-                    }
-                }); */
-
-            /*    builder1.setPositiveButton("Schedule" , (d, w)->{
-                    Dates = currentUserRef.child("Dates");
-                    currentDate = Dates.child(DateFormat.format("EEE, MMM dd", date).toString());
-                    programOnDate = currentDate.child("ProgramsScheduled");
-                    programOnDate.addValueEventListener(programOnDateListener);
-                    currentComment = currentDate.child("Comments");
-                    currentComment.addValueEventListener(commentListener);
-                    if(programText!= null){
-                        programOnDate.setValue(programText);
-                    }
-                });
-                //builder1.setPositiveButton("Comment", (d,w)->{
-                //    currentComment = currentDate.child("Comments");
-                //    currentComment.addValueEventListener(commentListener);
-                //    if (programs != null) {
-                //        LayoutInflater ci = LayoutInflater.from(getContext());
-                //        View createComments = ci.inflate(R.layout.comment_dialog, null);
-                //        AlertDialog.Builder cBuilder = new AlertDialog.Builder(getContext(), R.style.AlertDialogStyle);
-                /*
-                        cBuilder.setTitle("Add a Comment");
-
-                        EditText cTV = createComments.findViewById(R.id.add_program_comment);
-                        cBuilder.setView(createComments);
-
-                        cBuilder.setPositiveButton("Done", (d1, w1) -> {
-
-                            if (!cTV.getText().toString().equals("")){
-                                commentsAdapter.add(cTV.getText().toString());
-                                currentComment.setValue(comments);
-                            }else{
-                                d.cancel();
-                            }
-
-                        });
-                        cBuilder.setNegativeButton("Cancel", (d1, w1) -> {
-                            d1.cancel();
-                        });
-                        cBuilder.show();
-                    }
-                });
-                //builder1.setNegativeButton("Cancel", (d,w)->{
-                //    d.cancel();
-              */  //});
                 builder1.show();
-            }else{
-                Toast t = Toast.makeText(getContext(), "Click a program on the program list to schedule.", Toast.LENGTH_SHORT);
-                t.show();
             }
                 return true;
 
