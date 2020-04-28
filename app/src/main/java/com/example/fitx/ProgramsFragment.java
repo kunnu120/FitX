@@ -152,7 +152,7 @@ public class ProgramsFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, @NonNull ViewGroup container, @NonNull Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_programs, container, false);
-       //commentInput = rootView.findViewById(R.id.CommentList);
+        //commentInput = rootView.findViewById(R.id.CommentList);
         dateSelected = rootView.findViewById(R.id.dateBox);
         comText = rootView.findViewById(R.id.textView3);
         dateOfProgram = rootView.findViewById(R.id.dateOfProgram);
