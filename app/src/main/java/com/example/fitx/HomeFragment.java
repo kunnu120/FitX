@@ -3,11 +3,8 @@ package com.example.fitx;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.tv.TvContract;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Vector;
 
-
+//This class is used for the home page of FitX
 public class HomeFragment extends Fragment {
 
     //database references
@@ -45,12 +42,8 @@ public class HomeFragment extends Fragment {
     private DatabaseReference currentProgram;
     private DatabaseReference exerciseList;
     private DatabaseReference selectProgram;
-    private DatabaseReference exerciseNumbers;
-    private SharedPreferences sharedPreference;
-
 
     private ArrayList<String> exercises;
-    private ArrayList<String> exercises2;
     private ArrayAdapter<String> programsAdapter;
     private ArrayAdapter<String> exercisesAdapter;
     private ListView programView;
@@ -59,16 +52,11 @@ public class HomeFragment extends Fragment {
     private TextView sets;
     private TextView reps;
     private TextView weight;
-
     private String loggingSets;
     private String loggingReps;
     private String loggingWeight;
 
     private int exerciseInfoIndex = 0;
-    private double progress = 0;
-    private boolean exerciseCalled;
-    private boolean programCalled;
-    private double programProgress;
     private int progSets = 0;
     private int progReps = 0;
     private int progWeight = 0;
@@ -81,6 +69,7 @@ public class HomeFragment extends Fragment {
     private int currentProgramProgress = 0;
     private boolean switchedPrograms = false;
 
+    //Gets data from firebase for user's programs every time the program data changes
     private ValueEventListener programListener = new ValueEventListener() {
 
         @Override
@@ -93,20 +82,18 @@ public class HomeFragment extends Fragment {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     programsAdapter.addAll(ds.getKey());
                 }
-
-
+                //Checks if there are no programs & assigns a default one
                 if(programsAdapter.getCount() == 0) {
                     programsAdapter.add("No Programs");
                     programView.performItemClick(programView, 0, R.id.programList);
                     exerciseView.performItemClick(exerciseView, 0, R.id.currentList);
                 }
-
+                //performs a click on the program listview
                 if(programsAdapter.getCount() ==1 && !(programsAdapter.getItem(0).equals("No Programs"))){
                     programView.performItemClick(programView, 0, R.id.programList);
 
                 }
-
-
+                //Removes default program and exercise if user has programmed at least one
                 if(programsAdapter.getCount()>1){
                     for(int i=0; i< programsAdapter.getCount(); i++){
                         if(programsAdapter.getItem(i).equals("No Programs")){
@@ -115,10 +102,6 @@ public class HomeFragment extends Fragment {
                         }
                     }
                 }
-
-
-
-
 
             } catch (NullPointerException e) {
 
@@ -131,6 +114,7 @@ public class HomeFragment extends Fragment {
         }
     };
 
+    //Gets data from firebase for user's exercises
     private ValueEventListener exerciseListener = new ValueEventListener() {
 
         @Override
@@ -140,7 +124,7 @@ public class HomeFragment extends Fragment {
                 if (exercisesAdapter != null) {
                     exercisesAdapter.clear();
                 }
-                //new code
+                //variables for calculating total weight for use in logging and progress bars
                 Vector<Integer> setsvect = new Vector<>();
                 Vector<Integer> repsvect = new Vector<>();
                 Vector<Integer> weightsvect = new Vector<>();
@@ -148,14 +132,15 @@ public class HomeFragment extends Fragment {
                 progSets = 0;
                 progWeight = 0;
 
-                //new code above
+                //Gets a snapshot of the exercises data every time it is changed
+                //Adds the exercise info to the vector for calculation later
                 int index = 0;
                 try {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         if (index == 0) {
                             exercises.add(Objects.requireNonNull(ds.getValue()).toString());
                         }
-                        //new code
+
                         if(index == 1){
                             progSets = Integer.parseInt(ds.getValue().toString());
                             setsvect.add(progSets);
@@ -169,7 +154,7 @@ public class HomeFragment extends Fragment {
                             progWeight = Integer.parseInt(ds.getValue().toString());
                             weightsvect.add(progWeight);
                         }
-                        //new code above
+
                         index++;
                         if (index == 4) {
 
@@ -178,7 +163,7 @@ public class HomeFragment extends Fragment {
 
                     }
                     totalProgWeight = 0;
-                    //new code
+                    //calculates the total program weight from the vectors
                     for(int i=0; i<setsvect.size(); i++){
                         int a = setsvect.elementAt(i);
                         int b = repsvect.elementAt(i);
@@ -186,20 +171,19 @@ public class HomeFragment extends Fragment {
                         totalProgWeight += (a*b*c);
                     }
 
-
                     exercisesAdapter.addAll(exercises);
-
-
+                    //Adds a default exercise if there are no programs
                     if(programsAdapter.getItem(0).equals("No Programs")){
                         exercisesAdapter.add("No Exercises");
                     }
-
+                    //passes the data from the snapshot to this method which populates the
+                    //sets reps and weight for the currently selected exercise
                     setExerciseViews(dataSnapshot, exerciseInfoIndex);
 
                 } catch (NullPointerException e) {
 
                 }
-
+                //If the program is switched the first exercise is selected
                 if(switchedPrograms){
                     exerciseView.performItemClick(exerciseView, 0, R.id.currentList);
                     switchedPrograms = false;
@@ -218,6 +202,7 @@ public class HomeFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @NonNull
     @Override
+    //Inflates the page, buttons, progress bars, and listviews
     public View onCreateView(LayoutInflater inflater, @NonNull ViewGroup container, @NonNull Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, null);
         Button logoutButton = v.findViewById(R.id.logoutButton);
@@ -238,20 +223,18 @@ public class HomeFragment extends Fragment {
         ProgressBar exerciseProgress = v.findViewById(R.id.progressBar1);
         ProgressBar progProgress = v.findViewById(R.id.progressBar2);
 
-
         String userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
+        //Initializes array for programs & gets reference for selected program from firebase
         ArrayList<String> programs = new ArrayList<>();
         currentProgram = db.getReference("Users").child(userid).child("Programs");
         currentProgram.addValueEventListener(programListener);
         programsAdapter = new ArrayAdapter<>(this.requireActivity(), android.R.layout.simple_list_item_1, programs);
         programView.setAdapter(programsAdapter);
 
-
-
-
+            //When log button is clicked, allows the user to enter numbers for exercises and reflects
+            // in program exercise progress bars
             logButton.setOnClickListener(v1 -> {
-
                 if(programsAdapter.getItem(0).equals("No Programs")){
                     Toast t = Toast.makeText(getContext(),"Cant log without a Program and Exercises",Toast.LENGTH_SHORT);
                     t.show();
@@ -266,16 +249,14 @@ public class HomeFragment extends Fragment {
 
                     builder.setView(log);
 
-
+                    //Runs code when user clicks the log button in the log alert dialog box
                     builder.setPositiveButton("Log", (d, w) -> {
-
 
                         double activityPercent = 0.0;
                         double programPercent = 0.0;
 
-
                         try {
-                            //new code
+                            //math for user entered log numbers
                             int currentlogweight = Integer.parseInt(numReps.getText().toString()) *
                                     Integer.parseInt(numWeight.getText().toString());
                             currentExerciseProgress = currentExerciseProgress + currentlogweight;
@@ -283,19 +264,17 @@ public class HomeFragment extends Fragment {
                             activityPercent = currentExerciseProgress / totalLogWeight;
                             programPercent = currentProgramProgress / totalProgWeight;
 
-                            ///////new code above
                         } catch (NumberFormatException nfe) {
                             Toast.makeText(this.getActivity(), "Please Log both Reps and Weight", Toast.LENGTH_SHORT).show();
                             d.cancel();
                         }
-
-
+                        //Creates decimal format for progress bars
                         DecimalFormat df = new DecimalFormat("#.##");
                         activityPercent = Double.parseDouble(df.format(activityPercent));
                         DecimalFormat df1 = new DecimalFormat("#.##");
                         programPercent = Double.parseDouble(df1.format(programPercent));
 
-
+                        //sets progress for exercise and programs
                         double hundred = 100.0;
                         double progressBar = hundred * activityPercent;
                         int progressPercent = (int) progressBar;
@@ -313,7 +292,6 @@ public class HomeFragment extends Fragment {
                             exerciseProgress.setProgress(100);
                         }
 
-
                         double hundred1 = 100.0;
                         double programProgress = hundred1 * programPercent;
                         int programProgressPercent = (int) programProgress;
@@ -325,8 +303,7 @@ public class HomeFragment extends Fragment {
                         progProgress.setProgress(programProgressPercent);
 
                     });
-
-
+                    //Cancels when user hits the cancel button in the log alert dialog box
                     builder.setNegativeButton("Cancel", (d, w) -> {
                         d.cancel();
                     });
@@ -337,7 +314,7 @@ public class HomeFragment extends Fragment {
             });
 
 
-
+        //Runs code when user hits the plate calculator button
         calculator_view.setOnClickListener(v1 -> {
             LayoutInflater li = LayoutInflater.from(getContext());
             View plateCalc = li.inflate(R.layout.plate_calculator_dialog, null);
@@ -351,6 +328,8 @@ public class HomeFragment extends Fragment {
             EditText num2half = plateCalc.findViewById(R.id.num_2_5_plates);
 
             builder.setView(plateCalc);
+            //Math for when user hits done in plate calculator alert dialog box
+            //Adds up and multiplies the amount of plates entered to get the total
             builder.setPositiveButton("Done", (d,w)->{
                 double totalplateweight = 0;
                 if(num45.getText().toString().equals("")) {
@@ -388,10 +367,10 @@ public class HomeFragment extends Fragment {
                     totalplateweight += (2.5*plates2_5);
                 }
 
-
                 String plateResult = "Total: " + totalplateweight;
                 calculator_total.setText(plateResult);
             });
+            //Cancels when the user hits the cancel button in plate calculator alert dialog box
             builder.setNegativeButton("Cancel", (d,w)->{
                 d.cancel();
             });
@@ -399,13 +378,7 @@ public class HomeFragment extends Fragment {
 
 
         });
-
-
-
-
-
-
-
+        //Runs code when user selects a program from the program listview
         programView.setOnItemClickListener((p, view, pos, id) -> {
             switchedPrograms = true;
             currentProgramProgress = 0;
@@ -413,19 +386,18 @@ public class HomeFragment extends Fragment {
 
             selectProgram = currentProgram.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
             exerciseList = selectProgram.child("Exercises");
-
+            //updates the exercises adapter with the exercises list for the exercises view
             exercisesAdapter = new ArrayAdapter<>(this.requireActivity(), android.R.layout.simple_list_item_1, exercises);
             exerciseList.addValueEventListener(exerciseListener);
             exerciseView.setAdapter(exercisesAdapter);
 
             exerciseProgress.setProgress(0);
             percent1.setText("0%");
-
+            //Sets default program progress bar
             if(!programsAdapter.getItem(0).equals("No Programs")) {
                 progressLabel2.setText(programsAdapter.getItem(pos) + " Progress");
                 progProgress.setProgress(0);
                 percent2.setText("0%");
-                programCalled = true;
             }else{
                 progressLabel2.setText("Add a program on the next page");
                 percent2.setText("0%");
@@ -433,31 +405,29 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
+        //Runs code when user selects and exercise from exercise listview
         exerciseView.setOnItemClickListener((p, view, pos, id) -> {
 
             exerciseInfoIndex = pos * 4;
-            //selectProgram = currentProgram.child(Objects.requireNonNull(programsAdapter.getItem(pos)));
             exerciseList = selectProgram.child("Exercises");
 
+            //updates the exercises adapter with the exercises list for the exercises view
             exercisesAdapter = new ArrayAdapter<>(this.requireActivity(), android.R.layout.simple_list_item_1, exercises);
             exerciseList.addValueEventListener(exerciseListener);
 
 
             exerciseView.setAdapter(exercisesAdapter);
             exerciseView.setSelection(pos);
-
+            //Sets exercise program progress bar label and percentage
             if(!programsAdapter.getItem(0).equals("No Programs")) {
-                exerciseCalled = true;
                 exerciseProgress.setProgress(0);
                 percent1.setText("0%");
                 progressLabel1.setText(exercisesAdapter.getItem(pos) + " Progress");
             }else{
-                exerciseCalled = true;
                 progressLabel1.setText("Add an exercise to a program");
             }
         });
-
+        //Logs the user out when clicking the logout button
         logoutButton.setOnClickListener(v1 -> {
             fAuth.signOut();
             startActivity(new Intent(getContext(), LoginActivity.class));
@@ -467,12 +437,11 @@ public class HomeFragment extends Fragment {
 
     }
 
-
+    //Test code
     public static String dummyFunction() {
         return "This is a useful test.";
     }
-
-
+    //Sets the numbers for sets, reps, and weight for the selected exercise
     private void setExerciseViews(DataSnapshot ds, int index) {
         int i = 0;
         String s1 = "Sets: ";
@@ -484,6 +453,7 @@ public class HomeFragment extends Fragment {
         currentSets = 0;
         currentReps = 0;
         currentWeight = 0;
+        //Checks if there is at least one program then creates variables for use in logging
         if(!programsAdapter.getItem(0).equals("No Programs")) {
             for (DataSnapshot dss : ds.getChildren()) {
                 if (i == (index + 1)) {
@@ -503,7 +473,6 @@ public class HomeFragment extends Fragment {
                     weight.setText(s3);
                 }
                 i++;
-
             }
             currentExerciseProgress = 0;
             totalLogWeight = 0;
