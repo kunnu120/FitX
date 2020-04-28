@@ -1,3 +1,14 @@
+/*   Main Developer For This Page: Brett Noltkamper, brettn@email.sc.edu
+     For all my libraries imported below, I learned how to use them from
+     developer.android.com. It has a lot of tutorials an example code to
+     use as reference but other than that all the logic is unique and we
+     had to come up with on our own. Firebase implementation was learned
+     through the firebase helper built in Android Studio and on the
+     Google Devs tutorial pages online.
+ */
+
+
+
 package com.example.fitx;
 
 import android.app.AlertDialog;
@@ -348,7 +359,13 @@ public class ExercisesFragment extends Fragment {
         });
 
         /*  Add Exercise Button Click Listener
-            Launches an alert dialog
+            First the current information from the table is captured into a vector and
+            transferred back into the exercise adapter. If we add an exercise we just add
+            the new exercise data to the end of the adapter.
+            Launches an alert dialog with multiple input fields for exercise information.
+            Has error checking for bad inputs. Like numbers being too long or nonexistant.
+            User input for number fields are locked in the xml file for the add exercise
+            custom dialog we made by setting the keyboard to a number keyboard.
          */
         addExercise.setOnClickListener(v1 -> {
             if(programsAdapter.getCount()>0) {
@@ -401,6 +418,10 @@ public class ExercisesFragment extends Fragment {
                     String s4 = weightAmt.getText().toString();
 
 
+                    /*  Begin of error checking
+                        If s1check to s4check are all true by the end of reading the inputs
+                        then the exercise will be added.
+                     */
                     Toast t;
                     boolean s1check = true;
                     boolean s2check = true;
@@ -524,6 +545,7 @@ public class ExercisesFragment extends Fragment {
                             t.show();
                             d.cancel();
                         }
+                        //End of add exercise error checking
 
                         if (s1check && s2check && s3check && s4check) {
                             exercisesAdapter.add(s1);
@@ -551,7 +573,17 @@ public class ExercisesFragment extends Fragment {
             }
         });
 
-        //remove exercise click listener
+        /*  Remove Exercise Button Click Listener
+            First we copy the contents of the current table shown and put it into our adapter
+            Then we make a new adapter for the exercise names only
+            Then we launch a dialog with a spinner and attach the exercise names adapter to the
+            spinner. This allows the user to just pick the exercise they want to remove on the list
+            of names that exist. We capture the index on the list that they select and copy the
+            contents of the list into the exercise adapter except for the row that we want to delete
+            using the index we captured from the user. Then we update the table contents by setting the
+            exercise reference to the new exerciseAdapter.
+            This listener has a function call to ExerciseToDelete that passes the string of the exercise with that index as well.
+         */
         removeExercise.setOnClickListener(v1 -> {
             //copy whole table into exercises adapter for editing
             Vector<String> data1 = new Vector<>();
@@ -568,7 +600,8 @@ public class ExercisesFragment extends Fragment {
                     data1.add(cellData);
                 }
             }
-            //removes the 4 empty spaces added at the end of the vector
+            //removes the 4 empty spaces added at the end of the vector because it copies an extra row for some reason. sloppy fix but works
+
             for(int i=0; i < 4; i++) {
                 data1.removeElementAt(data1.size() - 1);
             }
@@ -611,7 +644,12 @@ public class ExercisesFragment extends Fragment {
 
 
 
-        //remove program click listener
+        /*   Remove Program Button Listener
+             We make a spinner with the adapter as the programs adapter
+             and display it in a alertdialog. Then if the user hits
+             remove the program they selected will be remove from the
+             list
+         */
         removeProgram.setOnClickListener(v1 -> {
 
             Spinner sp = new Spinner(getActivity());
@@ -669,7 +707,14 @@ public class ExercisesFragment extends Fragment {
         });
 
 
-        //edit exercise click listener
+        /*   Edit exercise button click listener
+             This is like a combination of remove exercise and add exercise
+             We use the same method for displaying the exercise names in a spinner
+             as we did in remove exercise but once we get the index they selected
+             we load the contents of the table at that row into an add exercise dialog
+             We do some error checking before just like in add exercise we change the
+             values at that same index we retrieved the data from
+         */
         editExercise.setOnClickListener(v1 -> {
             //copy whole table into exercises adapter for editing
             Vector<String> data1 = new Vector<>();
@@ -900,6 +945,8 @@ public class ExercisesFragment extends Fragment {
         return v;
     }
 
+
+    //Function used by removeExercise click listener
     private void exerciseToDelete(String exerciseStr, int pos){
         pos = pos*4;
         //copy whole table into exercises adapter for editing
