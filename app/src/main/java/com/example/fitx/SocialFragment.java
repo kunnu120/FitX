@@ -61,7 +61,8 @@ public class SocialFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
     private final StorageReference storageRef = FirebaseStorage.getInstance().getReference("uploads");
-
+    
+    // handles changes to the database post list.
     private ChildEventListener postListener = new ChildEventListener() {
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -97,7 +98,8 @@ public class SocialFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_social, null);
 
         postTextField = v.findViewById(R.id.postTextField);
-
+        
+        // image upload functionality
         img = v.findViewById(R.id.postpic);
         img.setOnClickListener(v1 -> {
             openFileChooser();
@@ -106,6 +108,7 @@ public class SocialFragment extends Fragment {
         progressBar = v.findViewById(R.id.ventilator_progress);
         progressBar.setVisibility(View.INVISIBLE);
 
+        // upload button functionality
         btnupload = v.findViewById(R.id.btnPostUpload);
         btnupload.setOnClickListener(x -> {
             if (uri == null & postTextField.getText().toString().isEmpty()) {
@@ -120,6 +123,7 @@ public class SocialFragment extends Fragment {
 
         userid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
+        // this array holds Post objects for each post pulled from the server
         postList = new ArrayList<Post>();
         postListRef = db.getReference("postList");
 
@@ -129,6 +133,7 @@ public class SocialFragment extends Fragment {
         rvPosts.setAdapter(adapter);
         // Set layout manager to position the items
         linearLayoutManager = new LinearLayoutManager(getContext());
+        // Set recyclerview to populate newest posts at top
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         rvPosts.setLayoutManager(linearLayoutManager);
@@ -136,7 +141,8 @@ public class SocialFragment extends Fragment {
         postListRef.addChildEventListener(postListener);
         return v;
     }
-
+    
+    // Choose a photo form local storage on phone
     private void openFileChooser() {
         btnupload.setEnabled(false);
         Intent intent = new Intent();
@@ -145,6 +151,7 @@ public class SocialFragment extends Fragment {
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
+    // Photo chooser
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -154,21 +161,25 @@ public class SocialFragment extends Fragment {
             btnupload.setEnabled(true);
         }
     }
-
+    
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getActivity().getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
+    // Send post to server
     private void uploadPost() {
+        // Upload button is disabled until upload finished
         btnupload.setEnabled(false);
         String postText = postTextField.getText().toString();
         String postid = ""+System.currentTimeMillis();
         if (uri != null) {
+            // if there is an image with the post
             progressBar.setVisibility(View.VISIBLE);
             String refS = postid + "." + getFileExtension(uri);
             StorageReference fileRef = storageRef.child(refS);
+            // First upload image to firebase storage
             fileRef.putFile(uri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -177,6 +188,7 @@ public class SocialFragment extends Fragment {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                // upload post info to firebase database
                                 postTextField.setText("");
                                 Post p = new Post(userid,postid,postText, true);
                                 postListRef.push().setValue(p);
@@ -207,6 +219,7 @@ public class SocialFragment extends Fragment {
                     }
                 });
         } else {
+            // if there is no image with the post
             postTextField.setText("");
             Post p = new Post(userid,postid,postText,false);
             postListRef.push().setValue(p);
